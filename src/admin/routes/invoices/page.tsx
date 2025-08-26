@@ -15,7 +15,7 @@ import {
 	Textarea,
 } from '@medusajs/ui';
 import React from 'react';
-import TiptapEditor from '../../../components/TiptapEditor';
+import TiptapEditor from '../../components/TiptapEditor';
 
 const orders = [
 	{ id: 'order_1', label: 'Order 1' },
