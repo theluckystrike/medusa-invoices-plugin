@@ -101,12 +101,8 @@ const renderTemplateSettings = ({
 			<Heading level="h2" className="mb-4">
 				Additional Content
 			</Heading>
-			<Label htmlFor="header-additional-text">Header Content</Label>
-			<TiptapEditor
-				// placeholder="Additional header content"
-				// id="header-additional-text"
-				className="mb-3 mt-1 max-h-40"
-			/>
+			<Label>Header Content</Label>
+			<TiptapEditor className="mb-3 mt-1" />
 			<Label htmlFor="footer-additional-text">Footer Content</Label>
 			<Textarea
 				placeholder="Additional footer content"

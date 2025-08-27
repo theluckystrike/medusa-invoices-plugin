@@ -12,7 +12,13 @@ import Strike from '@tiptap/extension-strike';
 import TextAlign from '@tiptap/extension-text-align';
 import { Color, TextStyle } from '@tiptap/extension-text-style';
 import Underline from '@tiptap/extension-underline';
-import { Editor, EditorContent, useEditor } from '@tiptap/react';
+import { Placeholder } from '@tiptap/extensions';
+import {
+	Editor,
+	EditorContent,
+	useEditor,
+	useEditorState,
+} from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
 import {
@@ -44,6 +50,7 @@ interface TiptapEditorProps {
 	content?: string;
 	onChange?: (content: string) => void;
 	className?: string;
+	placeholder?: string;
 	isInvalid?: boolean;
 	disabled?: boolean;
 }
@@ -78,13 +85,42 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 		setShowColorPicker(false);
 	};
 
+	const editorState = useEditorState({
+		editor,
+		selector: (ctx) => {
+			return {
+				isBold: ctx.editor.isActive('bold') ?? false,
+				isItalic: ctx.editor.isActive('italic') ?? false,
+				isUnderline: ctx.editor.isActive('underline') ?? false,
+				isStrike: ctx.editor.isActive('strike') ?? false,
+				isLink: ctx.editor.isActive('link') ?? false,
+				isBulletList: ctx.editor.isActive('bulletList') ?? false,
+				isOrderedList: ctx.editor.isActive('orderedList') ?? false,
+				isTaskList: ctx.editor.isActive('taskList') ?? false,
+				isLeftAligned: ctx.editor.isActive({ textAlign: 'left' }) ?? false,
+				isCenterAligned: ctx.editor.isActive({ textAlign: 'center' }) ?? false,
+				isRightAligned: ctx.editor.isActive({ textAlign: 'right' }) ?? false,
+				isJustified: ctx.editor.isActive({ textAlign: 'justify' }) ?? false,
+				isParagraph: ctx.editor.isActive('paragraph') ?? false,
+				isHeading1: ctx.editor.isActive('heading', { level: 1 }) ?? false,
+				isHeading2: ctx.editor.isActive('heading', { level: 2 }) ?? false,
+				isHeading3: ctx.editor.isActive('heading', { level: 3 }) ?? false,
+				isHeading4: ctx.editor.isActive('heading', { level: 4 }) ?? false,
+				isHeading5: ctx.editor.isActive('heading', { level: 5 }) ?? false,
+				isHeading6: ctx.editor.isActive('heading', { level: 6 }) ?? false,
+				canUndo: ctx.editor.can().chain().undo().run() ?? false,
+				canRedo: ctx.editor.can().chain().redo().run() ?? false,
+			};
+		},
+	});
+
 	return (
 		<div className="border-b border-gray-200 p-2 flex flex-wrap gap-1">
 			{/* Undo */}
 			<IconButton
 				className="size-7"
 				onClick={() => editor.chain().focus().undo().run()}
-				disabled={!editor.can().undo()}
+				disabled={!editorState.canUndo}
 			>
 				<Undo size={16} />
 			</IconButton>
@@ -93,7 +129,7 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 			<IconButton
 				className="size-7"
 				onClick={() => editor.chain().focus().redo().run()}
-				disabled={!editor.can().redo()}
+				disabled={!editorState.canRedo}
 			>
 				<Redo size={16} />
 			</IconButton>
@@ -102,7 +138,11 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 
 			{/* Bold */}
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isBold &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleBold().run()}
 			>
 				<BoldIcon size={16} />
@@ -110,7 +150,11 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 
 			{/* Italic */}
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isItalic &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleItalic().run()}
 			>
 				<ItalicIcon size={16} />
@@ -118,7 +162,11 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 
 			{/* Underline */}
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isUnderline &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleUnderline().run()}
 			>
 				<UnderlineIcon size={16} />
@@ -126,7 +174,11 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 
 			{/* Strike */}
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isStrike &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleStrike().run()}
 			>
 				<Strikethrough size={16} />
@@ -138,11 +190,16 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 			<DropdownMenu open={showLinkDialog} onOpenChange={setShowLinkDialog}>
 				<DropdownMenu.Trigger asChild>
 					<IconButton
-						className="size-7"
+						className={clx(
+							'size-7',
+							editorState.isLink &&
+								'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+						)}
 						onClick={() => {
-							if (editor.isActive('link')) {
+							if (editorState.isLink) {
 								removeLink();
 							} else {
+								console.log('Adding link');
 								setShowLinkDialog(!showLinkDialog);
 							}
 						}}
@@ -150,7 +207,7 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 						<LinkIcon size={16} />
 					</IconButton>
 				</DropdownMenu.Trigger>
-				<DropdownMenu.Content className="flex gap-2">
+				<DropdownMenu.Content>
 					<Input
 						type="url"
 						placeholder="Enter URL..."
@@ -164,15 +221,30 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 								setLinkUrl('');
 							}
 						}}
-						className="h-auto w-40"
 						autoFocus
+						className="mb-4"
 					/>
-					<Button onClick={addLink}>Add</Button>
+					<Button onClick={addLink} className="w-full mb-2">
+						Add
+					</Button>
 					<Button
+						onClick={() => {
+							removeLink();
+							setShowLinkDialog(false);
+							setLinkUrl('');
+						}}
+						className="w-full"
+					>
+						Remove link
+					</Button>
+					<DropdownMenu.Separator />
+					<Button
+						variant="transparent"
 						onClick={() => {
 							setShowLinkDialog(false);
 							setLinkUrl('');
 						}}
+						className="w-full"
 					>
 						Cancel
 					</Button>
@@ -255,7 +327,11 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 
 			{/* Bullet List */}
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isBulletList &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleBulletList().run()}
 			>
 				<List size={16} />
@@ -263,7 +339,11 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 
 			{/* Ordered List */}
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isOrderedList &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleOrderedList().run()}
 			>
 				<ListOrdered size={16} />
@@ -271,7 +351,11 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 
 			{/* Task List (Checklist) */}
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isTaskList &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleTaskList().run()}
 			>
 				<LayoutList size={16} />
@@ -281,28 +365,44 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 
 			{/* Text Alignment */}
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isLeftAligned &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().setTextAlign('left').run()}
 			>
 				<AlignLeft size={16} />
 			</IconButton>
 
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isCenterAligned &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().setTextAlign('center').run()}
 			>
 				<AlignCenter size={16} />
 			</IconButton>
 
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isRightAligned &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().setTextAlign('right').run()}
 			>
 				<AlignRight size={16} />
 			</IconButton>
 
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isJustified &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().setTextAlign('justify').run()}
 			>
 				<AlignJustify size={16} />
@@ -312,42 +412,66 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 
 			{/* Headings */}
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isHeading1 &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
 			>
 				<Heading1 size={16} />
 			</IconButton>
 
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isHeading2 &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
 			>
 				<Heading2 size={16} />
 			</IconButton>
 
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isHeading3 &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
 			>
 				<Heading3 size={16} />
 			</IconButton>
 
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isHeading4 &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
 			>
 				<Heading4 size={16} />
 			</IconButton>
 
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isHeading5 &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleHeading({ level: 5 }).run()}
 			>
 				<Heading5 size={16} />
 			</IconButton>
 
 			<IconButton
-				className="size-7"
+				className={clx(
+					'size-7',
+					editorState.isHeading6 &&
+						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
+				)}
 				onClick={() => editor.chain().focus().toggleHeading({ level: 6 }).run()}
 			>
 				<Heading6 size={16} />
@@ -360,6 +484,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 	content = '',
 	onChange,
 	className,
+	placeholder,
 	isInvalid = false,
 	disabled = false,
 }) => {
@@ -418,6 +543,9 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 			TextAlign.configure({
 				types: ['heading', 'paragraph'],
 			}),
+			Placeholder.configure({
+				placeholder: placeholder,
+			}),
 		],
 		content,
 		editable: !disabled,
@@ -426,7 +554,42 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 		},
 		editorProps: {
 			attributes: {
-				class: 'prose prose-sm sm:prose focus:outline-none',
+				class: clx(
+					'prose prose-sm sm:prose max-h-40 h-[3.75rem] overflow-y-auto focus:outline-none caret-ui-fg-base bg-ui-bg-field hover:bg-ui-bg-field-hover shadow-borders-base placeholder-ui-fg-muted text-ui-fg-base transition-fg relative w-full appearance-none rounded-md outline-none focus-visible:shadow-borders-interactive-with-active disabled:text-ui-fg-disabled disabled:!bg-ui-bg-disabled disabled:placeholder-ui-fg-disabled disabled:cursor-not-allowed aria-[invalid=true]:!shadow-borders-error invalid:!shadow-borders-error [&::--webkit-search-cancel-button]:hidden [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden txt-compact-small px-2 py-1.5',
+					// Placeholder styles for empty editor
+					'[&_p.is-editor-empty:first-child::before]:float-left',
+					'[&_p.is-editor-empty:first-child::before]:pointer-events-none',
+					'[&_p.is-editor-empty:first-child::before]:h-0',
+					'[&_p.is-editor-empty:first-child::before]:text-ui-fg-interactive-hover',
+					// List styles
+					'[&_.tiptap-bullet-list]:list-disc [&_.tiptap-bullet-list]:ml-6',
+					'[&_ul]:list-disc [&_ul]:ml-6',
+					'[&_ol]:list-decimal [&_ol]:ml-6',
+					'[&_li]:mb-1',
+					'[&_.tiptap-bullet-list_li]:mb-1',
+					'[&_.tiptap-ordered-list_li]:mb-1 [&_.tiptap-ordered-list]:list-decimal [&_.tiptap-ordered-list]:ml-6',
+					// Text alignment styles
+					'[&_[style*="text-align:_left"]]:text-left',
+					'[&_[style*="text-align:_center"]]:text-center',
+					'[&_[style*="text-align:_right"]]:text-right',
+					'[&_[style*="text-align:_justify"]]:text-justify',
+					// Heading styles
+					'[&_h1]:text-4xl [&_h1]:leading-10 [&_h1]:font-bold [&_h1]:mt-6 [&_h1]:mb-4',
+					'[&_h2]:text-3xl [&_h2]:leading-9 [&_h2]:font-semibold [&_h2]:mt-5 [&_h2]:mb-3',
+					'[&_h3]:text-2xl [&_h3]:leading-8 [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-3',
+					'[&_h4]:text-xl [&_h4]:leading-7 [&_h4]:font-semibold [&_h4]:mt-4 [&_h4]:mb-2',
+					'[&_h5]:text-lg [&_h5]:leading-6 [&_h5]:font-semibold [&_h5]:mt-3 [&_h5]:mb-2',
+					'[&_h6]:text-base [&_h6]:leading-5 [&_h6]:font-semibold [&_h6]:mt-3 [&_h6]:mb-2',
+					// Remove top margin from first element
+					'[&_>*:first-child]:mt-0',
+					// Task list styles (based on official Tiptap examples)
+					'[&_ul[data-type="taskList"]]:list-none [&_ul[data-type="taskList"]]:ml-0 [&_ul[data-type="taskList"]]:p-0',
+					'[&_ul[data-type="taskList"]_li]:flex [&_ul[data-type="taskList"]_li]:items-start [&_ul[data-type="taskList"]_li]:mb-1',
+					'[&_ul[data-type="taskList"]_li>label]:flex-none [&_ul[data-type="taskList"]_li>label]:mr-2 [&_ul[data-type="taskList"]_li>label]:select-none',
+					'[&_ul[data-type="taskList"]_li>div]:flex-1',
+					'[&_ul[data-type="taskList"]_input[type="checkbox"]]:cursor-pointer',
+					'[&_ul[data-type="taskList"]]:!ml-2'
+				),
 			},
 		},
 	});
@@ -446,48 +609,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 	return (
 		<div className={editorClasses}>
 			{!disabled && <MenuBar editor={editor} />}
-			<EditorContent
-				editor={editor}
-				className={clx(
-					// ProseMirror base styles
-					'[&_.tiptap]:outline-none [&_.tiptap]:min-h-[8rem] [&_.tiptap]:hover:bg-ui-bg-field-hover:hover [&_.tiptap]:caret-ui-fg-base [&_.tiptap]:prose [&_.tiptap]:prose-sm [&_.tiptap]:bg-ui-bg-field [&_.tiptap]:text-ui-fg-base [&_.tiptap]:p-4 [&_.tiptap]:transition-fg',
-					// Placeholder styles for empty editor
-					'[&_.tiptap_p.is-editor-empty:first-child::before]:float-left',
-					'[&_.tiptap_p.is-editor-empty:first-child::before]:pointer-events-none',
-					'[&_.tiptap_p.is-editor-empty:first-child::before]:h-0',
-					'[&_.tiptap_.is-empty::before]:float-left',
-					'[&_.tiptap_.is-empty::before]:pointer-events-none',
-					'[&_.tiptap_.is-empty::before]:h-0',
-					// List styles
-					'[&_.tiptap-bullet-list]:list-disc [&_.tiptap-bullet-list]:ml-6',
-					'[&_ul]:list-disc [&_ul]:ml-6',
-					'[&_ol]:list-decimal [&_ol]:ml-6',
-					'[&_li]:mb-1',
-					'[&_.tiptap-bullet-list_li]:mb-1',
-					'[&_.tiptap-ordered-list_li]:mb-1 [&_.tiptap-ordered-list]:list-decimal [&_.tiptap-ordered-list]:ml-6',
-					// Text alignment styles
-					'[&_.tiptap_[style*="text-align:_left"]]:text-left',
-					'[&_.tiptap_[style*="text-align:_center"]]:text-center',
-					'[&_.tiptap_[style*="text-align:_right"]]:text-right',
-					'[&_.tiptap_[style*="text-align:_justify"]]:text-justify',
-					// Heading styles
-					'[&_.tiptap_h1]:text-4xl [&_.tiptap_h1]:leading-10 [&_.tiptap_h1]:font-bold [&_.tiptap_h1]:mt-6 [&_.tiptap_h1]:mb-4',
-					'[&_.tiptap_h2]:text-3xl [&_.tiptap_h2]:leading-9 [&_.tiptap_h2]:font-semibold [&_.tiptap_h2]:mt-5 [&_.tiptap_h2]:mb-3',
-					'[&_.tiptap_h3]:text-2xl [&_.tiptap_h3]:leading-8 [&_.tiptap_h3]:font-semibold [&_.tiptap_h3]:mt-4 [&_.tiptap_h3]:mb-3',
-					'[&_.tiptap_h4]:text-xl [&_.tiptap_h4]:leading-7 [&_.tiptap_h4]:font-semibold [&_.tiptap_h4]:mt-4 [&_.tiptap_h4]:mb-2',
-					'[&_.tiptap_h5]:text-lg [&_.tiptap_h5]:leading-6 [&_.tiptap_h5]:font-semibold [&_.tiptap_h5]:mt-3 [&_.tiptap_h5]:mb-2',
-					'[&_.tiptap_h6]:text-base [&_.tiptap_h6]:leading-5 [&_.tiptap_h6]:font-semibold [&_.tiptap_h6]:mt-3 [&_.tiptap_h6]:mb-2',
-					// Remove top margin from first element
-					'[&_.tiptap_>*:first-child]:mt-0',
-					// Task list styles (based on official Tiptap examples)
-					'[&_ul[data-type="taskList"]]:list-none [&_ul[data-type="taskList"]]:ml-0 [&_ul[data-type="taskList"]]:p-0',
-					'[&_ul[data-type="taskList"]_li]:flex [&_ul[data-type="taskList"]_li]:items-start [&_ul[data-type="taskList"]_li]:mb-1',
-					'[&_ul[data-type="taskList"]_li>label]:flex-none [&_ul[data-type="taskList"]_li>label]:mr-2 [&_ul[data-type="taskList"]_li>label]:select-none',
-					'[&_ul[data-type="taskList"]_li>div]:flex-1',
-					'[&_ul[data-type="taskList"]_input[type="checkbox"]]:cursor-pointer',
-					'[&_ul[data-type="taskList"]]:!ml-2'
-				)}
-			/>
+			<EditorContent editor={editor} />
 		</div>
 	);
 };
