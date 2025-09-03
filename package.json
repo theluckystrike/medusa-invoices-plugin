@@ -74,6 +74,7 @@
     "node": ">=20"
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.3.0",
     "@tiptap/extension-text-align": "^3.3.0",
     "@tiptap/extension-text-style": "^3.3.0",
     "@tiptap/pm": "^3.3.0",

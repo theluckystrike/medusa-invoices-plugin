@@ -49,8 +49,8 @@ import * as React from 'react';
 interface TiptapEditorProps {
 	content?: string;
 	onChange?: (content: string) => void;
-	className?: string;
 	placeholder?: string;
+	className?: string;
 	isInvalid?: boolean;
 	disabled?: boolean;
 }
