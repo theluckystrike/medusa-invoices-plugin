@@ -15,26 +15,87 @@ const templateStyles = StyleSheet.create({
 		page: {
 			backgroundColor: '#fff',
 			padding: 32,
+			color: '#18181b',
 		},
-		header: {},
-		invoiceMeta: {},
-		addresses: {},
-		lineItems: {},
-		totals: {},
-		footer: {},
+		section: {
+			marginBottom: 32,
+			paddingBottom: 32,
+		},
+		heading: {
+			fontSize: '36px',
+			fontWeight: 'bold',
+			marginBottom: 32,
+		},
+		image: {
+			height: '32px',
+			width: 'auto',
+		},
+		label: {
+			fontWeight: 'semibold',
+		},
+		grandTotal: {
+			fontWeight: 'bold',
+			fontSize: '22px',
+			marginTop: '6px',
+		},
+	},
+	classic: {
+		page: {
+			backgroundColor: '#fff',
+			padding: 32,
+			color: '#18181b',
+		},
+		section: {
+			marginBottom: 32,
+			paddingBottom: 32,
+		},
+		heading: {
+			fontSize: '36px',
+			fontWeight: 'bold',
+			marginBottom: 32,
+		},
+		image: {
+			height: '32px',
+			width: 'auto',
+		},
+		label: {
+			fontWeight: 'semibold',
+		},
+		grandTotal: {
+			fontWeight: 'bold',
+			fontSize: '22px',
+			marginTop: '6px',
+		},
+	},
+	compact: {
+		page: {
+			backgroundColor: '#fff',
+			padding: 12,
+			fontSize: '12px',
+			color: '#52525b',
+		},
 		section: {
 			marginBottom: 12,
 			paddingBottom: 12,
-			borderBottom: '1px solid #eee',
 		},
 		heading: {
-			fontSize: 20,
-			marginBottom: 8,
+			fontSize: '20px',
+			fontWeight: 'medium',
+			marginBottom: 12,
+			color: '#18181b',
 		},
 		image: {
-			width: '100%',
-			height: 'auto',
-			marginBottom: 12,
+			height: '24px',
+			width: 'auto',
+		},
+		label: {
+			fontWeight: 'medium',
+			color: '#18181b',
+		},
+		grandTotal: {
+			fontSize: '15px',
+			marginTop: '6px',
+			color: '#18181b',
 		},
 	},
 });
@@ -44,64 +105,51 @@ type PdfViewerProps = {
 };
 
 export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
-	<PDFViewer width="100%" height="auto" showToolbar={false}>
+	<PDFViewer showToolbar={false} height="100%" width="100%">
 		<Document>
-			<Page
-				size="A4"
-				style={
-					templateStyles[templateSettings.style as keyof typeof templateStyles]
-						.page
-				}
-			>
-				{templateSettings.headerType !== 'none' && (
-					<View
-						style={
-							templateStyles[
-								templateSettings.style as keyof typeof templateStyles
-							].header
-						}
-					>
-						{templateSettings.headerType === 'heading' ? (
-							<Text
-								style={
-									templateStyles[
-										templateSettings.style as keyof typeof templateStyles
-									].heading
-								}
-							>
-								{templateSettings.headerText}
-							</Text>
-						) : templateSettings.headerType === 'image' ? (
-							<Image
-								src={templateSettings.imageUrl}
-								style={
-									templateStyles[
-										templateSettings.style as keyof typeof templateStyles
-									].image
-								}
-							/>
-						) : null}
-						{templateSettings.additionalHeaderContent && (
-							<Text>{templateSettings.additionalHeaderContent}</Text>
-						)}
-					</View>
-				)}
-				<View
-					style={
-						templateStyles[
-							templateSettings.style as keyof typeof templateStyles
-						].invoiceMeta
-					}
-				>
-					<Text>Invoice number: #4234234</Text>
-					<Text>Invoice date: {new Date().toLocaleDateString()}</Text>
-					<Text>Order id: #fsdfsdg</Text>
+			<Page size="A4" style={templateStyles[templateSettings.style].page}>
+				{templateSettings.headerType === 'heading' &&
+					templateSettings.headerText && (
+						<Text style={templateStyles[templateSettings.style].heading}>
+							{templateSettings.headerText}
+						</Text>
+					)}
+				{templateSettings.headerType === 'image' &&
+					templateSettings.imageUrl && (
+						<Image
+							src={templateSettings.imageUrl}
+							style={templateStyles[templateSettings.style].image}
+						/>
+					)}
+				{templateSettings.additionalHeaderContent &&
+					templateSettings.additionalHeaderContent}
+				<View style={templateStyles[templateSettings.style].section}>
+					<Text style={templateStyles[templateSettings.style].heading}>
+						Invoice
+					</Text>
+					<Text>
+						<Text style={templateStyles[templateSettings.style].label}>
+							Invoice number:
+						</Text>{' '}
+						#4234234
+					</Text>
+					<Text>
+						<Text style={templateStyles[templateSettings.style].label}>
+							Invoice date:
+						</Text>{' '}
+						{new Date().toLocaleDateString()}
+					</Text>
+					<Text>
+						<Text style={templateStyles[templateSettings.style].label}>
+							Order ID:
+						</Text>{' '}
+						#fsdfsdg
+					</Text>
 				</View>
+
 				<View
 					style={[
-						templateStyles[
-							templateSettings.style as keyof typeof templateStyles
-						].section,
+						templateStyles[templateSettings.style].section,
 						{
 							display: 'flex',
 							flexDirection: 'row',
@@ -110,25 +158,24 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 					]}
 				>
 					<View>
-						<Text>Bill to:</Text>
-						<Text>John Doe</Text>
-						<Text>john.doe@example.com</Text>
-						<Text>123 Main St</Text>
-						<Text>City, State, ZIP</Text>
+						<Text style={templateStyles[templateSettings.style].label}>
+							Bill to:
+						</Text>
+						<Text>Lorem ipsum</Text>
+						<Text>Soltanska 45b, 21000</Text>
+						<Text>+385 99 543 2345</Text>
 					</View>
+
 					<View>
-						<Text>Ship to:</Text>
-						<Text>123 Main St</Text>
-						<Text>City, State, ZIP</Text>
+						<Text style={templateStyles[templateSettings.style].label}>
+							Ship to:
+						</Text>
+						<Text>Lorem ipsum</Text>
+						<Text>Soltanska 45b, 21000</Text>
+						<Text>+385 99 543 2345</Text>
 					</View>
 				</View>
-				<View
-					style={
-						templateStyles[
-							templateSettings.style as keyof typeof templateStyles
-						].section
-					}
-				>
+				<View style={templateStyles[templateSettings.style].section}>
 					<View
 						style={{
 							display: 'flex',
@@ -139,19 +186,29 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 						}}
 					>
 						<View style={{ flex: 1 }}>
-							<Text>Item Title</Text>
+							<Text style={templateStyles[templateSettings.style].label}>
+								Item Title
+							</Text>
 						</View>
 						<View style={{ flex: 1 }}>
-							<Text>SKU</Text>
+							<Text style={templateStyles[templateSettings.style].label}>
+								SKU
+							</Text>
 						</View>
 						<View style={{ flex: 1 }}>
-							<Text>QTY</Text>
+							<Text style={templateStyles[templateSettings.style].label}>
+								QTY
+							</Text>
 						</View>
 						<View style={{ flex: 1 }}>
-							<Text>Unit price</Text>
+							<Text style={templateStyles[templateSettings.style].label}>
+								Unit price
+							</Text>
 						</View>
 						<View style={{ flex: 1 }}>
-							<Text>Line total</Text>
+							<Text style={templateStyles[templateSettings.style].label}>
+								Line total
+							</Text>
 						</View>
 					</View>
 					<View
@@ -205,13 +262,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 						</View>
 					</View>
 				</View>
-				<View
-					style={
-						templateStyles[
-							templateSettings.style as keyof typeof templateStyles
-						].section
-					}
-				>
+				<View style={templateStyles[templateSettings.style].section}>
 					<View
 						style={{
 							flexDirection: 'row',
@@ -220,40 +271,64 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 						}}
 					>
 						<View style={{ gap: '6px' }}>
-							<Text>Subtotal:</Text>
-							<Text>Discount:</Text>
-							<Text>Shipping:</Text>
-							<Text>Tax:</Text>
-							<Text>Grand Total:</Text>
+							<Text style={templateStyles[templateSettings.style].label}>
+								Subtotal:
+							</Text>
+							<Text style={templateStyles[templateSettings.style].label}>
+								Discount:
+							</Text>
+							<Text style={templateStyles[templateSettings.style].label}>
+								Shipping:
+							</Text>
+							<Text style={templateStyles[templateSettings.style].label}>
+								Tax:
+							</Text>
+							<Text style={templateStyles[templateSettings.style].grandTotal}>
+								Grand Total:
+							</Text>
 						</View>
 						<View style={{ gap: '6px' }}>
 							<Text>$234.00</Text>
 							<Text>$2.00</Text>
 							<Text>$234.00</Text>
 							<Text>$234.00</Text>
-							<Text>$234.00</Text>
+							<Text style={templateStyles[templateSettings.style].grandTotal}>
+								$234.00
+							</Text>
 						</View>
 					</View>
 				</View>
+				{(templateSettings.business.name ||
+					templateSettings.business.address ||
+					templateSettings.business.taxId ||
+					templateSettings.business.iban ||
+					templateSettings.business.swift) && (
+					<View
+						style={[
+							templateStyles[templateSettings.style].section,
+							{ borderBottom: 'none', marginBottom: '64px' },
+						]}
+					>
+						{templateSettings.business.name && (
+							<Text>{templateSettings.business.name}</Text>
+						)}
+						{templateSettings.business.address && (
+							<Text>{templateSettings.business.address}</Text>
+						)}
+						{templateSettings.business.taxId && (
+							<Text>Tax ID: {templateSettings.business.taxId}</Text>
+						)}
+						{templateSettings.business.iban && (
+							<Text>IBAN: {templateSettings.business.iban}</Text>
+						)}
+						{templateSettings.business.swift && (
+							<Text>SWIFT: {templateSettings.business.swift}</Text>
+						)}
+					</View>
+				)}
 				<View
 					style={[
-						templateStyles[
-							templateSettings.style as keyof typeof templateStyles
-						].section,
-						{ borderBottom: 'none', marginBottom: '64px' },
-					]}
-				>
-					<Text style={{ marginBottom: '32px' }}>Tekla Fabrics</Text>
-					<Text style={{ marginBottom: '6px' }}>Soltanska 26b, Split</Text>
-					<Text style={{ marginBottom: '6px' }}>Tax ID: 4234234234234234</Text>
-					<Text style={{ marginBottom: '6px' }}>IBAN: 4234234234234234</Text>
-					<Text>SWIFT: 2343</Text>
-				</View>
-				<View
-					style={[
-						templateStyles[
-							templateSettings.style as keyof typeof templateStyles
-						].section,
+						templateStyles[templateSettings.style].section,
 						{ borderBottom: 'none' },
 					]}
 				>

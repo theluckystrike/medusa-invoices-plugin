@@ -58,7 +58,8 @@ export default function Invoices() {
 				<div>
 					<Heading>Invoice Template Configuration</Heading>
 					<Text className="text-ui-fg-subtle">
-						Configure your invoice templates and preview them in real-time
+						Configure your invoice templates and click "Save Template
+						Configuration" to see changes in the preview
 					</Text>
 				</div>
 				<Drawer>
@@ -96,8 +97,8 @@ export default function Invoices() {
 							Download Preview
 						</Button>
 					</div>
-					<div className="px-6 py-4">
-						<Tabs defaultValue="dummy-data">
+					<div className="px-6 py-4 h-[calc(100%-64px)]">
+						<Tabs defaultValue="dummy-data" className="h-full">
 							<Tabs.List className="mb-4 w-full bg-ui-bg-base-hover rounded-full p-1">
 								<Tabs.Trigger value="dummy-data" className="flex-1">
 									Dummy Data
@@ -106,13 +107,16 @@ export default function Invoices() {
 									Select Order
 								</Tabs.Trigger>
 							</Tabs.List>
-							<Tabs.Content value="dummy-data">
+							<Tabs.Content value="dummy-data" className="h-[calc(100%-92px)]">
 								<Text className="mb-4 text-ui-fg-subtle">
 									Using built-in sample order data for preview
 								</Text>
 								<PdfViewer templateSettings={templateSettings} />
 							</Tabs.Content>
-							<Tabs.Content value="select-order">
+							<Tabs.Content
+								value="select-order"
+								className="h-[calc(100%-127px)]"
+							>
 								<Label>Select Order</Label>
 								<div className="w-[256px] mt-1 mb-4">
 									<Select>

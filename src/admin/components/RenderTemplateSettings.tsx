@@ -38,48 +38,57 @@ const RenderTemplateSettings: React.FC<{
 	setTemplateSettings: React.Dispatch<React.SetStateAction<TemplateSettings>>;
 }> = React.memo(
 	({ renderHeading = true, templateSettings, setTemplateSettings }) => {
-		const handleStyleChange = React.useCallback(
-			(value: string) => {
-				setTemplateSettings((prev) => ({
-					...prev,
-					style: value as TemplateSettings['style'],
-				}));
-			},
-			[setTemplateSettings]
-		);
-		const handleHeaderTypeChange = React.useCallback(
-			(value: string) => {
-				setTemplateSettings((prev) => ({
-					...prev,
-					headerType: value as TemplateSettings['headerType'],
-				}));
-			},
-			[setTemplateSettings]
-		);
+		const [draftSettings, setDraftSettings] =
+			React.useState<TemplateSettings>(templateSettings);
+
+		React.useEffect(() => {
+			setDraftSettings(templateSettings);
+		}, [templateSettings]);
+
+		const handleSave = React.useCallback(() => {
+			setTemplateSettings(draftSettings);
+		}, [draftSettings, setTemplateSettings]);
+
+		const handleStyleChange = React.useCallback((value: string) => {
+			setDraftSettings((prev) => ({
+				...prev,
+				style: value as TemplateSettings['style'],
+			}));
+		}, []);
+
+		const handleHeaderTypeChange = React.useCallback((value: string) => {
+			setDraftSettings((prev) => ({
+				...prev,
+				headerType: value as TemplateSettings['headerType'],
+			}));
+		}, []);
+
 		const handleInputChange = React.useCallback(
 			(field: keyof TemplateSettings, value: string) => {
-				setTemplateSettings((prev) => ({
+				setDraftSettings((prev) => ({
 					...prev,
 					[field]: value,
 				}));
 			},
-			[setTemplateSettings]
+			[]
 		);
+
 		const handleBusinessChange = React.useCallback(
 			(field: keyof TemplateSettings['business'], value: string) => {
-				setTemplateSettings((prev) => ({
+				setDraftSettings((prev) => ({
 					...prev,
 					business: { ...prev.business, [field]: value },
 				}));
 			},
-			[setTemplateSettings]
+			[]
 		);
+
 		const handleTriggerChange = React.useCallback(
 			(
 				field: keyof TemplateSettings['autoGenerationTriggers'],
 				checked: boolean
 			) => {
-				setTemplateSettings((prev) => ({
+				setDraftSettings((prev) => ({
 					...prev,
 					autoGenerationTriggers: {
 						...prev.autoGenerationTriggers,
@@ -87,8 +96,9 @@ const RenderTemplateSettings: React.FC<{
 					},
 				}));
 			},
-			[setTemplateSettings]
+			[]
 		);
+
 		return (
 			<>
 				<div className="px-6 py-4">
@@ -101,7 +111,7 @@ const RenderTemplateSettings: React.FC<{
 					<RadioGroup
 						id="template-style"
 						className="mt-1"
-						value={templateSettings.style}
+						value={draftSettings.style}
 						onValueChange={handleStyleChange}
 					>
 						<RadioGroup.ChoiceBox
@@ -126,7 +136,7 @@ const RenderTemplateSettings: React.FC<{
 						Header / Logo
 					</Heading>
 					<RadioGroup
-						value={templateSettings.headerType}
+						value={draftSettings.headerType}
 						className="flex gap-3 justify-between flex-wrap"
 						onValueChange={handleHeaderTypeChange}
 					>
@@ -143,26 +153,26 @@ const RenderTemplateSettings: React.FC<{
 							<Label htmlFor="none">None</Label>
 						</div>
 					</RadioGroup>
-					{templateSettings.headerType === 'image' && (
+					{draftSettings.headerType === 'image' && (
 						<div className="mt-3">
 							<Label htmlFor="image-url">Image URL</Label>
 							<Input
 								placeholder="https://example.com/image.jpg"
 								id="image-url"
 								className="mt-1"
-								value={templateSettings.imageUrl}
+								value={draftSettings.imageUrl}
 								onChange={(e) => handleInputChange('imageUrl', e.target.value)}
 							/>
 						</div>
 					)}
-					{templateSettings.headerType === 'heading' && (
+					{draftSettings.headerType === 'heading' && (
 						<div className="mt-3">
 							<Label htmlFor="header-text">Header Text</Label>
 							<Input
 								placeholder="My Company"
 								id="header-text"
 								className="mt-1"
-								value={templateSettings.headerText}
+								value={draftSettings.headerText}
 								onChange={(e) =>
 									handleInputChange('headerText', e.target.value)
 								}
@@ -176,7 +186,7 @@ const RenderTemplateSettings: React.FC<{
 					</Heading>
 					<Label>Header Content</Label>
 					<TiptapEditor
-						content={templateSettings.additionalHeaderContent}
+						content={draftSettings.additionalHeaderContent}
 						onChange={(value) =>
 							handleInputChange('additionalHeaderContent', value)
 						}
@@ -185,7 +195,7 @@ const RenderTemplateSettings: React.FC<{
 					/>
 					<Label>Footer Content</Label>
 					<TiptapEditor
-						content={templateSettings.additionalFooterContent}
+						content={draftSettings.additionalFooterContent}
 						onChange={(value) =>
 							handleInputChange('additionalFooterContent', value)
 						}
@@ -202,7 +212,7 @@ const RenderTemplateSettings: React.FC<{
 						placeholder="My Company"
 						id="business-name"
 						className="mt-1 mb-3"
-						value={templateSettings.business.name}
+						value={draftSettings.business.name}
 						onChange={(e) => handleBusinessChange('name', e.target.value)}
 					/>
 					<Label htmlFor="address">Address</Label>
@@ -212,7 +222,7 @@ const RenderTemplateSettings: React.FC<{
 						className="mt-1 mb-3"
 						style={{ maxHeight: '8rem' }}
 						maxLength={200}
-						value={templateSettings.business.address}
+						value={draftSettings.business.address}
 						onChange={(e) => handleBusinessChange('address', e.target.value)}
 					/>
 					<Label htmlFor="tax-id">Tax / VAT ID</Label>
@@ -220,7 +230,7 @@ const RenderTemplateSettings: React.FC<{
 						placeholder="Tax identification number"
 						id="tax-id"
 						className="mt-1 mb-4"
-						value={templateSettings.business.taxId}
+						value={draftSettings.business.taxId}
 						onChange={(e) => handleBusinessChange('taxId', e.target.value)}
 					/>
 					<div className="flex gap-3 flex-wrap">
@@ -230,7 +240,7 @@ const RenderTemplateSettings: React.FC<{
 								placeholder="International Bank Account Number"
 								id="iban"
 								className="mt-1"
-								value={templateSettings.business.iban}
+								value={draftSettings.business.iban}
 								onChange={(e) => handleBusinessChange('iban', e.target.value)}
 							/>
 						</div>
@@ -240,7 +250,7 @@ const RenderTemplateSettings: React.FC<{
 								placeholder="SWIFT/BIC code"
 								id="swift"
 								className="mt-1"
-								value={templateSettings.business.swift}
+								value={draftSettings.business.swift}
 								onChange={(e) => handleBusinessChange('swift', e.target.value)}
 							/>
 						</div>
@@ -253,12 +263,9 @@ const RenderTemplateSettings: React.FC<{
 					<div className="flex items-center gap-x-1.5 mb-3">
 						<Checkbox
 							id="order-completed"
-							checked={templateSettings.autoGenerationTriggers.orderCompleted}
-							onChange={(e) =>
-								handleTriggerChange(
-									'orderCompleted',
-									(e.target as HTMLInputElement).checked
-								)
+							checked={draftSettings.autoGenerationTriggers.orderCompleted}
+							onCheckedChange={(checked) =>
+								handleTriggerChange('orderCompleted', !!checked)
 							}
 						/>
 						<Label htmlFor="order-completed">Order Completed</Label>
@@ -266,12 +273,9 @@ const RenderTemplateSettings: React.FC<{
 					<div className="flex items-center gap-x-1.5 mb-3">
 						<Checkbox
 							id="payment-captured"
-							checked={templateSettings.autoGenerationTriggers.paymentCaptured}
-							onChange={(e) =>
-								handleTriggerChange(
-									'paymentCaptured',
-									(e.target as HTMLInputElement).checked
-								)
+							checked={draftSettings.autoGenerationTriggers.paymentCaptured}
+							onCheckedChange={(checked) =>
+								handleTriggerChange('paymentCaptured', !!checked)
 							}
 						/>
 						<Label htmlFor="payment-captured">Payment Captured</Label>
@@ -279,21 +283,16 @@ const RenderTemplateSettings: React.FC<{
 					<div className="flex items-center gap-x-1.5">
 						<Checkbox
 							id="fulfillment-created"
-							checked={
-								templateSettings.autoGenerationTriggers.fulfillmentCreated
-							}
-							onChange={(e) =>
-								handleTriggerChange(
-									'fulfillmentCreated',
-									(e.target as HTMLInputElement).checked
-								)
+							checked={draftSettings.autoGenerationTriggers.fulfillmentCreated}
+							onCheckedChange={(checked) =>
+								handleTriggerChange('fulfillmentCreated', !!checked)
 							}
 						/>
 						<Label htmlFor="fulfillment-created">Fulfillment Created</Label>
 					</div>
 				</div>
-				<div className="px-6 py-4">
-					<Button className="w-full">
+				<div className="px-6 py-4 sticky bottom-0 bg-ui-bg-base">
+					<Button className="w-full" onClick={handleSave}>
 						<DocumentTextIcon />
 						Save Template Configuration
 					</Button>

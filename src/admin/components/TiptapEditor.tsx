@@ -5,7 +5,6 @@ import BulletList from '@tiptap/extension-bullet-list';
 import Heading from '@tiptap/extension-heading';
 import Italic from '@tiptap/extension-italic';
 import Link from '@tiptap/extension-link';
-import { TaskItem, TaskList } from '@tiptap/extension-list';
 import ListItem from '@tiptap/extension-list-item';
 import OrderedList from '@tiptap/extension-ordered-list';
 import Strike from '@tiptap/extension-strike';
@@ -34,7 +33,6 @@ import {
 	Heading5,
 	Heading6,
 	Italic as ItalicIcon,
-	LayoutList,
 	Link as LinkIcon,
 	List,
 	ListOrdered,
@@ -96,7 +94,6 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 				isLink: ctx.editor.isActive('link') ?? false,
 				isBulletList: ctx.editor.isActive('bulletList') ?? false,
 				isOrderedList: ctx.editor.isActive('orderedList') ?? false,
-				isTaskList: ctx.editor.isActive('taskList') ?? false,
 				isLeftAligned: ctx.editor.isActive({ textAlign: 'left' }) ?? false,
 				isCenterAligned: ctx.editor.isActive({ textAlign: 'center' }) ?? false,
 				isRightAligned: ctx.editor.isActive({ textAlign: 'right' }) ?? false,
@@ -115,7 +112,7 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 	});
 
 	return (
-		<div className="border-b border-gray-200 p-2 flex flex-wrap gap-1">
+		<div className="p-2 flex flex-wrap gap-1">
 			{/* Undo */}
 			<IconButton
 				className="size-7"
@@ -349,18 +346,6 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 				<ListOrdered size={16} />
 			</IconButton>
 
-			{/* Task List (Checklist) */}
-			<IconButton
-				className={clx(
-					'size-7',
-					editorState.isTaskList &&
-						'bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base'
-				)}
-				onClick={() => editor.chain().focus().toggleTaskList().run()}
-			>
-				<LayoutList size={16} />
-			</IconButton>
-
 			<div className="w-px h-8 bg-ui-bg-base-pressed mx-1" />
 
 			{/* Text Alignment */}
@@ -505,37 +490,25 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 			Strike,
 			BulletList.configure({
 				HTMLAttributes: {
-					class: 'tiptap-bullet-list',
+					style: 'list-style-type: disc; padding-left: 1.5rem;',
 				},
 			}),
 			OrderedList.configure({
 				HTMLAttributes: {
-					class: 'tiptap-ordered-list',
+					style: 'list-style-type: decimal; padding-left: 1.5rem;',
 				},
 			}),
 			ListItem,
-			TaskList.configure({
-				HTMLAttributes: {
-					class: 'tiptap-task-list',
-				},
-			}),
-			TaskItem.configure({
-				HTMLAttributes: {
-					class: 'tiptap-task-item',
-				},
-				nested: true,
-			}),
 			Heading.configure({
 				levels: [1, 2, 3, 4, 5, 6],
 				HTMLAttributes: {
-					class: 'font-semibold mt-4 mb-2',
+					style: 'font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem;',
 				},
 			}),
 			Link.configure({
 				openOnClick: false,
 				HTMLAttributes: {
-					class:
-						'text-ui-bg-interactive underline cursor-pointer hover:text-blue-800',
+					style: 'text-decoration: underline; cursor: pointer; color: #3b82f6;',
 				},
 			}),
 			TextStyle,
@@ -555,40 +528,12 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 		editorProps: {
 			attributes: {
 				class: clx(
-					'prose prose-sm sm:prose max-h-40 h-[3.75rem] overflow-y-auto focus:outline-none caret-ui-fg-base bg-ui-bg-field hover:bg-ui-bg-field-hover shadow-borders-base placeholder-ui-fg-muted text-ui-fg-base transition-fg relative w-full appearance-none rounded-md outline-none focus-visible:shadow-borders-interactive-with-active disabled:text-ui-fg-disabled disabled:!bg-ui-bg-disabled disabled:placeholder-ui-fg-disabled disabled:cursor-not-allowed aria-[invalid=true]:!shadow-borders-error invalid:!shadow-borders-error [&::--webkit-search-cancel-button]:hidden [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden txt-compact-small px-2 py-1.5',
+					'max-h-40 h-[3.75rem] overflow-y-auto focus:outline-none caret-ui-fg-base bg-ui-bg-field hover:bg-ui-bg-field-hover shadow-borders-base placeholder-ui-fg-muted text-ui-fg-base transition-fg relative w-full appearance-none rounded-md outline-none focus-visible:shadow-borders-interactive-with-active disabled:text-ui-fg-disabled disabled:!bg-ui-bg-disabled disabled:placeholder-ui-fg-disabled disabled:cursor-not-allowed aria-[invalid=true]:!shadow-borders-error invalid:!shadow-borders-error [&::--webkit-search-cancel-button]:hidden [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden txt-compact-small px-2 py-1.5',
 					// Placeholder styles for empty editor
 					'[&_p.is-editor-empty:first-child::before]:float-left',
 					'[&_p.is-editor-empty:first-child::before]:pointer-events-none',
 					'[&_p.is-editor-empty:first-child::before]:h-0',
-					'[&_p.is-editor-empty:first-child::before]:text-ui-fg-interactive-hover',
-					// List styles
-					'[&_.tiptap-bullet-list]:list-disc [&_.tiptap-bullet-list]:ml-6',
-					'[&_ul]:list-disc [&_ul]:ml-6',
-					'[&_ol]:list-decimal [&_ol]:ml-6',
-					'[&_li]:mb-1',
-					'[&_.tiptap-bullet-list_li]:mb-1',
-					'[&_.tiptap-ordered-list_li]:mb-1 [&_.tiptap-ordered-list]:list-decimal [&_.tiptap-ordered-list]:ml-6',
-					// Text alignment styles
-					'[&_[style*="text-align:_left"]]:text-left',
-					'[&_[style*="text-align:_center"]]:text-center',
-					'[&_[style*="text-align:_right"]]:text-right',
-					'[&_[style*="text-align:_justify"]]:text-justify',
-					// Heading styles
-					'[&_h1]:text-4xl [&_h1]:leading-10 [&_h1]:font-bold [&_h1]:mt-6 [&_h1]:mb-4',
-					'[&_h2]:text-3xl [&_h2]:leading-9 [&_h2]:font-semibold [&_h2]:mt-5 [&_h2]:mb-3',
-					'[&_h3]:text-2xl [&_h3]:leading-8 [&_h3]:font-semibold [&_h3]:mt-4 [&_h3]:mb-3',
-					'[&_h4]:text-xl [&_h4]:leading-7 [&_h4]:font-semibold [&_h4]:mt-4 [&_h4]:mb-2',
-					'[&_h5]:text-lg [&_h5]:leading-6 [&_h5]:font-semibold [&_h5]:mt-3 [&_h5]:mb-2',
-					'[&_h6]:text-base [&_h6]:leading-5 [&_h6]:font-semibold [&_h6]:mt-3 [&_h6]:mb-2',
-					// Remove top margin from first element
-					'[&_>*:first-child]:mt-0',
-					// Task list styles (based on official Tiptap examples)
-					'[&_ul[data-type="taskList"]]:list-none [&_ul[data-type="taskList"]]:ml-0 [&_ul[data-type="taskList"]]:p-0',
-					'[&_ul[data-type="taskList"]_li]:flex [&_ul[data-type="taskList"]_li]:items-start [&_ul[data-type="taskList"]_li]:mb-1',
-					'[&_ul[data-type="taskList"]_li>label]:flex-none [&_ul[data-type="taskList"]_li>label]:mr-2 [&_ul[data-type="taskList"]_li>label]:select-none',
-					'[&_ul[data-type="taskList"]_li>div]:flex-1',
-					'[&_ul[data-type="taskList"]_input[type="checkbox"]]:cursor-pointer',
-					'[&_ul[data-type="taskList"]]:!ml-2'
+					'[&_p.is-editor-empty:first-child::before]:text-ui-fg-interactive-hover'
 				),
 			},
 		},
