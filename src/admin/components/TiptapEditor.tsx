@@ -483,6 +483,8 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 				italic: false,
 				strike: false,
 				heading: false,
+				underline: false,
+				link: false,
 			}),
 			Bold,
 			Italic,

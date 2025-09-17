@@ -14,74 +14,132 @@ const templateStyles = StyleSheet.create({
 	clean: {
 		page: {
 			backgroundColor: '#fff',
-			padding: 32,
-			color: '#18181b',
+			padding: '32px',
+			color: '#52525b',
 		},
+		header: {},
 		section: {
-			marginBottom: 32,
-			paddingBottom: 32,
+			marginBottom: '32px',
+			paddingBottom: '32px',
 		},
 		heading: {
 			fontSize: '36px',
 			fontWeight: 'bold',
-			marginBottom: 32,
+			marginBottom: '32px',
+			color: '#18181b',
 		},
 		image: {
 			height: '32px',
 			width: 'auto',
 		},
 		label: {
-			fontWeight: 'semibold',
+			fontWeight: 'bold',
+			textTransform: 'uppercase' as const,
+			fontSize: '14px',
+			letterSpacing: '1px',
+			color: '#18181b',
+		},
+		itemRow: {
+			display: 'flex' as const,
+			flexDirection: 'row' as const,
+			justifyContent: 'space-between' as const,
+			gap: '10px',
+			paddingBottom: '8px',
+			marginBottom: '8px',
+		},
+		totals: {
+			flexDirection: 'row' as const,
+			gap: '40px',
+			justifyContent: 'flex-end' as const,
+			marginBottom: '32px',
+			paddingBottom: '32px',
 		},
 		grandTotal: {
 			fontWeight: 'bold',
 			fontSize: '22px',
 			marginTop: '6px',
+			color: '#18181b',
+		},
+		footer: {
+			marginTop: '64px',
 		},
 	},
 	classic: {
 		page: {
 			backgroundColor: '#fff',
-			padding: 32,
-			color: '#18181b',
+			padding: '32px',
+			color: '#52525b',
+		},
+		header: {
+			padding: '8px',
+			border: '1px solid #eee',
+			marginBottom: '32px',
 		},
 		section: {
-			marginBottom: 32,
-			paddingBottom: 32,
+			marginBottom: '32px',
+			paddingBottom: '32px',
 		},
 		heading: {
 			fontSize: '36px',
 			fontWeight: 'bold',
-			marginBottom: 32,
+			marginBottom: '32px',
+			color: '#18181b',
 		},
 		image: {
 			height: '32px',
 			width: 'auto',
 		},
 		label: {
-			fontWeight: 'semibold',
+			fontWeight: 'bold',
+			textTransform: 'uppercase' as const,
+			fontSize: '14px',
+			letterSpacing: '1px',
+			color: '#18181b',
+		},
+		itemRow: {
+			display: 'flex' as const,
+			flexDirection: 'row' as const,
+			justifyContent: 'space-between' as const,
+			gap: '10px',
+			paddingBottom: '8px',
+			marginBottom: '8px',
+			borderBottom: '1px solid #eee',
+		},
+		totals: {
+			flexDirection: 'row' as const,
+			gap: '40px',
+			justifyContent: 'space-between' as const,
+			padding: '8px',
+			border: '1px solid #eee',
+			backgroundColor: '#f9f9f9',
+			marginBottom: '32px',
+			paddingBottom: '32px',
 		},
 		grandTotal: {
-			fontWeight: 'bold',
 			fontSize: '22px',
 			marginTop: '6px',
+			color: '#18181b',
+		},
+		footer: {
+			marginTop: '64px',
 		},
 	},
 	compact: {
 		page: {
 			backgroundColor: '#fff',
-			padding: 12,
+			padding: '12px',
 			fontSize: '12px',
 			color: '#52525b',
 		},
+		header: {},
 		section: {
-			marginBottom: 12,
-			paddingBottom: 12,
+			marginBottom: '12px',
+			paddingBottom: '12px',
 		},
 		heading: {
 			fontSize: '20px',
 			fontWeight: 'medium',
-			marginBottom: 12,
+			marginBottom: '12px',
 			color: '#18181b',
 		},
 		image: {
@@ -89,13 +147,34 @@ const templateStyles = StyleSheet.create({
 			width: 'auto',
 		},
 		label: {
-			fontWeight: 'medium',
+			fontWeight: 'bold',
+			textTransform: 'uppercase' as const,
+			fontSize: '10px',
+			letterSpacing: '1px',
 			color: '#18181b',
+		},
+		itemRow: {
+			display: 'flex' as const,
+			flexDirection: 'row' as const,
+			justifyContent: 'space-between' as const,
+			gap: '10px',
+			paddingBottom: '8px',
+			marginBottom: '8px',
+		},
+		totals: {
+			flexDirection: 'row' as const,
+			gap: '40px',
+			justifyContent: 'flex-end' as const,
+			marginBottom: '12px',
+			paddingBottom: '12px',
 		},
 		grandTotal: {
 			fontSize: '15px',
 			marginTop: '6px',
 			color: '#18181b',
+		},
+		footer: {
+			marginTop: '64px',
 		},
 	},
 });
@@ -121,8 +200,11 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 							style={templateStyles[templateSettings.style].image}
 						/>
 					)}
-				{templateSettings.additionalHeaderContent &&
-					templateSettings.additionalHeaderContent}
+				{templateSettings.additionalHeaderContent && (
+					<View style={templateStyles[templateSettings.style].header}>
+						{templateSettings.additionalHeaderContent}
+					</View>
+				)}
 				<View style={templateStyles[templateSettings.style].section}>
 					<Text style={templateStyles[templateSettings.style].heading}>
 						Invoice
@@ -175,15 +257,21 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 						<Text>+385 99 543 2345</Text>
 					</View>
 				</View>
-				<View style={templateStyles[templateSettings.style].section}>
+				<View
+					style={[
+						templateStyles[templateSettings.style].section,
+						templateSettings.style === 'compact'
+							? { borderBottom: '1px solid #eee' }
+							: {},
+					]}
+				>
 					<View
-						style={{
-							display: 'flex',
-							flexDirection: 'row',
-							justifyContent: 'space-between',
-							gap: '10px',
-							marginBottom: '16px',
-						}}
+						style={[
+							templateStyles[templateSettings.style].itemRow,
+							{
+								marginBottom: '16px',
+							},
+						]}
 					>
 						<View style={{ flex: 1 }}>
 							<Text style={templateStyles[templateSettings.style].label}>
@@ -211,15 +299,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 							</Text>
 						</View>
 					</View>
-					<View
-						style={{
-							display: 'flex',
-							flexDirection: 'row',
-							justifyContent: 'space-between',
-							gap: '10px',
-							marginBottom: '8px',
-						}}
-					>
+					<View style={templateStyles[templateSettings.style].itemRow}>
 						<View style={{ flex: 1 }}>
 							<Text>Premium Widget</Text>
 						</View>
@@ -236,15 +316,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 							<Text>$100.00</Text>
 						</View>
 					</View>
-					<View
-						style={{
-							display: 'flex',
-							flexDirection: 'row',
-							justifyContent: 'space-between',
-							gap: '10px',
-							marginBottom: '8px',
-						}}
-					>
+					<View style={templateStyles[templateSettings.style].itemRow}>
 						<View style={{ flex: 1 }}>
 							<Text>Standard Service</Text>
 						</View>
@@ -262,40 +334,32 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 						</View>
 					</View>
 				</View>
-				<View style={templateStyles[templateSettings.style].section}>
-					<View
-						style={{
-							flexDirection: 'row',
-							gap: '40px',
-							justifyContent: 'flex-end',
-						}}
-					>
-						<View style={{ gap: '6px' }}>
-							<Text style={templateStyles[templateSettings.style].label}>
-								Subtotal:
-							</Text>
-							<Text style={templateStyles[templateSettings.style].label}>
-								Discount:
-							</Text>
-							<Text style={templateStyles[templateSettings.style].label}>
-								Shipping:
-							</Text>
-							<Text style={templateStyles[templateSettings.style].label}>
-								Tax:
-							</Text>
-							<Text style={templateStyles[templateSettings.style].grandTotal}>
-								Grand Total:
-							</Text>
-						</View>
-						<View style={{ gap: '6px' }}>
-							<Text>$234.00</Text>
-							<Text>$2.00</Text>
-							<Text>$234.00</Text>
-							<Text>$234.00</Text>
-							<Text style={templateStyles[templateSettings.style].grandTotal}>
-								$234.00
-							</Text>
-						</View>
+				<View style={templateStyles[templateSettings.style].totals}>
+					<View style={{ gap: '6px' }}>
+						<Text style={templateStyles[templateSettings.style].label}>
+							Subtotal:
+						</Text>
+						<Text style={templateStyles[templateSettings.style].label}>
+							Discount:
+						</Text>
+						<Text style={templateStyles[templateSettings.style].label}>
+							Shipping:
+						</Text>
+						<Text style={templateStyles[templateSettings.style].label}>
+							Tax:
+						</Text>
+						<Text style={templateStyles[templateSettings.style].grandTotal}>
+							Grand Total:
+						</Text>
+					</View>
+					<View style={{ gap: '6px' }}>
+						<Text>$234.00</Text>
+						<Text>$2.00</Text>
+						<Text>$234.00</Text>
+						<Text>$234.00</Text>
+						<Text style={templateStyles[templateSettings.style].grandTotal}>
+							$234.00
+						</Text>
 					</View>
 				</View>
 				{(templateSettings.business.name ||
@@ -303,12 +367,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 					templateSettings.business.taxId ||
 					templateSettings.business.iban ||
 					templateSettings.business.swift) && (
-					<View
-						style={[
-							templateStyles[templateSettings.style].section,
-							{ borderBottom: 'none', marginBottom: '64px' },
-						]}
-					>
+					<View style={templateStyles[templateSettings.style].section}>
 						{templateSettings.business.name && (
 							<Text>{templateSettings.business.name}</Text>
 						)}
@@ -326,14 +385,11 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 						)}
 					</View>
 				)}
-				<View
-					style={[
-						templateStyles[templateSettings.style].section,
-						{ borderBottom: 'none' },
-					]}
-				>
-					<Text>Thank you for your business!</Text>
-				</View>
+				{templateSettings.additionalFooterContent && (
+					<View style={templateStyles[templateSettings.style].footer}>
+						{templateSettings.additionalFooterContent}
+					</View>
+				)}
 			</Page>
 		</Document>
 	</PDFViewer>
