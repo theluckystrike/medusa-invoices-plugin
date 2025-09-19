@@ -44,6 +44,18 @@ import {
 } from 'lucide-react';
 import * as React from 'react';
 
+const getHeadingStyle = (level: number): string => {
+	const styles = {
+		1: 'font-size: 2.25rem; font-weight: 700; line-height: 1.2; margin-bottom: 1rem;',
+		2: 'font-size: 1.875rem; font-weight: 600; line-height: 1.3; margin-bottom: 0.75rem;',
+		3: 'font-size: 1.5rem; font-weight: 600; line-height: 1.4; margin-bottom: 0.5rem;',
+		4: 'font-size: 1.25rem; font-weight: 500; line-height: 1.4; margin-bottom: 0.5rem;',
+		5: 'font-size: 1.125rem; font-weight: 500; line-height: 1.5; margin-bottom: 0.375rem;',
+		6: 'font-size: 1rem; font-weight: 500; line-height: 1.5; margin-bottom: 0.25rem;',
+	};
+	return styles[level as keyof typeof styles] || styles[1];
+};
+
 interface TiptapEditorProps {
 	content?: string;
 	onChange?: (content: string) => void;
@@ -501,11 +513,20 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 				},
 			}),
 			ListItem,
-			Heading.configure({
-				levels: [1, 2, 3, 4, 5, 6],
-				HTMLAttributes: {
-					style: 'font-weight: 600; margin-top: 1rem; margin-bottom: 0.5rem;',
+			Heading.extend({
+				renderHTML({ node, HTMLAttributes }) {
+					const level = node.attrs.level;
+					const baseStyle = getHeadingStyle(level);
+
+					const existingStyle = HTMLAttributes.style || '';
+					const combinedStyle = existingStyle
+						? `${baseStyle} ${existingStyle}`
+						: baseStyle;
+
+					return [`h${level}`, { ...HTMLAttributes, style: combinedStyle }, 0];
 				},
+			}).configure({
+				levels: [1, 2, 3, 4, 5, 6],
 			}),
 			Link.configure({
 				openOnClick: false,
@@ -529,13 +550,9 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 		},
 		editorProps: {
 			attributes: {
+				style: 'max-height: 10rem; min-height: 3.75rem;',
 				class: clx(
-					'max-h-40 h-[3.75rem] overflow-y-auto focus:outline-none caret-ui-fg-base bg-ui-bg-field hover:bg-ui-bg-field-hover shadow-borders-base placeholder-ui-fg-muted text-ui-fg-base transition-fg relative w-full appearance-none rounded-md outline-none focus-visible:shadow-borders-interactive-with-active disabled:text-ui-fg-disabled disabled:!bg-ui-bg-disabled disabled:placeholder-ui-fg-disabled disabled:cursor-not-allowed aria-[invalid=true]:!shadow-borders-error invalid:!shadow-borders-error [&::--webkit-search-cancel-button]:hidden [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden txt-compact-small px-2 py-1.5',
-					// Placeholder styles for empty editor
-					'[&_p.is-editor-empty:first-child::before]:float-left',
-					'[&_p.is-editor-empty:first-child::before]:pointer-events-none',
-					'[&_p.is-editor-empty:first-child::before]:h-0',
-					'[&_p.is-editor-empty:first-child::before]:text-ui-fg-interactive-hover'
+					'overflow-y-auto focus:outline-none caret-ui-fg-base bg-ui-bg-field hover:bg-ui-bg-field-hover shadow-borders-base placeholder-ui-fg-muted text-ui-fg-base transition-fg relative w-full appearance-none rounded-md outline-none focus-visible:shadow-borders-interactive-with-active disabled:text-ui-fg-disabled disabled:!bg-ui-bg-disabled disabled:placeholder-ui-fg-disabled disabled:cursor-not-allowed aria-[invalid=true]:!shadow-borders-error invalid:!shadow-borders-error [&::--webkit-search-cancel-button]:hidden [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden px-2 py-1.5'
 				),
 			},
 		},

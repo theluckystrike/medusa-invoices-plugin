@@ -28,10 +28,6 @@ const templateStyles = StyleSheet.create({
 			marginBottom: '32px',
 			color: '#18181b',
 		},
-		image: {
-			height: '32px',
-			width: 'auto',
-		},
 		label: {
 			fontWeight: 'bold',
 			textTransform: 'uppercase' as const,
@@ -84,10 +80,6 @@ const templateStyles = StyleSheet.create({
 			fontWeight: 'bold',
 			marginBottom: '32px',
 			color: '#18181b',
-		},
-		image: {
-			height: '32px',
-			width: 'auto',
 		},
 		label: {
 			fontWeight: 'bold',
@@ -142,10 +134,6 @@ const templateStyles = StyleSheet.create({
 			marginBottom: '12px',
 			color: '#18181b',
 		},
-		image: {
-			height: '24px',
-			width: 'auto',
-		},
 		label: {
 			fontWeight: 'bold',
 			textTransform: 'uppercase' as const,
@@ -187,35 +175,52 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 	<PDFViewer showToolbar={false} height="100%" width="100%">
 		<Document>
 			<Page size="A4" style={templateStyles[templateSettings.style].page}>
-				{templateSettings.headerType === 'heading' &&
-					templateSettings.headerText && (
-						<Text style={templateStyles[templateSettings.style].heading}>
-							{templateSettings.headerText}
-						</Text>
-					)}
-				{templateSettings.headerType === 'image' &&
-					templateSettings.imageUrl && (
-						<Image
-							src={templateSettings.imageUrl}
-							style={templateStyles[templateSettings.style].image}
-						/>
-					)}
-				{templateSettings.additionalHeaderContent && (
-					<View style={templateStyles[templateSettings.style].header}>
-						{templateSettings.additionalHeaderContent}
-					</View>
-				)}
+				<View
+					render={() =>
+						templateSettings.headerType === 'heading' &&
+						templateSettings.headerText && (
+							<Text style={templateStyles[templateSettings.style].heading}>
+								{templateSettings.headerText}
+							</Text>
+						)
+					}
+				/>
+				<View
+					render={() =>
+						templateSettings.headerType === 'image' &&
+						templateSettings.imageUrl && (
+							<Image
+								src={templateSettings.imageUrl}
+								style={{
+									width: 'auto',
+									height: '40px',
+									objectFit: 'contain',
+									marginBottom: '20px',
+								}}
+							/>
+						)
+					}
+				/>
+				<View
+					render={() =>
+						templateSettings.additionalHeaderContent && (
+							<View style={templateStyles[templateSettings.style].header}>
+								{templateSettings.additionalHeaderContent}
+							</View>
+						)
+					}
+				/>
 				<View style={templateStyles[templateSettings.style].section}>
 					<Text style={templateStyles[templateSettings.style].heading}>
 						Invoice
 					</Text>
-					<Text>
+					<Text style={{ marginBottom: '2px' }}>
 						<Text style={templateStyles[templateSettings.style].label}>
 							Invoice number:
 						</Text>{' '}
 						#4234234
 					</Text>
-					<Text>
+					<Text style={{ marginBottom: '2px' }}>
 						<Text style={templateStyles[templateSettings.style].label}>
 							Invoice date:
 						</Text>{' '}
@@ -240,20 +245,30 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 					]}
 				>
 					<View>
-						<Text style={templateStyles[templateSettings.style].label}>
+						<Text
+							style={[
+								templateStyles[templateSettings.style].label,
+								{ marginBottom: '2px' },
+							]}
+						>
 							Bill to:
 						</Text>
-						<Text>Lorem ipsum</Text>
-						<Text>Soltanska 45b, 21000</Text>
+						<Text style={{ marginBottom: '2px' }}>Lorem ipsum</Text>
+						<Text style={{ marginBottom: '2px' }}>Soltanska 45b, 21000</Text>
 						<Text>+385 99 543 2345</Text>
 					</View>
 
 					<View>
-						<Text style={templateStyles[templateSettings.style].label}>
+						<Text
+							style={[
+								templateStyles[templateSettings.style].label,
+								{ marginBottom: '2px' },
+							]}
+						>
 							Ship to:
 						</Text>
-						<Text>Lorem ipsum</Text>
-						<Text>Soltanska 45b, 21000</Text>
+						<Text style={{ marginBottom: '2px' }}>Lorem ipsum</Text>
+						<Text style={{ marginBottom: '2px' }}>Soltanska 45b, 21000</Text>
 						<Text>+385 99 543 2345</Text>
 					</View>
 				</View>
@@ -336,18 +351,10 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 				</View>
 				<View style={templateStyles[templateSettings.style].totals}>
 					<View style={{ gap: '6px' }}>
-						<Text style={templateStyles[templateSettings.style].label}>
-							Subtotal:
-						</Text>
-						<Text style={templateStyles[templateSettings.style].label}>
-							Discount:
-						</Text>
-						<Text style={templateStyles[templateSettings.style].label}>
-							Shipping:
-						</Text>
-						<Text style={templateStyles[templateSettings.style].label}>
-							Tax:
-						</Text>
+						<Text>Subtotal:</Text>
+						<Text>Discount:</Text>
+						<Text>Shipping:</Text>
+						<Text>Tax:</Text>
 						<Text style={templateStyles[templateSettings.style].grandTotal}>
 							Grand Total:
 						</Text>
@@ -362,29 +369,44 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings }) => (
 						</Text>
 					</View>
 				</View>
-				{(templateSettings.business.name ||
-					templateSettings.business.address ||
-					templateSettings.business.taxId ||
-					templateSettings.business.iban ||
-					templateSettings.business.swift) && (
-					<View style={templateStyles[templateSettings.style].section}>
-						{templateSettings.business.name && (
-							<Text>{templateSettings.business.name}</Text>
-						)}
-						{templateSettings.business.address && (
-							<Text>{templateSettings.business.address}</Text>
-						)}
-						{templateSettings.business.taxId && (
-							<Text>Tax ID: {templateSettings.business.taxId}</Text>
-						)}
-						{templateSettings.business.iban && (
-							<Text>IBAN: {templateSettings.business.iban}</Text>
-						)}
-						{templateSettings.business.swift && (
-							<Text>SWIFT: {templateSettings.business.swift}</Text>
-						)}
-					</View>
-				)}
+
+				<View
+					style={templateStyles[templateSettings.style].section}
+					render={() =>
+						(templateSettings.business.name ||
+							templateSettings.business.address ||
+							templateSettings.business.taxId ||
+							templateSettings.business.iban ||
+							templateSettings.business.swift) && (
+							<>
+								{templateSettings.business.name && (
+									<Text style={{ marginBottom: '4px' }}>
+										{templateSettings.business.name}
+									</Text>
+								)}
+								{templateSettings.business.address && (
+									<Text style={{ marginBottom: '4px' }}>
+										{templateSettings.business.address}
+									</Text>
+								)}
+								{templateSettings.business.taxId && (
+									<Text style={{ marginBottom: '4px' }}>
+										Tax ID: {templateSettings.business.taxId}
+									</Text>
+								)}
+								{templateSettings.business.iban && (
+									<Text style={{ marginBottom: '4px' }}>
+										IBAN: {templateSettings.business.iban}
+									</Text>
+								)}
+								{templateSettings.business.swift && (
+									<Text>SWIFT: {templateSettings.business.swift}</Text>
+								)}
+							</>
+						)
+					}
+				/>
+
 				{templateSettings.additionalFooterContent && (
 					<View style={templateStyles[templateSettings.style].footer}>
 						{templateSettings.additionalFooterContent}
