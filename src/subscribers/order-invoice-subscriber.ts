@@ -1,5 +1,6 @@
 import { SubscriberArgs, type SubscriberConfig } from "@medusajs/framework";
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
+import { createInvoiceWorkflow } from "../workflows/create-invoice";
 
 type orderCompletedPayload = {
   id: string; //ID of order
@@ -24,39 +25,108 @@ export default async function orderInvoiceHandler({
   | paymentCapturedPayload
 >) {
   const { name, data } = event;
-  let orderId: string;
+  let orderId: string | undefined;
+
+  const query = container.resolve(ContainerRegistrationKeys.QUERY);
 
   if (name === "order.completed") {
     orderId = (data as orderCompletedPayload).id;
   } else if (name === "order.fulfillment_created") {
     orderId = (data as orderFulfillmentCreatedPayload).order_id;
-  } else if (name === "order.placed") {
-    orderId = (data as orderCompletedPayload).id;
+  } else if (name === "payment.captured") {
+    const { data: payments } = await query.graph({
+      entity: "payment",
+      fields: ["payment_collection.*"],
+      filters: {
+        id: (data as paymentCapturedPayload).id,
+      },
+    });
+
+    if (!payments?.[0]?.payment_collection) {
+      console.log("No payment collection found for payment:", data);
+      return;
+    }
+
+    const paymentCollection = payments[0].payment_collection;
+
+    const { data: orders } = await query.graph({
+      entity: "order",
+      fields: ["*"],
+      filters: {
+        payment_collection: paymentCollection.id,
+      },
+    });
+
+    if (!orders?.[0]) {
+      console.log(
+        "No order found for payment collection:",
+        paymentCollection.id,
+      );
+      return;
+    }
+
+    orderId = orders[0].id;
+
+    console.log("PAYMENT COLLECTION: ", paymentCollection);
+  } else {
+    console.log("Unhandled event type:", name);
+    return;
   }
 
-  const query = container.resolve(ContainerRegistrationKeys.QUERY);
+  if (!orderId) {
+    console.log("No orderId found for event:", name);
+    return;
+  }
 
-  const { data: orders } = await query.graph({
-    entity: "order",
-    fields: ["*", "invoice_settings.*"],
+  const storeModuleService = container.resolve(Modules.STORE);
+  const stores = await storeModuleService.listStores();
+
+  if (!stores?.[0]) {
+    console.log("No store found");
+    return;
+  }
+
+  const store = stores[0];
+
+  const { data: storeInvoiceSettingsList } = await query.graph({
+    entity: "store",
+    fields: ["invoice_settings.*"],
     filters: {
-      id: orderId!,
-    },
-    pagination: {
-      take: 1,
+      id: store.id,
     },
   });
 
-  const invoiceSettings = orders[0].invoice_settings;
+  if (!storeInvoiceSettingsList?.[0]?.invoice_settings) {
+    console.log("No invoice settings found for store");
+    return;
+  }
 
-  console.log(invoiceSettings);
+  const storeInvoiceSettings = storeInvoiceSettingsList[0].invoice_settings;
+  const {
+    auto_order_completed,
+    auto_fullfillment_created,
+    auto_payment_captured,
+  } = storeInvoiceSettings;
+
+  console.log(
+    "storeInvoiceSettings.auto_order_completed: ",
+    auto_order_completed,
+  );
+
+  console.log("Event name: ", name);
+  console.log("Event data: ", data);
+
+  if (
+    (auto_order_completed && name === "order.completed") ||
+    (auto_fullfillment_created && name === "order.fulfillment_created") ||
+    (auto_payment_captured && name === "payment.captured")
+  ) {
+    await createInvoiceWorkflow(container).run({
+      input: { order_id: orderId },
+    });
+  }
 }
 
 export const config: SubscriberConfig = {
-  event: [
-    "order.placed",
-    "order.completed",
-    "order.fulfillment_created",
-    "payment.captured",
-  ],
+  event: ["order.completed", "order.fulfillment_created", "payment.captured"],
 };
