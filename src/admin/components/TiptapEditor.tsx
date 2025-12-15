@@ -15,6 +15,7 @@ import { Placeholder } from '@tiptap/extensions';
 import {
 	Editor,
 	EditorContent,
+	JSONContent,
 	useEditor,
 	useEditorState,
 } from '@tiptap/react';
@@ -57,8 +58,8 @@ const getHeadingStyle = (level: number): string => {
 };
 
 interface TiptapEditorProps {
-	content?: string;
-	onChange?: (content: string) => void;
+	initialContent?: JSONContent;
+	onChange?: (content: JSONContent) => void;
 	placeholder?: string;
 	className?: string;
 	isInvalid?: boolean;
@@ -478,7 +479,7 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
 };
 
 export const TiptapEditor: React.FC<TiptapEditorProps> = ({
-	content = '',
+	initialContent,
 	onChange,
 	className,
 	placeholder,
@@ -543,10 +544,10 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 				placeholder: placeholder,
 			}),
 		],
-		content,
+		content: initialContent,
 		editable: !disabled,
 		onUpdate: ({ editor }) => {
-			onChange?.(editor.getHTML());
+			onChange?.(editor.getJSON());
 		},
 		editorProps: {
 			attributes: {
@@ -557,12 +558,6 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
 			},
 		},
 	});
-
-	React.useEffect(() => {
-		if (editor && content !== editor.getHTML()) {
-			editor.commands.setContent(content);
-		}
-	}, [editor, content]);
 
 	const editorClasses = clx(
 		'rounded-md shadow-borders-base',

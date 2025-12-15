@@ -1,5 +1,5 @@
 {
-  "name": "my-medusa-plugin",
+  "name": "@agilo/medusa-invoices-plugin",
   "version": "0.0.1",
   "description": "A starter for Medusa plugins.",
   "author": "Medusa (https://medusajs.com)",
@@ -13,7 +13,12 @@
     "./.medusa/server/src/modules/*": "./.medusa/server/src/modules/*/index.js",
     "./modules/*": "./.medusa/server/src/modules/*/index.js",
     "./providers/*": "./.medusa/server/src/providers/*/index.js",
-    "./*": "./.medusa/server/src/*.js"
+    "./*": "./.medusa/server/src/*.js",
+    "./admin": {
+      "import": "./.medusa/server/src/admin/index.mjs",
+      "require": "./.medusa/server/src/admin/index.js",
+      "default": "./.medusa/server/src/admin/index.js"
+    }
   },
   "keywords": [
     "medusa",
@@ -28,24 +33,17 @@
     "prepublishOnly": "medusa plugin:build"
   },
   "devDependencies": {
-    "@medusajs/admin-sdk": "2.4.0",
-    "@medusajs/cli": "2.4.0",
-    "@medusajs/framework": "2.4.0",
-    "@medusajs/icons": "2.4.0",
-    "@medusajs/medusa": "2.4.0",
-    "@medusajs/test-utils": "2.4.0",
-    "@medusajs/ui": "4.0.4",
-    "@mikro-orm/cli": "6.4.3",
-    "@mikro-orm/core": "6.4.3",
-    "@mikro-orm/knex": "6.4.3",
-    "@mikro-orm/migrations": "6.4.3",
-    "@mikro-orm/postgresql": "6.4.3",
+    "@medusajs/admin-sdk": "2.11.3",
+    "@medusajs/cli": "2.11.3",
+    "@medusajs/framework": "2.11.3",
+    "@medusajs/icons": "2.11.3",
+    "@medusajs/medusa": "2.11.3",
+    "@medusajs/test-utils": "2.11.3",
+    "@medusajs/ui": "4.0.27",
     "@swc/core": "1.5.7",
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.2.25",
-    "awilix": "^8.0.1",
-    "pg": "^8.13.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -55,31 +53,25 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
-    "@medusajs/admin-sdk": "2.4.0",
-    "@medusajs/cli": "2.4.0",
-    "@medusajs/framework": "2.4.0",
-    "@medusajs/icons": "2.4.0",
-    "@medusajs/medusa": "2.4.0",
-    "@medusajs/test-utils": "2.4.0",
-    "@medusajs/ui": "4.0.3",
-    "@mikro-orm/cli": "6.4.3",
-    "@mikro-orm/core": "6.4.3",
-    "@mikro-orm/knex": "6.4.3",
-    "@mikro-orm/migrations": "6.4.3",
-    "@mikro-orm/postgresql": "6.4.3",
-    "awilix": "^8.0.1",
-    "pg": "^8.13.0"
+    "@medusajs/admin-sdk": "^2.11.2",
+    "@medusajs/cli": "^2.11.2",
+    "@medusajs/framework": "^2.11.2",
+    "@medusajs/icons": "^2.11.2",
+    "@medusajs/medusa": "^2.11.2",
+    "@medusajs/test-utils": "^2.11.2",
+    "@medusajs/ui": "^4.0.25"
   },
   "engines": {
     "node": ">=20"
   },
+  "packageManager": "yarn@4.12.0",
   "dependencies": {
-    "@react-pdf/renderer": "^4.3.0",
-    "@tiptap/extension-text-align": "^3.3.0",
-    "@tiptap/extension-text-style": "^3.3.0",
-    "@tiptap/pm": "^3.3.0",
-    "@tiptap/react": "^3.3.0",
-    "@tiptap/starter-kit": "^3.3.0",
-    "lucide-react": "^0.542.0"
+    "@react-pdf/renderer": "^4.3.1",
+    "@tiptap/extension-text-align": "^3.11.1",
+    "@tiptap/extension-text-style": "^3.11.1",
+    "@tiptap/pm": "^3.11.1",
+    "@tiptap/react": "^3.11.1",
+    "@tiptap/starter-kit": "^3.11.1",
+    "lucide-react": "^0.555.0"
   }
 }
