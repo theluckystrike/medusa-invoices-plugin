@@ -38,8 +38,6 @@ export async function PUT(
 ) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
-  console.log("API invoice settings: ", req.body);
-
   const {
     data: [store],
   } = await query.graph({

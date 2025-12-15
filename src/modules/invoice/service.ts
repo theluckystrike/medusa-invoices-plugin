@@ -33,8 +33,6 @@ class InvoiceModuleService extends MedusaService({
   }
 
   async deactivateInvoices(invoices) {
-    console.log(invoices);
-
     return this.updateInvoices(
       invoices.map((inv) => ({ id: inv.id, is_active: false })),
     );

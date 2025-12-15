@@ -66,8 +66,6 @@ export default async function orderInvoiceHandler({
     }
 
     orderId = orders[0].id;
-
-    console.log("PAYMENT COLLECTION: ", paymentCollection);
   } else {
     console.log("Unhandled event type:", name);
     return;
@@ -112,9 +110,6 @@ export default async function orderInvoiceHandler({
     "storeInvoiceSettings.auto_order_completed: ",
     auto_order_completed,
   );
-
-  console.log("Event name: ", name);
-  console.log("Event data: ", data);
 
   if (
     (auto_order_completed && name === "order.completed") ||

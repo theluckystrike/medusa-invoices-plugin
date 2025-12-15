@@ -19,6 +19,7 @@ import { PdfViewer } from "../../../components/PdfViewer";
 import { useOrders } from "../../../hooks/orders";
 import { JSONContent } from "@tiptap/react";
 import RenderTemplateSettings from "../../../components/RenderTemplateSettings";
+import { useInvoiceSettings } from "../../../hooks/invoice-settings";
 
 export type TemplateSettings = {
   style: "clean" | "classic" | "compact";
@@ -40,6 +41,7 @@ export type TemplateSettings = {
 };
 
 export default function Invoices() {
+  const invoiceSettingsQuery = useInvoiceSettings();
   const ordersQuery = useOrders({
     fields: "id,display_id,created_at",
     limit: 100,
@@ -75,6 +77,33 @@ export default function Invoices() {
     setPreviewType(value as "dummy-data" | "select-order");
   }, []);
 
+  React.useEffect(() => {
+    if (!invoiceSettingsQuery.data) {
+      return;
+    }
+
+    const settings = invoiceSettingsQuery.data;
+
+    setTemplateSettings({
+      style: settings.style,
+      headerType: settings.header_type,
+      imageUrl: settings.image_url ?? "",
+      headerText: settings.header_text ?? "",
+      additionalHeaderContent: settings.additional_header_content ?? {},
+      additionalFooterContent: settings.additional_footer_content ?? {},
+      business: {
+        name: settings.business?.name ?? "",
+        address: settings.business?.address ?? "",
+        tax_id: settings.business?.tax_id ?? "",
+        iban: settings.business?.iban ?? "",
+        swift: settings.business?.swift ?? "",
+      },
+      orderCompleted: settings.auto_order_completed,
+      paymentCaptured: settings.auto_payment_captured,
+      fulfillmentCreated: settings.auto_fullfillment_created,
+    });
+  }, [invoiceSettingsQuery.data]);
+
   return (
     <Container className="divide-y p-0">
       <div className="px-6 flex justify-between max-sm:flex-col sm:items-center gap-4 py-4">
@@ -96,25 +125,45 @@ export default function Invoices() {
               <Drawer.Title>Invoice Settings</Drawer.Title>
             </Drawer.Header>
             <div className="divide-y">
-              <RenderTemplateSettings
-                previewType={previewType}
-                selectedOrderId={selectedOrderId}
-                renderHeading={false}
-                templateSettings={templateSettings}
-                setTemplateSettings={setTemplateSettings}
-              />
+              {invoiceSettingsQuery.isLoading ? (
+                <Text className="p-6 text-ui-fg-subtle">
+                  Loading invoice settings…
+                </Text>
+              ) : invoiceSettingsQuery.isError ? (
+                <Text className="p-6 text-ui-fg-error">
+                  Failed to load invoice settings.
+                </Text>
+              ) : (
+                <RenderTemplateSettings
+                  previewType={previewType}
+                  selectedOrderId={selectedOrderId}
+                  renderHeading={false}
+                  templateSettings={templateSettings}
+                  setTemplateSettings={setTemplateSettings}
+                />
+              )}
             </div>
           </Drawer.Content>
         </Drawer>
       </div>
       <div className="px-6 gap-4 py-4 flex">
         <Container className="md:w-1/3 p-0 divide-y max-xl:hidden">
-          <RenderTemplateSettings
-            previewType={previewType}
-            selectedOrderId={selectedOrderId}
-            templateSettings={templateSettings}
-            setTemplateSettings={setTemplateSettings}
-          />
+          {invoiceSettingsQuery.isLoading ? (
+            <Text className="p-6 text-ui-fg-subtle">
+              Loading invoice settings…
+            </Text>
+          ) : invoiceSettingsQuery.isError ? (
+            <Text className="p-6 text-ui-fg-error">
+              Failed to load invoice settings.
+            </Text>
+          ) : (
+            <RenderTemplateSettings
+              previewType={previewType}
+              selectedOrderId={selectedOrderId}
+              templateSettings={templateSettings}
+              setTemplateSettings={setTemplateSettings}
+            />
+          )}
         </Container>
         <Container className="xl:w-2/3 p-0 divide-y">
           <div className="px-6 flex items-center justify-between flex-wrap gap-2 py-4">
