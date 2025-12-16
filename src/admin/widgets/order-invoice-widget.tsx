@@ -125,7 +125,11 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
         </Button>
       </div>
 
-      <MyFocusModal isModalOpen={isModalOpen} setIsModalOpen={setIsModalOpen} />
+      <MyFocusModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        orderId={orderId}
+      />
     </Container>
   );
 };

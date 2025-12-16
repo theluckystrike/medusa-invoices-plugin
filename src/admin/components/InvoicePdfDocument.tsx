@@ -1,0 +1,472 @@
+import {
+  Document,
+  Image,
+  Page,
+  StyleSheet,
+  Text,
+  View,
+} from "@react-pdf/renderer";
+import { TemplateSettings } from "../routes/settings/invoices/page";
+import renderTiptapNode from "./renderTiptapNode";
+import { AdminOrderWithInvoices } from "./MyFocusModal";
+
+type InvoicePdfDocumentProps = {
+  templateSettings: TemplateSettings;
+  order?: AdminOrderWithInvoices;
+};
+
+const templateStyles = StyleSheet.create({
+  clean: {
+    page: {
+      backgroundColor: "#fff",
+      padding: "32px",
+      color: "#52525b",
+    },
+    header: {},
+    section: {
+      marginBottom: "32px",
+      paddingBottom: "32px",
+    },
+    heading: {
+      fontSize: "36px",
+      fontWeight: "bold",
+      marginBottom: "32px",
+      color: "#18181b",
+    },
+    label: {
+      fontWeight: "bold",
+      textTransform: "uppercase" as const,
+      fontSize: "14px",
+      letterSpacing: "1px",
+      color: "#18181b",
+    },
+    itemRow: {
+      display: "flex" as const,
+      flexDirection: "row" as const,
+      justifyContent: "space-between" as const,
+      gap: "10px",
+      paddingBottom: "8px",
+      marginBottom: "8px",
+    },
+    totals: {
+      flexDirection: "row" as const,
+      gap: "40px",
+      justifyContent: "flex-end" as const,
+      marginBottom: "32px",
+      paddingBottom: "32px",
+    },
+    grandTotal: {
+      fontWeight: "bold",
+      fontSize: "22px",
+      marginTop: "6px",
+      color: "#18181b",
+    },
+    footer: {
+      marginTop: "64px",
+    },
+  },
+  classic: {
+    page: {
+      backgroundColor: "#fff",
+      padding: "32px",
+      color: "#52525b",
+    },
+    header: {
+      padding: "8px",
+      border: "1px solid #eee",
+      marginBottom: "32px",
+    },
+    section: {
+      marginBottom: "32px",
+      paddingBottom: "32px",
+    },
+    heading: {
+      fontSize: "36px",
+      fontWeight: "bold",
+      marginBottom: "32px",
+      color: "#18181b",
+    },
+    label: {
+      fontWeight: "bold",
+      textTransform: "uppercase" as const,
+      fontSize: "14px",
+      letterSpacing: "1px",
+      color: "#18181b",
+    },
+    itemRow: {
+      display: "flex" as const,
+      flexDirection: "row" as const,
+      justifyContent: "space-between" as const,
+      gap: "10px",
+      paddingBottom: "8px",
+      marginBottom: "8px",
+      borderBottom: "1px solid #eee",
+    },
+    totals: {
+      flexDirection: "row" as const,
+      gap: "40px",
+      justifyContent: "space-between" as const,
+      padding: "8px",
+      border: "1px solid #eee",
+      backgroundColor: "#f9f9f9",
+      marginBottom: "32px",
+      paddingBottom: "32px",
+    },
+    grandTotal: {
+      fontSize: "22px",
+      marginTop: "6px",
+      color: "#18181b",
+    },
+    footer: {
+      marginTop: "64px",
+    },
+  },
+  compact: {
+    page: {
+      backgroundColor: "#fff",
+      padding: "12px",
+      fontSize: "12px",
+      color: "#52525b",
+    },
+    header: {},
+    section: {
+      marginBottom: "12px",
+      paddingBottom: "12px",
+    },
+    heading: {
+      fontSize: "20px",
+      fontWeight: "medium",
+      marginBottom: "12px",
+      color: "#18181b",
+    },
+    label: {
+      fontWeight: "bold",
+      textTransform: "uppercase" as const,
+      fontSize: "10px",
+      letterSpacing: "1px",
+      color: "#18181b",
+    },
+    itemRow: {
+      display: "flex" as const,
+      flexDirection: "row" as const,
+      justifyContent: "space-between" as const,
+      gap: "10px",
+      paddingBottom: "8px",
+      marginBottom: "8px",
+    },
+    totals: {
+      flexDirection: "row" as const,
+      gap: "40px",
+      justifyContent: "flex-end" as const,
+      marginBottom: "12px",
+      paddingBottom: "12px",
+    },
+    grandTotal: {
+      fontSize: "15px",
+      marginTop: "6px",
+      color: "#18181b",
+    },
+    footer: {
+      marginTop: "64px",
+    },
+  },
+});
+
+export const InvoicePdfDocument = ({
+  templateSettings,
+  order,
+}: InvoicePdfDocumentProps) => {
+  const orderInvoice = order?.invoices?.find((i) => i.is_active);
+
+  return (
+    <Document>
+      <Page size="A4" style={templateStyles[templateSettings.style].page}>
+        <View
+          render={() =>
+            templateSettings.headerType === "heading" &&
+            templateSettings.headerText && (
+              <Text style={templateStyles[templateSettings.style].heading}>
+                {templateSettings.headerText}
+              </Text>
+            )
+          }
+        />
+        <View
+          render={() =>
+            templateSettings.headerType === "image" &&
+            templateSettings.imageUrl && (
+              <Image
+                src={templateSettings.imageUrl}
+                style={{
+                  width: "auto",
+                  height: "40px",
+                  objectFit: "contain",
+                  marginBottom: "20px",
+                }}
+              />
+            )
+          }
+        />
+        <View
+          render={() =>
+            templateSettings.additionalHeaderContent && (
+              <View style={templateStyles[templateSettings.style].header}>
+                {renderTiptapNode(templateSettings.additionalHeaderContent, 0)}
+              </View>
+            )
+          }
+        />
+        <View style={templateStyles[templateSettings.style].section}>
+          <Text style={templateStyles[templateSettings.style].heading}>
+            Invoice
+          </Text>
+          <Text style={{ marginBottom: "2px" }}>
+            <Text style={templateStyles[templateSettings.style].label}>
+              Invoice number:
+            </Text>{" "}
+            #{orderInvoice ? orderInvoice.number : "4234234"}
+          </Text>
+          <Text style={{ marginBottom: "2px" }}>
+            <Text style={templateStyles[templateSettings.style].label}>
+              Invoice date:
+            </Text>{" "}
+            {orderInvoice
+              ? new Date(orderInvoice.created_at).toLocaleDateString()
+              : new Date().toLocaleDateString()}
+          </Text>
+          <Text>
+            <Text style={templateStyles[templateSettings.style].label}>
+              Order ID:
+            </Text>{" "}
+            {order ? order.display_id : "#fsdfsdg"}
+          </Text>
+        </View>
+
+        <View
+          style={[
+            templateStyles[templateSettings.style].section,
+            {
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            },
+          ]}
+        >
+          <View>
+            <Text
+              style={[
+                templateStyles[templateSettings.style].label,
+                { marginBottom: "2px" },
+              ]}
+            >
+              Bill to:
+            </Text>
+            <Text style={{ marginBottom: "2px" }}>
+              {order
+                ? `${order.billing_address?.first_name} ${order.billing_address?.last_name}`
+                : "Lorem ipsum"}
+            </Text>
+            <Text style={{ marginBottom: "2px" }}>
+              {order
+                ? `${order.billing_address?.address_1}, ${order.billing_address?.city}`
+                : "Soltanska 45b, Split"}
+            </Text>
+            <Text>
+              {order ? order.billing_address?.phone : "+385 99 543 2345"}
+            </Text>
+          </View>
+
+          <View>
+            <Text
+              style={[
+                templateStyles[templateSettings.style].label,
+                { marginBottom: "2px" },
+              ]}
+            >
+              Ship to:
+            </Text>
+            <Text style={{ marginBottom: "2px" }}>
+              {order
+                ? `${order.shipping_address?.first_name} ${order.shipping_address?.last_name}`
+                : "Lorem ipsum"}
+            </Text>
+            <Text style={{ marginBottom: "2px" }}>
+              {order
+                ? `${order.shipping_address?.address_1}, ${order.shipping_address?.city}`
+                : "Soltanska 45b, Split"}
+            </Text>
+            <Text>{order ? order.customer?.phone : "+385 99 543 2345"}</Text>
+          </View>
+        </View>
+        <View
+          style={[
+            templateStyles[templateSettings.style].section,
+            templateSettings.style === "compact"
+              ? { borderBottom: "1px solid #eee" }
+              : {},
+          ]}
+        >
+          <View
+            style={[
+              templateStyles[templateSettings.style].itemRow,
+              {
+                marginBottom: "16px",
+              },
+            ]}
+          >
+            <View style={{ flex: 1 }}>
+              <Text style={templateStyles[templateSettings.style].label}>
+                Item Title
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={templateStyles[templateSettings.style].label}>
+                SKU
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={templateStyles[templateSettings.style].label}>
+                QTY
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={templateStyles[templateSettings.style].label}>
+                Unit price
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={templateStyles[templateSettings.style].label}>
+                Line total
+              </Text>
+            </View>
+          </View>
+
+          {order ? (
+            order.items.map((i) => (
+              <View
+                key={i.id}
+                style={templateStyles[templateSettings.style].itemRow}
+              >
+                <View style={{ flex: 1 }}>
+                  <Text>{i.title}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>{i.variant_sku}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>{i.quantity}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>${i.unit_price.toFixed(2)}</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>${i.total.toFixed(2)}</Text>
+                </View>
+              </View>
+            ))
+          ) : (
+            <>
+              <View style={templateStyles[templateSettings.style].itemRow}>
+                <View style={{ flex: 1 }}>
+                  <Text>Premium Widget</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>SKU123</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>1</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>$100.00</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>$100.00</Text>
+                </View>
+              </View>
+              <View style={templateStyles[templateSettings.style].itemRow}>
+                <View style={{ flex: 1 }}>
+                  <Text>Standard Service</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>SKU4324</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>4</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>$134.00</Text>
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text>$134.00</Text>
+                </View>
+              </View>
+            </>
+          )}
+        </View>
+        <View style={templateStyles[templateSettings.style].totals}>
+          <View style={{ gap: "6px" }}>
+            <Text>Subtotal:</Text>
+            <Text>Discount:</Text>
+            <Text>Shipping:</Text>
+            <Text>Tax:</Text>
+            <Text style={templateStyles[templateSettings.style].grandTotal}>
+              Grand Total:
+            </Text>
+          </View>
+          <View style={{ gap: "6px" }}>
+            <Text>{order ? `$${order.subtotal}` : "$234.00"}</Text>
+            <Text>{order ? `$${order.discount_total}` : "$2.00"}</Text>
+            <Text>{order ? `$${order.shipping_total}` : "$234.00"}</Text>
+            <Text>{order ? `$${order.tax_total}` : "$234.00"}</Text>
+            <Text style={templateStyles[templateSettings.style].grandTotal}>
+              {order ? `$${order.total}` : "$234.00"}
+            </Text>
+          </View>
+        </View>
+
+        <View
+          style={templateStyles[templateSettings.style].section}
+          render={() =>
+            (templateSettings.business.name ||
+              templateSettings.business.address ||
+              templateSettings.business.tax_id ||
+              templateSettings.business.iban ||
+              templateSettings.business.swift) && (
+              <>
+                {templateSettings.business.name && (
+                  <Text style={{ marginBottom: "4px" }}>
+                    {templateSettings.business.name}
+                  </Text>
+                )}
+                {templateSettings.business.address && (
+                  <Text style={{ marginBottom: "4px" }}>
+                    {templateSettings.business.address}
+                  </Text>
+                )}
+                {templateSettings.business.tax_id && (
+                  <Text style={{ marginBottom: "4px" }}>
+                    Tax ID: {templateSettings.business.tax_id}
+                  </Text>
+                )}
+                {templateSettings.business.iban && (
+                  <Text style={{ marginBottom: "4px" }}>
+                    IBAN: {templateSettings.business.iban}
+                  </Text>
+                )}
+                {templateSettings.business.swift && (
+                  <Text>SWIFT: {templateSettings.business.swift}</Text>
+                )}
+              </>
+            )
+          }
+        />
+
+        {templateSettings.additionalFooterContent && (
+          <View style={templateStyles[templateSettings.style].footer}>
+            {renderTiptapNode(templateSettings.additionalFooterContent, 0)}
+          </View>
+        )}
+      </Page>
+    </Document>
+  );
+};

@@ -15,11 +15,11 @@ import {
   Text,
 } from "@medusajs/ui";
 import React from "react";
-import { PdfViewer } from "../../../components/PdfViewer";
 import { useOrders } from "../../../hooks/orders";
 import { JSONContent } from "@tiptap/react";
 import RenderTemplateSettings from "../../../components/RenderTemplateSettings";
 import { useInvoiceSettings } from "../../../hooks/invoice-settings";
+import { MyPdfViewer } from "../../../components/MyPdfViewer";
 
 export type TemplateSettings = {
   style: "clean" | "classic" | "compact";
@@ -191,7 +191,7 @@ export default function Invoices() {
                 <Text className="mb-4 text-ui-fg-subtle">
                   Using built-in sample order data for preview
                 </Text>
-                <PdfViewer
+                <MyPdfViewer
                   templateSettings={templateSettings}
                   previewType={previewType}
                   selectedOrderId={selectedOrderId}
@@ -225,7 +225,7 @@ export default function Invoices() {
                     </Select.Content>
                   </Select>
                 </div>
-                <PdfViewer
+                <MyPdfViewer
                   templateSettings={templateSettings}
                   previewType={previewType}
                   selectedOrderId={selectedOrderId}
