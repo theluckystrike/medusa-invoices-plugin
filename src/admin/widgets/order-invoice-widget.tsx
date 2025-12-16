@@ -18,6 +18,7 @@ import {
 } from "@medusajs/icons";
 import React from "react";
 import MyFocusModal from "../components/MyFocusModal";
+import { JsonViewSection } from "../components/JsonViewSection";
 
 const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   const orderId = data?.id;
@@ -113,6 +114,10 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
         <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
           {new Date(invoiceQuery.data.created_at).toLocaleDateString()}
         </Text>
+      </div>
+
+      <div className="w-full items-center gap-4 px-6 py-4">
+        <JsonViewSection data={invoiceQuery.data} />
       </div>
 
       <div className="flex justify-center items-center px-6 py-4">

@@ -18,9 +18,11 @@ export const JsonViewSection = ({ data }: JsonViewSectionProps) => {
   const numberOfKeys = Object.keys(data).length;
 
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex w-full items-center justify-between">
       <div className="flex items-center gap-x-4">
-        <Text size="small">JSON</Text>
+        <Text className="text-ui-fg-subtle" size="small" weight="plus">
+          JSON
+        </Text>
         <Badge size="2xsmall" rounded="full">
           {numberOfKeys} keys
         </Badge>
