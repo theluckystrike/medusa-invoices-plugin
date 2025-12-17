@@ -1,22 +1,34 @@
 import { z } from "zod";
+import {
+  InvoiceSettingsAutoGenerateTrigger,
+  InvoiceSettingsHeaderLogoType,
+  InvoiceTemplateId,
+} from "../../../constants/invoice";
+
+const invoiceTemplateIdSchema = z.nativeEnum(InvoiceTemplateId);
+const invoiceSettingsHeaderLogoTypeSchema = z.nativeEnum(
+  InvoiceSettingsHeaderLogoType,
+);
+const invoiceAutoGenerateTriggerSchema = z.nativeEnum(
+  InvoiceSettingsAutoGenerateTrigger,
+);
 
 export const createInvoiceSettingsSchema = z.object({
-  style: z.enum(["clean", "classic", "compact"]),
-  header_type: z.enum(["heading", "image", "none"]),
-  image_url: z.string().nullable().optional(),
-  header_text: z.string().nullable().optional(),
-  additional_header_content: z.record(z.any()).nullable().optional(),
-  additional_footer_content: z.record(z.any()).nullable().optional(),
-  business: z
-    .object({
-      name: z.string(),
-      address: z.string(),
-      tax_id: z.string(),
-      iban: z.string(),
-      swift: z.string(),
-    })
-    .optional(),
-  auto_order_completed: z.boolean().optional(),
-  auto_payment_captured: z.boolean().optional(),
-  auto_fullfillment_created: z.boolean().optional(),
+  template_id: invoiceTemplateIdSchema,
+  template_version: z.string(),
+  header_logo_type: invoiceSettingsHeaderLogoTypeSchema,
+  header_logo_url: z.string().nullable(),
+  header_logo_text: z.string().nullable(),
+  header_content: z.record(z.any()).nullable(),
+  footer_content: z.record(z.any()).nullable(),
+  store_name: z.string().nullable(),
+  store_address: z.string().nullable(),
+  store_tax_id: z.string().nullable(),
+  bank_account_iban: z.string().nullable(),
+  bank_account_swift: z.string().nullable(),
+  auto_generate_on: z.array(invoiceAutoGenerateTriggerSchema).default([]),
 });
+
+export type CreateInvoiceInvoiceSettingsRequestBody = z.infer<
+  typeof createInvoiceSettingsSchema
+>;

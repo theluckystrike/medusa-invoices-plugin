@@ -1,4 +1,4 @@
-import { FocusModal, Text } from "@medusajs/ui";
+import { Button, FocusModal, Text } from "@medusajs/ui";
 import { Dispatch, SetStateAction } from "react";
 import { PDFViewer } from "@react-pdf/renderer";
 import { InvoicePdfDocument } from "./InvoicePdfDocument";
@@ -7,6 +7,7 @@ import { TemplateSettings } from "../routes/settings/invoices/page";
 import { useOrder } from "../hooks/orders";
 import { AdminOrder } from "@medusajs/framework/types";
 import { AdminInvoice } from "../hooks/invoices";
+import { ArrowDownTray } from "@medusajs/icons";
 
 type MyFocusModalProps = {
   isModalOpen: boolean;
@@ -16,11 +17,11 @@ type MyFocusModalProps = {
 
 export type AdminOrderWithInvoices = AdminOrder & { invoices?: AdminInvoice[] };
 
-export default function MyFocusModal({
+const MyFocusModal = ({
   isModalOpen,
   setIsModalOpen,
   orderId,
-}: MyFocusModalProps) {
+}: MyFocusModalProps) => {
   const invoiceSettingsQuery = useInvoiceSettings();
   const orderQuery = useOrder(
     orderId,
@@ -93,7 +94,15 @@ export default function MyFocusModal({
             />
           </PDFViewer>
         </FocusModal.Body>
+        <FocusModal.Footer>
+          <Button>
+            <ArrowDownTray className="text-ui-fg-subtle" />
+            Download
+          </Button>
+        </FocusModal.Footer>
       </FocusModal.Content>
     </FocusModal>
   );
-}
+};
+
+export default MyFocusModal;

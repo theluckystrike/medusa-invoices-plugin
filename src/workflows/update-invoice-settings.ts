@@ -13,25 +13,26 @@ import {
   useQueryGraphStep,
 } from "@medusajs/medusa/core-flows";
 import { Modules } from "@medusajs/framework/utils";
+import {
+  InvoiceSettingsHeaderLogoType,
+  InvoiceTemplateId,
+} from "../constants/invoice";
 
 export type UpsertInvoiceSettingsWorkflowInput = {
   store_id: string;
-  style?: "clean" | "classic" | "compact";
-  header_type?: "heading" | "image" | "none";
-  image_url?: string | null;
-  header_text?: string | null;
-  additional_header_content?: Record<string, any> | null;
-  additional_footer_content?: Record<string, any> | null;
-  business?: {
-    name: string;
-    address: string;
-    tax_id: string;
-    iban: string;
-    swift: string;
-  };
-  auto_order_completed?: boolean;
-  auto_payment_captured?: boolean;
-  auto_fullfillment_created?: boolean;
+  template_id: InvoiceTemplateId;
+  template_version: string;
+  header_logo_type: InvoiceSettingsHeaderLogoType;
+  header_logo_url?: string | null;
+  header_logo_text?: string | null;
+  header_content?: Record<string, any> | null;
+  footer_content?: Record<string, any> | null;
+  store_name?: string | null;
+  store_address?: string | null;
+  store_tax_id?: string | null;
+  bank_account_iban?: string | null;
+  bank_account_swift?: string | null;
+  auto_generate_on?: string[];
 };
 
 export type UpsertInvoiceSettingsStepInput = {
@@ -95,7 +96,7 @@ const upsertInvoiceSettingsStep = createStep(
   },
 );
 
-export const updateInvoiceSettingsWorkflow = createWorkflow(
+const updateInvoiceSettingsWorkflow = createWorkflow(
   "upsert-invoice-settings-workflow",
   (input: UpsertInvoiceSettingsWorkflowInput) => {
     const storeData = useQueryGraphStep({
@@ -138,3 +139,5 @@ export const updateInvoiceSettingsWorkflow = createWorkflow(
     return new WorkflowResponse(settings);
   },
 );
+
+export default updateInvoiceSettingsWorkflow;

@@ -180,23 +180,25 @@ export const InvoicePdfDocument = ({
 
   return (
     <Document>
-      <Page size="A4" style={templateStyles[templateSettings.style].page}>
+      <Page size="A4" style={templateStyles[templateSettings.template_id].page}>
         <View
           render={() =>
-            templateSettings.headerType === "heading" &&
-            templateSettings.headerText && (
-              <Text style={templateStyles[templateSettings.style].heading}>
-                {templateSettings.headerText}
+            templateSettings.header_logo_type === "heading" &&
+            templateSettings.header_logo_text && (
+              <Text
+                style={templateStyles[templateSettings.template_id].heading}
+              >
+                {templateSettings.header_logo_text}
               </Text>
             )
           }
         />
         <View
           render={() =>
-            templateSettings.headerType === "image" &&
-            templateSettings.imageUrl && (
+            templateSettings.header_logo_type === "image" &&
+            templateSettings.header_logo_url && (
               <Image
-                src={templateSettings.imageUrl}
+                src={templateSettings.header_logo_url}
                 style={{
                   width: "auto",
                   height: "40px",
@@ -209,25 +211,25 @@ export const InvoicePdfDocument = ({
         />
         <View
           render={() =>
-            templateSettings.additionalHeaderContent && (
-              <View style={templateStyles[templateSettings.style].header}>
-                {renderTiptapNode(templateSettings.additionalHeaderContent, 0)}
+            templateSettings.header_content && (
+              <View style={templateStyles[templateSettings.template_id].header}>
+                {renderTiptapNode(templateSettings.header_content, 0)}
               </View>
             )
           }
         />
-        <View style={templateStyles[templateSettings.style].section}>
-          <Text style={templateStyles[templateSettings.style].heading}>
+        <View style={templateStyles[templateSettings.template_id].section}>
+          <Text style={templateStyles[templateSettings.template_id].heading}>
             Invoice
           </Text>
           <Text style={{ marginBottom: "2px" }}>
-            <Text style={templateStyles[templateSettings.style].label}>
+            <Text style={templateStyles[templateSettings.template_id].label}>
               Invoice number:
             </Text>{" "}
             #{orderInvoice ? orderInvoice.number : "4234234"}
           </Text>
           <Text style={{ marginBottom: "2px" }}>
-            <Text style={templateStyles[templateSettings.style].label}>
+            <Text style={templateStyles[templateSettings.template_id].label}>
               Invoice date:
             </Text>{" "}
             {orderInvoice
@@ -235,7 +237,7 @@ export const InvoicePdfDocument = ({
               : new Date().toLocaleDateString()}
           </Text>
           <Text>
-            <Text style={templateStyles[templateSettings.style].label}>
+            <Text style={templateStyles[templateSettings.template_id].label}>
               Order ID:
             </Text>{" "}
             {order ? order.display_id : "#fsdfsdg"}
@@ -244,7 +246,7 @@ export const InvoicePdfDocument = ({
 
         <View
           style={[
-            templateStyles[templateSettings.style].section,
+            templateStyles[templateSettings.template_id].section,
             {
               display: "flex",
               flexDirection: "row",
@@ -255,7 +257,7 @@ export const InvoicePdfDocument = ({
           <View>
             <Text
               style={[
-                templateStyles[templateSettings.style].label,
+                templateStyles[templateSettings.template_id].label,
                 { marginBottom: "2px" },
               ]}
             >
@@ -279,7 +281,7 @@ export const InvoicePdfDocument = ({
           <View>
             <Text
               style={[
-                templateStyles[templateSettings.style].label,
+                templateStyles[templateSettings.template_id].label,
                 { marginBottom: "2px" },
               ]}
             >
@@ -300,42 +302,42 @@ export const InvoicePdfDocument = ({
         </View>
         <View
           style={[
-            templateStyles[templateSettings.style].section,
-            templateSettings.style === "compact"
+            templateStyles[templateSettings.template_id].section,
+            templateSettings.template_id === "compact"
               ? { borderBottom: "1px solid #eee" }
               : {},
           ]}
         >
           <View
             style={[
-              templateStyles[templateSettings.style].itemRow,
+              templateStyles[templateSettings.template_id].itemRow,
               {
                 marginBottom: "16px",
               },
             ]}
           >
             <View style={{ flex: 1 }}>
-              <Text style={templateStyles[templateSettings.style].label}>
+              <Text style={templateStyles[templateSettings.template_id].label}>
                 Item Title
               </Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={templateStyles[templateSettings.style].label}>
+              <Text style={templateStyles[templateSettings.template_id].label}>
                 SKU
               </Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={templateStyles[templateSettings.style].label}>
+              <Text style={templateStyles[templateSettings.template_id].label}>
                 QTY
               </Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={templateStyles[templateSettings.style].label}>
+              <Text style={templateStyles[templateSettings.template_id].label}>
                 Unit price
               </Text>
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={templateStyles[templateSettings.style].label}>
+              <Text style={templateStyles[templateSettings.template_id].label}>
                 Line total
               </Text>
             </View>
@@ -345,7 +347,7 @@ export const InvoicePdfDocument = ({
             order.items.map((i) => (
               <View
                 key={i.id}
-                style={templateStyles[templateSettings.style].itemRow}
+                style={templateStyles[templateSettings.template_id].itemRow}
               >
                 <View style={{ flex: 1 }}>
                   <Text>{i.title}</Text>
@@ -366,7 +368,9 @@ export const InvoicePdfDocument = ({
             ))
           ) : (
             <>
-              <View style={templateStyles[templateSettings.style].itemRow}>
+              <View
+                style={templateStyles[templateSettings.template_id].itemRow}
+              >
                 <View style={{ flex: 1 }}>
                   <Text>Premium Widget</Text>
                 </View>
@@ -383,7 +387,9 @@ export const InvoicePdfDocument = ({
                   <Text>$100.00</Text>
                 </View>
               </View>
-              <View style={templateStyles[templateSettings.style].itemRow}>
+              <View
+                style={templateStyles[templateSettings.template_id].itemRow}
+              >
                 <View style={{ flex: 1 }}>
                   <Text>Standard Service</Text>
                 </View>
@@ -403,13 +409,15 @@ export const InvoicePdfDocument = ({
             </>
           )}
         </View>
-        <View style={templateStyles[templateSettings.style].totals}>
+        <View style={templateStyles[templateSettings.template_id].totals}>
           <View style={{ gap: "6px" }}>
             <Text>Subtotal:</Text>
             <Text>Discount:</Text>
             <Text>Shipping:</Text>
             <Text>Tax:</Text>
-            <Text style={templateStyles[templateSettings.style].grandTotal}>
+            <Text
+              style={templateStyles[templateSettings.template_id].grandTotal}
+            >
               Grand Total:
             </Text>
           </View>
@@ -418,52 +426,54 @@ export const InvoicePdfDocument = ({
             <Text>{order ? `$${order.discount_total}` : "$2.00"}</Text>
             <Text>{order ? `$${order.shipping_total}` : "$234.00"}</Text>
             <Text>{order ? `$${order.tax_total}` : "$234.00"}</Text>
-            <Text style={templateStyles[templateSettings.style].grandTotal}>
+            <Text
+              style={templateStyles[templateSettings.template_id].grandTotal}
+            >
               {order ? `$${order.total}` : "$234.00"}
             </Text>
           </View>
         </View>
 
         <View
-          style={templateStyles[templateSettings.style].section}
+          style={templateStyles[templateSettings.template_id].section}
           render={() =>
-            (templateSettings.business.name ||
-              templateSettings.business.address ||
-              templateSettings.business.tax_id ||
-              templateSettings.business.iban ||
-              templateSettings.business.swift) && (
+            (templateSettings.store_name ||
+              templateSettings.store_address ||
+              templateSettings.store_tax_id ||
+              templateSettings.bank_account_iban ||
+              templateSettings.bank_account_swift) && (
               <>
-                {templateSettings.business.name && (
+                {templateSettings.store_name && (
                   <Text style={{ marginBottom: "4px" }}>
-                    {templateSettings.business.name}
+                    {templateSettings.store_name}
                   </Text>
                 )}
-                {templateSettings.business.address && (
+                {templateSettings.store_address && (
                   <Text style={{ marginBottom: "4px" }}>
-                    {templateSettings.business.address}
+                    {templateSettings.store_address}
                   </Text>
                 )}
-                {templateSettings.business.tax_id && (
+                {templateSettings.store_tax_id && (
                   <Text style={{ marginBottom: "4px" }}>
-                    Tax ID: {templateSettings.business.tax_id}
+                    Tax ID: {templateSettings.store_tax_id}
                   </Text>
                 )}
-                {templateSettings.business.iban && (
+                {templateSettings.bank_account_iban && (
                   <Text style={{ marginBottom: "4px" }}>
-                    IBAN: {templateSettings.business.iban}
+                    IBAN: {templateSettings.bank_account_iban}
                   </Text>
                 )}
-                {templateSettings.business.swift && (
-                  <Text>SWIFT: {templateSettings.business.swift}</Text>
+                {templateSettings.bank_account_swift && (
+                  <Text>SWIFT: {templateSettings.bank_account_swift}</Text>
                 )}
               </>
             )
           }
         />
 
-        {templateSettings.additionalFooterContent && (
-          <View style={templateStyles[templateSettings.style].footer}>
-            {renderTiptapNode(templateSettings.additionalFooterContent, 0)}
+        {templateSettings.footer_content && (
+          <View style={templateStyles[templateSettings.template_id].footer}>
+            {renderTiptapNode(templateSettings.footer_content, 0)}
           </View>
         )}
       </Page>

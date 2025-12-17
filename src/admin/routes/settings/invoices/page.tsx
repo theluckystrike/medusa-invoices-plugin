@@ -19,22 +19,21 @@ import { useOrders } from "../../../hooks/orders";
 import { JSONContent } from "@tiptap/react";
 import RenderTemplateSettings from "../../../components/RenderTemplateSettings";
 import { useInvoiceSettings } from "../../../hooks/invoice-settings";
-import { MyPdfViewer } from "../../../components/MyPdfViewer";
+import MyPdfViewer from "../../../components/MyPdfViewer";
+import { InvoiceSettingsAutoGenerateTrigger } from "../../../../constants/invoice";
 
 export type TemplateSettings = {
-  style: "clean" | "classic" | "compact";
-  headerType: "image" | "heading" | "none";
-  imageUrl: string;
-  headerText: string;
-  additionalHeaderContent: JSONContent;
-  additionalFooterContent: JSONContent;
-  business: {
-    name: string;
-    address: string;
-    tax_id: string;
-    iban: string;
-    swift: string;
-  };
+  template_id: "clean" | "classic" | "compact";
+  header_logo_type: "image" | "heading" | "none";
+  header_logo_url: string;
+  header_logo_text: string;
+  header_content: JSONContent;
+  footer_content: JSONContent;
+  store_name: string;
+  store_address: string;
+  store_tax_id: string;
+  bank_account_iban: string;
+  bank_account_swift: string;
   orderCompleted: boolean;
   paymentCaptured: boolean;
   fulfillmentCreated: boolean;
@@ -54,19 +53,17 @@ export default function Invoices() {
 
   const [templateSettings, setTemplateSettings] =
     React.useState<TemplateSettings>({
-      style: "clean",
-      headerType: "image",
-      imageUrl: "",
-      headerText: "",
-      additionalHeaderContent: {},
-      additionalFooterContent: {},
-      business: {
-        name: "",
-        address: "",
-        tax_id: "",
-        iban: "",
-        swift: "",
-      },
+      template_id: "clean",
+      header_logo_type: "image",
+      header_logo_url: "",
+      header_logo_text: "",
+      header_content: {},
+      footer_content: {},
+      store_name: "",
+      store_address: "",
+      store_tax_id: "",
+      bank_account_iban: "",
+      bank_account_swift: "",
       orderCompleted: false,
       paymentCaptured: false,
       fulfillmentCreated: false,
@@ -85,22 +82,26 @@ export default function Invoices() {
     const settings = invoiceSettingsQuery.data;
 
     setTemplateSettings({
-      style: settings.style,
-      headerType: settings.header_type,
-      imageUrl: settings.image_url ?? "",
-      headerText: settings.header_text ?? "",
-      additionalHeaderContent: settings.additional_header_content ?? {},
-      additionalFooterContent: settings.additional_footer_content ?? {},
-      business: {
-        name: settings.business?.name ?? "",
-        address: settings.business?.address ?? "",
-        tax_id: settings.business?.tax_id ?? "",
-        iban: settings.business?.iban ?? "",
-        swift: settings.business?.swift ?? "",
-      },
-      orderCompleted: settings.auto_order_completed,
-      paymentCaptured: settings.auto_payment_captured,
-      fulfillmentCreated: settings.auto_fullfillment_created,
+      template_id: settings.template_id,
+      header_logo_type: settings.header_logo_type,
+      header_logo_url: settings.header_logo_url ?? "",
+      header_logo_text: settings.header_logo_text ?? "",
+      header_content: settings.header_content ?? {},
+      footer_content: settings.footer_content ?? {},
+      store_name: settings.store_name ?? "",
+      store_address: settings.store_address ?? "",
+      store_tax_id: settings.store_tax_id ?? "",
+      bank_account_iban: settings.bank_account_iban ?? "",
+      bank_account_swift: settings.bank_account_swift ?? "",
+      orderCompleted: settings.auto_generate_on.includes(
+        InvoiceSettingsAutoGenerateTrigger.ORDER_COMPLETED,
+      ),
+      paymentCaptured: settings.auto_generate_on.includes(
+        InvoiceSettingsAutoGenerateTrigger.PAYMENT_CAPTURED,
+      ),
+      fulfillmentCreated: settings.auto_generate_on.includes(
+        InvoiceSettingsAutoGenerateTrigger.FULFILLMENT_CREATED,
+      ),
     });
   }, [invoiceSettingsQuery.data]);
 

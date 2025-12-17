@@ -15,18 +15,56 @@
           "nullable": false,
           "mappedType": "text"
         },
-        "is_active": {
-          "name": "is_active",
-          "type": "boolean",
+        "status": {
+          "name": "status",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "default": "true",
-          "mappedType": "boolean"
+          "enumItems": [
+            "queued",
+            "generating",
+            "completed",
+            "failed"
+          ],
+          "mappedType": "enum"
         },
-        "number": {
-          "name": "number",
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "pdf_url": {
+          "name": "pdf_url",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "template_id": {
+          "name": "template_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "clean",
+            "classic",
+            "compact"
+          ],
+          "mappedType": "enum"
+        },
+        "template_version": {
+          "name": "template_version",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -34,8 +72,17 @@
           "nullable": false,
           "mappedType": "text"
         },
-        "pdf_url": {
-          "name": "pdf_url",
+        "settings_snapshot": {
+          "name": "settings_snapshot",
+          "type": "jsonb",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "json"
+        },
+        "error_message": {
+          "name": "error_message",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -80,15 +127,6 @@
       "schema": "public",
       "indexes": [
         {
-          "keyName": "IDX_invoice_number_unique",
-          "columnNames": [],
-          "composite": false,
-          "constraint": false,
-          "primary": false,
-          "unique": false,
-          "expression": "CREATE UNIQUE INDEX IF NOT EXISTS \"IDX_invoice_number_unique\" ON \"invoice\" (\"number\") WHERE deleted_at IS NULL"
-        },
-        {
           "keyName": "IDX_invoice_deleted_at",
           "columnNames": [],
           "composite": false,
@@ -123,8 +161,8 @@
           "nullable": false,
           "mappedType": "text"
         },
-        "style": {
-          "name": "style",
+        "template_id": {
+          "name": "template_id",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -137,8 +175,17 @@
           ],
           "mappedType": "enum"
         },
-        "header_type": {
-          "name": "header_type",
+        "template_version": {
+          "name": "template_version",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
+        "header_logo_type": {
+          "name": "header_logo_type",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -151,8 +198,8 @@
           ],
           "mappedType": "enum"
         },
-        "image_url": {
-          "name": "image_url",
+        "header_logo_url": {
+          "name": "header_logo_url",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -160,8 +207,8 @@
           "nullable": true,
           "mappedType": "text"
         },
-        "header_text": {
-          "name": "header_text",
+        "header_logo_text": {
+          "name": "header_logo_text",
           "type": "text",
           "unsigned": false,
           "autoincrement": false,
@@ -169,8 +216,8 @@
           "nullable": true,
           "mappedType": "text"
         },
-        "additional_header_content": {
-          "name": "additional_header_content",
+        "header_content": {
+          "name": "header_content",
           "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,
@@ -178,8 +225,8 @@
           "nullable": true,
           "mappedType": "json"
         },
-        "additional_footer_content": {
-          "name": "additional_footer_content",
+        "footer_content": {
+          "name": "footer_content",
           "type": "jsonb",
           "unsigned": false,
           "autoincrement": false,
@@ -187,45 +234,60 @@
           "nullable": true,
           "mappedType": "json"
         },
-        "business": {
-          "name": "business",
-          "type": "jsonb",
+        "store_name": {
+          "name": "store_name",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "default": "'{\"name\":\"\",\"address\":\"\",\"tax_id\":\"\",\"iban\":\"\",\"swift\":\"\"}'",
-          "mappedType": "json"
+          "nullable": true,
+          "mappedType": "text"
         },
-        "auto_order_completed": {
-          "name": "auto_order_completed",
-          "type": "boolean",
+        "store_address": {
+          "name": "store_address",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
+          "nullable": true,
+          "mappedType": "text"
         },
-        "auto_payment_captured": {
-          "name": "auto_payment_captured",
-          "type": "boolean",
+        "store_tax_id": {
+          "name": "store_tax_id",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
-          "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
+          "nullable": true,
+          "mappedType": "text"
         },
-        "auto_fullfillment_created": {
-          "name": "auto_fullfillment_created",
-          "type": "boolean",
+        "bank_account_iban": {
+          "name": "bank_account_iban",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "bank_account_swift": {
+          "name": "bank_account_swift",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
+        },
+        "auto_generate_on": {
+          "name": "auto_generate_on",
+          "type": "text[]",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "default": "false",
-          "mappedType": "boolean"
+          "default": "'{}'",
+          "mappedType": "array"
         },
         "created_at": {
           "name": "created_at",

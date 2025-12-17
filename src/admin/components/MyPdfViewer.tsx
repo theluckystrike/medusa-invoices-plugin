@@ -3,6 +3,7 @@ import React from "react";
 import { TemplateSettings } from "../routes/settings/invoices/page";
 import { useOrder } from "../hooks/orders";
 import { InvoicePdfDocument } from "./InvoicePdfDocument";
+import { getTemplate } from "./templates/registry";
 
 type MyPdfViewerProps = {
   templateSettings: TemplateSettings;
@@ -10,7 +11,7 @@ type MyPdfViewerProps = {
   selectedOrderId: string;
 };
 
-export const MyPdfViewer: React.FC<MyPdfViewerProps> = ({
+const MyPdfViewer: React.FC<MyPdfViewerProps> = ({
   templateSettings,
   previewType,
   selectedOrderId,
@@ -44,9 +45,15 @@ export const MyPdfViewer: React.FC<MyPdfViewerProps> = ({
     return <div>Failed to load order data</div>;
   }
 
+  const template = getTemplate(templateSettings.template_id);
+  const TemplateComponent = template.Component;
+
   return (
     <PDFViewer showToolbar={false} height="100%" width="100%">
-      <InvoicePdfDocument templateSettings={templateSettings} order={order} />
+      <TemplateComponent settings={templateSettings} order={order} />
+      {/*<InvoicePdfDocument templateSettings={templateSettings} order={order} />*/}
     </PDFViewer>
   );
 };
+
+export default MyPdfViewer;

@@ -28,13 +28,17 @@ const RenderTemplateSettings: React.FC<{
     const handleSave = async () => {
       try {
         await upsertInvoiceSettings.mutateAsync({
-          style: templateSettings.style,
-          header_type: templateSettings.headerType,
-          image_url: templateSettings.imageUrl,
-          header_text: templateSettings.headerText,
-          additional_header_content: templateSettings.additionalHeaderContent,
-          additional_footer_content: templateSettings.additionalFooterContent,
-          business: templateSettings.business,
+          template_id: templateSettings.template_id,
+          header_logo_type: templateSettings.header_logo_type,
+          header_logo_url: templateSettings.header_logo_url,
+          header_logo_text: templateSettings.header_logo_text,
+          header_content: templateSettings.header_content,
+          footer_content: templateSettings.footer_content,
+          store_name: templateSettings.store_name,
+          store_address: templateSettings.store_address,
+          store_tax_id: templateSettings.store_tax_id,
+          bank_account_iban: templateSettings.bank_account_iban,
+          bank_account_swift: templateSettings.bank_account_swift,
           auto_order_completed: templateSettings.orderCompleted,
           auto_payment_captured: templateSettings.paymentCaptured,
           auto_fullfillment_created: templateSettings.fulfillmentCreated,
@@ -50,17 +54,17 @@ const RenderTemplateSettings: React.FC<{
       }
     };
 
-    const handleStyleChange = React.useCallback((value: string) => {
+    const handleTemplateIdChange = React.useCallback((value: string) => {
       setTemplateSettings((prev) => ({
         ...prev,
-        style: value as TemplateSettings["style"],
+        template_id: value as TemplateSettings["template_id"],
       }));
     }, []);
 
-    const handleHeaderTypeChange = React.useCallback((value: string) => {
+    const handleHeaderLogoTypeChange = React.useCallback((value: string) => {
       setTemplateSettings((prev) => ({
         ...prev,
-        headerType: value as TemplateSettings["headerType"],
+        header_logo_type: value as TemplateSettings["header_logo_type"],
       }));
     }, []);
 
@@ -79,16 +83,6 @@ const RenderTemplateSettings: React.FC<{
         setTemplateSettings((prev) => ({
           ...prev,
           [field]: value,
-        }));
-      },
-      [],
-    );
-
-    const handleBusinessChange = React.useCallback(
-      (field: keyof TemplateSettings["business"], value: string) => {
-        setTemplateSettings((prev) => ({
-          ...prev,
-          business: { ...prev.business, [field]: value },
         }));
       },
       [],
@@ -116,8 +110,8 @@ const RenderTemplateSettings: React.FC<{
           <RadioGroup
             id="template-style"
             className="mt-1"
-            value={templateSettings.style}
-            onValueChange={handleStyleChange}
+            value={templateSettings.template_id}
+            onValueChange={handleTemplateIdChange}
           >
             <RadioGroup.ChoiceBox
               value="clean"
@@ -141,9 +135,9 @@ const RenderTemplateSettings: React.FC<{
             Header / Logo
           </Heading>
           <RadioGroup
-            value={templateSettings.headerType}
+            value={templateSettings.header_logo_type}
             className="flex gap-3 justify-between flex-wrap"
-            onValueChange={handleHeaderTypeChange}
+            onValueChange={handleHeaderLogoTypeChange}
           >
             <div className="flex items-center gap-x-1.5">
               <RadioGroup.Item value="image" id="image" />
@@ -158,28 +152,30 @@ const RenderTemplateSettings: React.FC<{
               <Label htmlFor="none">None</Label>
             </div>
           </RadioGroup>
-          {templateSettings.headerType === "image" && (
+          {templateSettings.header_logo_type === "image" && (
             <div className="mt-3">
               <Label htmlFor="image-url">Image URL</Label>
               <Input
                 placeholder="https://example.com/image.jpg"
                 id="image-url"
                 className="mt-1"
-                value={templateSettings.imageUrl}
-                onChange={(e) => handleInputChange("imageUrl", e.target.value)}
+                value={templateSettings.header_logo_url}
+                onChange={(e) =>
+                  handleInputChange("header_logo_url", e.target.value)
+                }
               />
             </div>
           )}
-          {templateSettings.headerType === "heading" && (
+          {templateSettings.header_logo_type === "heading" && (
             <div className="mt-3">
               <Label htmlFor="header-text">Header Text</Label>
               <Input
                 placeholder="My Company"
                 id="header-text"
                 className="mt-1"
-                value={templateSettings.headerText}
+                value={templateSettings.header_logo_text}
                 onChange={(e) =>
-                  handleInputChange("headerText", e.target.value)
+                  handleInputChange("header_logo_text", e.target.value)
                 }
               />
             </div>
@@ -191,18 +187,18 @@ const RenderTemplateSettings: React.FC<{
           </Heading>
           <Label>Header Content</Label>
           <TiptapEditor
-            initialContent={templateSettings.additionalHeaderContent}
+            initialContent={templateSettings.header_content}
             onChange={(value) =>
-              handleAdditionalContentChange("additionalHeaderContent", value)
+              handleAdditionalContentChange("header_content", value)
             }
             placeholder="Additional header content"
             className="mb-3 mt-1"
           />
           <Label>Footer Content</Label>
           <TiptapEditor
-            initialContent={templateSettings.additionalFooterContent}
+            initialContent={templateSettings.footer_content}
             onChange={(value) =>
-              handleAdditionalContentChange("additionalFooterContent", value)
+              handleAdditionalContentChange("footer_content", value)
             }
             placeholder="Additional footer content"
             className="mt-1 max-h-40"
@@ -217,8 +213,8 @@ const RenderTemplateSettings: React.FC<{
             placeholder="My Company"
             id="business-name"
             className="mt-1 mb-3"
-            value={templateSettings.business.name}
-            onChange={(e) => handleBusinessChange("name", e.target.value)}
+            value={templateSettings.store_name}
+            onChange={(e) => handleInputChange("store_name", e.target.value)}
           />
           <Label htmlFor="address">Address</Label>
           <Textarea
@@ -227,16 +223,16 @@ const RenderTemplateSettings: React.FC<{
             className="mt-1 mb-3"
             style={{ maxHeight: "8rem" }}
             maxLength={200}
-            value={templateSettings.business.address}
-            onChange={(e) => handleBusinessChange("address", e.target.value)}
+            value={templateSettings.store_address}
+            onChange={(e) => handleInputChange("store_address", e.target.value)}
           />
           <Label htmlFor="tax-id">Tax / VAT ID</Label>
           <Input
             placeholder="Tax identification number"
             id="tax-id"
             className="mt-1 mb-4"
-            value={templateSettings.business.tax_id}
-            onChange={(e) => handleBusinessChange("tax_id", e.target.value)}
+            value={templateSettings.store_tax_id}
+            onChange={(e) => handleInputChange("store_tax_id", e.target.value)}
           />
           <div className="flex gap-3 flex-wrap">
             <div className="flex-1">
@@ -245,8 +241,10 @@ const RenderTemplateSettings: React.FC<{
                 placeholder="International Bank Account Number"
                 id="iban"
                 className="mt-1"
-                value={templateSettings.business.iban}
-                onChange={(e) => handleBusinessChange("iban", e.target.value)}
+                value={templateSettings.bank_account_iban}
+                onChange={(e) =>
+                  handleInputChange("bank_account_iban", e.target.value)
+                }
               />
             </div>
             <div className="flex-1">
@@ -255,8 +253,10 @@ const RenderTemplateSettings: React.FC<{
                 placeholder="SWIFT/BIC code"
                 id="swift"
                 className="mt-1"
-                value={templateSettings.business.swift}
-                onChange={(e) => handleBusinessChange("swift", e.target.value)}
+                value={templateSettings.bank_account_swift}
+                onChange={(e) =>
+                  handleInputChange("bank_account_swift", e.target.value)
+                }
               />
             </div>
           </div>

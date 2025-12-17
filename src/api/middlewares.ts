@@ -5,6 +5,7 @@ import {
 } from "@medusajs/framework/http";
 import { createFindParams } from "@medusajs/medusa/api/utils/validators";
 import { createInvoiceSettingsSchema } from "./admin/invoice-settings/validators";
+import { generateInvoiceSchema } from "./admin/invoices/validators";
 
 export const GetAdminInvoiceSettingsSchema = createFindParams();
 
@@ -29,6 +30,11 @@ export default defineMiddlewares({
       matcher: "/admin/orders/:id/invoice",
       method: "GET",
       middlewares: [validateGetInvoicesMiddleware],
+    },
+    {
+      matcher: "/admin/invoices/:order_id/generate",
+      method: "POST",
+      middlewares: [validateAndTransformBody(generateInvoiceSchema)],
     },
   ],
 });

@@ -18,7 +18,7 @@ import {
 } from "@medusajs/icons";
 import React from "react";
 import MyFocusModal from "../components/MyFocusModal";
-import { JsonViewSection } from "../components/JsonViewSection";
+import JsonViewSection from "../components/JsonViewSection";
 
 const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   const orderId = data?.id;

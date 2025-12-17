@@ -14,7 +14,7 @@ type JsonViewSectionProps = {
   title?: string;
 };
 
-export const JsonViewSection = ({ data }: JsonViewSectionProps) => {
+const JsonViewSection = ({ data }: JsonViewSectionProps) => {
   const numberOfKeys = Object.keys(data).length;
 
   return (
@@ -176,3 +176,5 @@ const Copied = ({ style, value }: CopiedProps) => {
     </span>
   );
 };
+
+export default JsonViewSection;

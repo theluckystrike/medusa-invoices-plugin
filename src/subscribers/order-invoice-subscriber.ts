@@ -1,6 +1,6 @@
 import { SubscriberArgs, type SubscriberConfig } from "@medusajs/framework";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
-import { createInvoiceWorkflow } from "../workflows/create-invoice";
+import createInvoiceWorkflow from "../workflows/generate-invoice";
 
 type orderCompletedPayload = {
   id: string; //ID of order

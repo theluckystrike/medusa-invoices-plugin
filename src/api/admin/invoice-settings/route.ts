@@ -1,8 +1,7 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
-import {
-  updateInvoiceSettingsWorkflow,
+import updateInvoiceSettingsWorkflow, {
   UpsertInvoiceSettingsWorkflowInput,
 } from "../../../workflows/update-invoice-settings";
 
