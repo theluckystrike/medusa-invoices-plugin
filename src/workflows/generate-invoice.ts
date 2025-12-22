@@ -287,10 +287,16 @@ const completeInvoiceStep = createStep(
       completed_at: new Date(),
     });
 
-    return new StepResponse(completedInvoice, {
-      invoice: completedInvoice,
-      order_id,
-    });
+    return new StepResponse(
+      {
+        invoice: completedInvoice,
+        order_id,
+      },
+      {
+        invoice: completedInvoice,
+        order_id,
+      },
+    );
   },
   async (context, { container }) => {
     const invoiceModuleService: InvoiceModuleService =
@@ -350,23 +356,21 @@ const generateInvoiceWorkflow = createWorkflow(
     });
 
     const eventPayload = transform(completeInvoiceStepResult, (input) => ({
-      invoice_id: input.id,
-      order_display_id: input.order_display_id,
-      pdf_url: input.pdf_url,
-      template_id: input.template_id,
-      template_version: input.template_version,
-      completed_at: input.completed_at,
+      invoice_id: input.invoice.id,
+      order_id: input.order_id,
+      order_display_id: input.invoice.order_display_id,
+      pdf_url: input.invoice.pdf_url,
+      template_id: input.invoice.template_id,
+      template_version: input.invoice.template_version,
+      completed_at: input.invoice.completed_at,
     }));
 
     emitEventStep({
       eventName: "invoice.generated",
-      data: {
-        ...eventPayload,
-        order_id: input.order_id,
-      },
+      data: eventPayload,
     });
 
-    return new WorkflowResponse(completeInvoiceStepResult);
+    return new WorkflowResponse(completeInvoiceStepResult.invoice);
   },
 );
 
