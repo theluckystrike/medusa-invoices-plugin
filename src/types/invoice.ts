@@ -29,7 +29,7 @@ export type InvoiceDTO = {
   pdf_url: string | null;
   template_id: InvoiceTemplateId; // clean | classic | compact
   template_version: string;
-  settings_snapshot: InvoiceSettingsSnapshot;
+  settings_snapshot: Record<string, any>;
   error_message: string | null;
   created_at: Date;
   updated_at: Date;

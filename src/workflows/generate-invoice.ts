@@ -202,17 +202,25 @@ const renderPdfStep = createStep(
 
     const pdfStream = await ReactPDF.renderToStream(element);
 
-    console.log(pdfStream);
-
     const pdfBuffer = await ReactPDF.renderToBuffer(element);
     const base64Pdf = pdfBuffer.toString("base64");
-
-    console.log(base64Pdf);
 
     const file = await fileModuleService.createFiles({
       filename: "invoice.pdf",
       mimeType: "application/pdf",
       content: base64Pdf,
+    });
+
+    if (!file) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "Invoice PDF file was not created",
+      );
+    }
+
+    const updatedInvoice = await invoiceModuleService.updateInvoices({
+      id: invoice.id,
+      pdf_url: file.url,
     });
 
     //const template = getTemplate(invoice.template_id);
@@ -244,6 +252,54 @@ const renderPdfStep = createStep(
 
     // const Component = template.Component;
     //const pdfStream = await pdf(<Component {...templateProps} />)
+
+    return new StepResponse(updatedInvoice, updatedInvoice);
+  },
+  async (context, { container }) => {
+    const invoiceModuleService: InvoiceModuleService =
+      container.resolve(INVOICE_MODULE);
+
+    if (!context?.pdf_url) {
+      await invoiceModuleService.updateInvoices({
+        id: context?.id,
+        status: InvoiceStatus.FAILED,
+        error_message: "Invoice PDF file was not created",
+        completed_at: null,
+      });
+    }
+  },
+);
+
+const completeInvoiceStep = createStep(
+  "complete-invoice-step",
+  async (invoice: InvoiceDTO, { container }) => {
+    const invoiceModuleService: InvoiceModuleService =
+      await container.resolve(INVOICE_MODULE);
+
+    const completedInvoice = await invoiceModuleService.updateInvoices({
+      id: invoice.id,
+      status: InvoiceStatus.COMPLETED,
+      completed_at: new Date(),
+    });
+
+    return new StepResponse(completedInvoice, completedInvoice);
+  },
+  async (context, { container }) => {
+    const invoiceModuleService: InvoiceModuleService =
+      await container.resolve(INVOICE_MODULE);
+
+    if (
+      !context ||
+      context.status !== InvoiceStatus.COMPLETED ||
+      !context.completed_at
+    ) {
+      await invoiceModuleService.updateInvoices({
+        id: context?.id,
+        status: InvoiceStatus.FAILED,
+        error_message: "Invoice completion failed",
+        completed_at: null,
+      });
+    }
   },
 );
 
@@ -275,13 +331,15 @@ const generateInvoiceWorkflow = createWorkflow(
       },
     ]);
 
-    renderPdfStep({
+    const rederPdfStepResult = renderPdfStep({
       order_id: input.order_id,
-      invoice: invoice as unknown as InvoiceDTO,
+      invoice,
       settings,
     });
 
-    return new WorkflowResponse(invoice);
+    const completeInvoiceStepResult = completeInvoiceStep(rederPdfStepResult);
+
+    return new WorkflowResponse(completeInvoiceStepResult);
   },
 );
 

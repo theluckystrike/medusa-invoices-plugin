@@ -1,7 +1,6 @@
 const getTemp = async () => {
   const React = await import("react");
   const ReactPDF = await import("@react-pdf/renderer");
-
   const { Document, Page, View, Text } = ReactPDF;
 
   return React.createElement(
