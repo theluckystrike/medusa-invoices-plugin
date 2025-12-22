@@ -12,7 +12,10 @@ import {
   MedusaError,
   Modules,
 } from "@medusajs/framework/utils";
-import { createRemoteLinkStep } from "@medusajs/medusa/core-flows";
+import {
+  createRemoteLinkStep,
+  emitEventStep,
+} from "@medusajs/medusa/core-flows";
 import {
   InvoiceSettingsAutoGenerateTrigger,
   InvoiceStatus,
@@ -253,26 +256,28 @@ const renderPdfStep = createStep(
     // const Component = template.Component;
     //const pdfStream = await pdf(<Component {...templateProps} />)
 
-    return new StepResponse(updatedInvoice, updatedInvoice);
+    return new StepResponse(updatedInvoice, { updatedInvoice, order_id });
   },
   async (context, { container }) => {
     const invoiceModuleService: InvoiceModuleService =
       container.resolve(INVOICE_MODULE);
 
-    if (!context?.pdf_url) {
-      await invoiceModuleService.updateInvoices({
-        id: context?.id,
-        status: InvoiceStatus.FAILED,
-        error_message: "Invoice PDF file was not created",
-        completed_at: null,
-      });
+    if (!context?.updatedInvoice.pdf_url) {
+      await invoiceModuleService.generationFailed(
+        context?.updatedInvoice.id!,
+        "Invoice PDF file was not created",
+        context?.order_id!,
+      );
     }
   },
 );
 
 const completeInvoiceStep = createStep(
   "complete-invoice-step",
-  async (invoice: InvoiceDTO, { container }) => {
+  async (
+    { invoice, order_id }: { invoice: InvoiceDTO; order_id: string },
+    { container },
+  ) => {
     const invoiceModuleService: InvoiceModuleService =
       await container.resolve(INVOICE_MODULE);
 
@@ -282,23 +287,25 @@ const completeInvoiceStep = createStep(
       completed_at: new Date(),
     });
 
-    return new StepResponse(completedInvoice, completedInvoice);
+    return new StepResponse(completedInvoice, {
+      invoice: completedInvoice,
+      order_id,
+    });
   },
   async (context, { container }) => {
     const invoiceModuleService: InvoiceModuleService =
       await container.resolve(INVOICE_MODULE);
 
     if (
-      !context ||
-      context.status !== InvoiceStatus.COMPLETED ||
-      !context.completed_at
+      !context?.invoice ||
+      context.invoice.status !== InvoiceStatus.COMPLETED ||
+      !context.invoice.completed_at
     ) {
-      await invoiceModuleService.updateInvoices({
-        id: context?.id,
-        status: InvoiceStatus.FAILED,
-        error_message: "Invoice completion failed",
-        completed_at: null,
-      });
+      await invoiceModuleService.generationFailed(
+        context?.invoice.id!,
+        "Invoice completion failed",
+        context?.order_id!,
+      );
     }
   },
 );
@@ -337,7 +344,27 @@ const generateInvoiceWorkflow = createWorkflow(
       settings,
     });
 
-    const completeInvoiceStepResult = completeInvoiceStep(rederPdfStepResult);
+    const completeInvoiceStepResult = completeInvoiceStep({
+      invoice: rederPdfStepResult,
+      order_id: input.order_id,
+    });
+
+    const eventPayload = transform(completeInvoiceStepResult, (input) => ({
+      invoice_id: input.id,
+      order_display_id: input.order_display_id,
+      pdf_url: input.pdf_url,
+      template_id: input.template_id,
+      template_version: input.template_version,
+      completed_at: input.completed_at,
+    }));
+
+    emitEventStep({
+      eventName: "invoice.generated",
+      data: {
+        ...eventPayload,
+        order_id: input.order_id,
+      },
+    });
 
     return new WorkflowResponse(completeInvoiceStepResult);
   },

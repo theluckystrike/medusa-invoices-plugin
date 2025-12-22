@@ -42,3 +42,18 @@ export type GenerateInvoiceWorkflowInput = {
     template_id?: InvoiceTemplateId; // clean | classic | compact
   };
 };
+
+export type InvoiceGeneratedPayload = {
+  invoice_id: string;
+  order_id: string;
+  order_display_id: number;
+  pdf_url: string;
+  template_id: string;
+  template_version: string;
+  completed_at: string;
+};
+
+export type InvoiceFailedPayload = {
+  order_id: string;
+  error_message: string;
+};
