@@ -14,6 +14,7 @@ import {
 } from "@medusajs/medusa/core-flows";
 import { Modules } from "@medusajs/framework/utils";
 import {
+  InvoiceSettingsAutoGenerateTrigger,
   InvoiceSettingsHeaderLogoType,
   InvoiceTemplateId,
 } from "../constants/invoice";
@@ -23,16 +24,16 @@ export type UpsertInvoiceSettingsWorkflowInput = {
   template_id: InvoiceTemplateId;
   template_version: string;
   header_logo_type: InvoiceSettingsHeaderLogoType;
-  header_logo_url?: string | null;
-  header_logo_text?: string | null;
-  header_content?: Record<string, any> | null;
-  footer_content?: Record<string, any> | null;
-  store_name?: string | null;
-  store_address?: string | null;
-  store_tax_id?: string | null;
-  bank_account_iban?: string | null;
-  bank_account_swift?: string | null;
-  auto_generate_on?: string[];
+  header_logo_url: string | null;
+  header_logo_text: string | null;
+  header_content: Record<string, any> | null;
+  footer_content: Record<string, any> | null;
+  store_name: string | null;
+  store_address: string | null;
+  store_tax_id: string | null;
+  bank_account_iban: string | null;
+  bank_account_swift: string | null;
+  auto_generate_on: InvoiceSettingsAutoGenerateTrigger[];
 };
 
 export type UpsertInvoiceSettingsStepInput = {
@@ -55,10 +56,20 @@ const upsertInvoiceSettingsStep = createStep(
     const invoiceModuleService: InvoiceModuleService =
       container.resolve(INVOICE_MODULE);
 
+    const serializedInput = {
+      ...input,
+      header_content: input.header_content
+        ? JSON.stringify(input.header_content)
+        : null,
+      footer_content: input.footer_content
+        ? JSON.stringify(input.footer_content)
+        : null,
+    };
+
     if (existing) {
       const updated = await invoiceModuleService.updateInvoiceSettings({
         id: existing.id,
-        ...input,
+        ...serializedInput,
       });
 
       const rollbackContext: RollbackContext = {
@@ -69,7 +80,8 @@ const upsertInvoiceSettingsStep = createStep(
       return new StepResponse(updated, rollbackContext);
     }
 
-    const created = await invoiceModuleService.createInvoiceSettings(input);
+    const created =
+      await invoiceModuleService.createInvoiceSettings(serializedInput);
 
     const rollbackContext: RollbackContext = {
       action: "created",

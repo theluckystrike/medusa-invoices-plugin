@@ -12,9 +12,9 @@ export enum InvoiceTemplateId {
 }
 
 export enum InvoiceSettingsHeaderLogoType {
-  HEADING = "heading",
-  IMAGE = "image",
   NONE = "none",
+  TEXT = "text",
+  IMAGE = "image",
 }
 
 export enum InvoiceSettingsAutoGenerateTrigger {

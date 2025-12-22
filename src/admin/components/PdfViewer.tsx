@@ -218,7 +218,7 @@ export const PdfViewer: React.FC<PdfViewerProps> = ({
         >
           <View
             render={() =>
-              templateSettings.header_logo_type === "heading" &&
+              templateSettings.header_logo_type === "text" &&
               templateSettings.header_logo_text && (
                 <Text
                   style={templateStyles[templateSettings.template_id].heading}

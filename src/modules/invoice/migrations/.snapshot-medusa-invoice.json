@@ -15,6 +15,15 @@
           "nullable": false,
           "mappedType": "text"
         },
+        "order_display_id": {
+          "name": "order_display_id",
+          "type": "integer",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
         "status": {
           "name": "status",
           "type": "text",
@@ -168,6 +177,7 @@
           "autoincrement": false,
           "primary": false,
           "nullable": false,
+          "default": "'clean'",
           "enumItems": [
             "clean",
             "classic",
@@ -192,20 +202,11 @@
           "primary": false,
           "nullable": false,
           "enumItems": [
-            "heading",
-            "image",
-            "none"
+            "none",
+            "text",
+            "image"
           ],
           "mappedType": "enum"
-        },
-        "header_logo_url": {
-          "name": "header_logo_url",
-          "type": "text",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": true,
-          "mappedType": "text"
         },
         "header_logo_text": {
           "name": "header_logo_text",
@@ -216,23 +217,32 @@
           "nullable": true,
           "mappedType": "text"
         },
-        "header_content": {
-          "name": "header_content",
-          "type": "jsonb",
+        "header_logo_url": {
+          "name": "header_logo_url",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "json"
+          "mappedType": "text"
+        },
+        "header_content": {
+          "name": "header_content",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "mappedType": "text"
         },
         "footer_content": {
           "name": "footer_content",
-          "type": "jsonb",
+          "type": "text",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "mappedType": "json"
+          "mappedType": "text"
         },
         "store_name": {
           "name": "store_name",

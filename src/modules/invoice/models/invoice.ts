@@ -3,6 +3,7 @@ import { InvoiceStatus, InvoiceTemplateId } from "../../../constants/invoice";
 
 const Invoice = model.define("invoice", {
   id: model.id({ prefix: "inv" }).primaryKey(),
+  order_display_id: model.number(),
   status: model.enum(InvoiceStatus),
   completed_at: model.dateTime().nullable(),
   pdf_url: model.text().nullable(),

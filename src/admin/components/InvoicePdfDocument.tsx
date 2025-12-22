@@ -11,7 +11,10 @@ import renderTiptapNode from "./renderTiptapNode";
 import { AdminOrderWithInvoices } from "./MyFocusModal";
 
 type InvoicePdfDocumentProps = {
-  templateSettings: TemplateSettings;
+  templateSettings: Omit<
+    TemplateSettings,
+    "order_completed" | "payment_captured" | "fulfillment_created"
+  >;
   order?: AdminOrderWithInvoices;
 };
 
@@ -183,7 +186,7 @@ export const InvoicePdfDocument = ({
       <Page size="A4" style={templateStyles[templateSettings.template_id].page}>
         <View
           render={() =>
-            templateSettings.header_logo_type === "heading" &&
+            templateSettings.header_logo_type === "text" &&
             templateSettings.header_logo_text && (
               <Text
                 style={templateStyles[templateSettings.template_id].heading}

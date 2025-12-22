@@ -24,7 +24,7 @@ import { InvoiceSettingsAutoGenerateTrigger } from "../../../../constants/invoic
 
 export type TemplateSettings = {
   template_id: "clean" | "classic" | "compact";
-  header_logo_type: "image" | "heading" | "none";
+  header_logo_type: "image" | "text" | "none";
   header_logo_url: string;
   header_logo_text: string;
   header_content: JSONContent;
@@ -34,9 +34,9 @@ export type TemplateSettings = {
   store_tax_id: string;
   bank_account_iban: string;
   bank_account_swift: string;
-  orderCompleted: boolean;
-  paymentCaptured: boolean;
-  fulfillmentCreated: boolean;
+  order_completed: boolean;
+  payment_captured: boolean;
+  fulfillment_created: boolean;
 };
 
 export default function Invoices() {
@@ -64,9 +64,9 @@ export default function Invoices() {
       store_tax_id: "",
       bank_account_iban: "",
       bank_account_swift: "",
-      orderCompleted: false,
-      paymentCaptured: false,
-      fulfillmentCreated: false,
+      order_completed: false,
+      payment_captured: false,
+      fulfillment_created: false,
     });
 
   const handlePreviewChange = React.useCallback((value: string) => {
@@ -86,20 +86,24 @@ export default function Invoices() {
       header_logo_type: settings.header_logo_type,
       header_logo_url: settings.header_logo_url ?? "",
       header_logo_text: settings.header_logo_text ?? "",
-      header_content: settings.header_content ?? {},
-      footer_content: settings.footer_content ?? {},
+      header_content: settings.header_content
+        ? JSON.parse(settings.header_content)
+        : {},
+      footer_content: settings.footer_content
+        ? JSON.parse(settings.footer_content)
+        : {},
       store_name: settings.store_name ?? "",
       store_address: settings.store_address ?? "",
       store_tax_id: settings.store_tax_id ?? "",
       bank_account_iban: settings.bank_account_iban ?? "",
       bank_account_swift: settings.bank_account_swift ?? "",
-      orderCompleted: settings.auto_generate_on.includes(
+      order_completed: settings.auto_generate_on.includes(
         InvoiceSettingsAutoGenerateTrigger.ORDER_COMPLETED,
       ),
-      paymentCaptured: settings.auto_generate_on.includes(
+      payment_captured: settings.auto_generate_on.includes(
         InvoiceSettingsAutoGenerateTrigger.PAYMENT_CAPTURED,
       ),
-      fulfillmentCreated: settings.auto_generate_on.includes(
+      fulfillment_created: settings.auto_generate_on.includes(
         InvoiceSettingsAutoGenerateTrigger.FULFILLMENT_CREATED,
       ),
     });

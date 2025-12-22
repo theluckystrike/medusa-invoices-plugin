@@ -1,9 +1,13 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
+import {
+  ContainerRegistrationKeys,
+  MedusaError,
+} from "@medusajs/framework/utils";
 import updateInvoiceSettingsWorkflow, {
   UpsertInvoiceSettingsWorkflowInput,
 } from "../../../workflows/update-invoice-settings";
+import { InvoiceSettingsDTO } from "../../../types/invoice-settings";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
@@ -17,7 +21,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   });
 
   if (!store) {
-    throw new Error("No active store found");
+    throw new MedusaError(MedusaError.Types.NOT_FOUND, "No active store found");
   }
 
   const {
@@ -28,7 +32,17 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     filters: { id: store.id },
   });
 
-  res.json(storeWithSettings?.invoice_settings ?? null);
+  const invoiceSettings: InvoiceSettingsDTO | null =
+    storeWithSettings?.invoice_settings;
+
+  if (!invoiceSettings) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      "Invoice settings not found.",
+    );
+  }
+
+  res.json(invoiceSettings);
 }
 
 export async function PUT(
@@ -46,7 +60,7 @@ export async function PUT(
   });
 
   if (!store) {
-    throw new Error("No active store found");
+    throw new MedusaError(MedusaError.Types.NOT_FOUND, "No active store found");
   }
 
   const input: UpsertInvoiceSettingsWorkflowInput = {

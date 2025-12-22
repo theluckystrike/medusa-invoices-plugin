@@ -2,6 +2,7 @@ import {
   createStep,
   createWorkflow,
   StepResponse,
+  transform,
   WorkflowResponse,
 } from "@medusajs/framework/workflows-sdk";
 import { INVOICE_MODULE } from "../modules/invoice/index";
@@ -12,35 +13,52 @@ import {
   Modules,
 } from "@medusajs/framework/utils";
 import { createRemoteLinkStep } from "@medusajs/medusa/core-flows";
-import { InvoiceStatus } from "../constants/invoice";
-import { GenerateInvoiceWorkflowInput } from "../types/invoice";
+import {
+  InvoiceSettingsAutoGenerateTrigger,
+  InvoiceStatus,
+} from "../constants/invoice";
+import {
+  GenerateInvoiceWorkflowInput,
+  InvoiceDTO,
+  InvoiceSettingsSnapshot,
+} from "../types/invoice";
+import { InvoiceSettingsDTO } from "../types/invoice-settings";
+import getTemp from "../templates/getTemp";
+//import { getTemplate } from "../admin/components/templates/registry";
+
+type RenderPdfStepInput = {
+  order_id: string;
+  invoice: InvoiceDTO;
+  settings: InvoiceSettingsDTO;
+};
 
 const validateOrderStep = createStep(
   "validate-order-exists-step",
   async ({ order_id }: GenerateInvoiceWorkflowInput, { container }) => {
-    const query = container.resolve(ContainerRegistrationKeys.QUERY);
+    const orderModuleService = container.resolve(Modules.ORDER);
 
-    const { data } = await query.graph({
-      entity: "order",
-      fields: ["id"],
-      filters: { id: order_id },
-      pagination: { take: 1 },
-    });
+    const order = await orderModuleService.retrieveOrder(order_id);
 
-    if (!data || !data.length) {
+    if (!order) {
       throw new MedusaError(
         MedusaError.Types.NOT_FOUND,
         `Order with id ${order_id} does not exist`,
       );
     }
 
-    return new StepResponse(true);
+    return new StepResponse({ order_display_id: order.display_id });
   },
 );
 
 const generateInvoiceStep = createStep(
   "generate-invoice-step",
-  async ({ opts }: GenerateInvoiceWorkflowInput, { container }) => {
+  async (
+    {
+      order_display_id,
+      opts,
+    }: GenerateInvoiceWorkflowInput & { order_display_id: number },
+    { container },
+  ) => {
     const invoiceModuleService: InvoiceModuleService =
       container.resolve(INVOICE_MODULE);
 
@@ -53,32 +71,41 @@ const generateInvoiceStep = createStep(
       );
     }
 
+    const settings = {
+      ...invoiceSettings,
+      auto_generate_on:
+        invoiceSettings.auto_generate_on as InvoiceSettingsAutoGenerateTrigger[],
+    };
+
+    const settingsSnapshot: InvoiceSettingsSnapshot = {
+      template_id: settings.template_id,
+      template_version: settings.template_version,
+      header_logo: {
+        type: settings.header_logo_type,
+        text: settings.header_logo_text,
+        url: settings.header_logo_url,
+      },
+      header_content: settings.header_content,
+      footer_content: settings.footer_content,
+      store_name: settings.store_name,
+      store_address: settings.store_address,
+      store_tax_id: settings.store_tax_id,
+      bank_account_iban: settings.bank_account_iban,
+      bank_account_swift: settings.bank_account_swift,
+    };
+
     const invoice = await invoiceModuleService.createInvoices({
       status: InvoiceStatus.GENERATING,
-      template_id: opts?.template_id ?? invoiceSettings.template_id,
-      template_version: invoiceSettings.template_version,
-      settings_snapshot: {
-        template_id: invoiceSettings.template_id,
-        template_version: invoiceSettings.template_version,
-        header_logo: {
-          type: invoiceSettings.header_logo_type,
-          text: invoiceSettings.header_logo_text,
-          url: invoiceSettings.header_logo_url,
-        },
-        header_content: invoiceSettings.header_content,
-        footer_content: invoiceSettings.footer_content,
-        store_name: invoiceSettings.store_name,
-        store_address: invoiceSettings.store_address,
-        store_tax_id: invoiceSettings.store_tax_id,
-        bank_account_iban: invoiceSettings.bank_account_iban,
-        bank_account_swift: invoiceSettings.bank_account_swift,
-      },
+      order_display_id: order_display_id,
+      template_id: opts?.template_id ?? settings.template_id,
+      template_version: settings.template_version,
+      settings_snapshot: settingsSnapshot,
       pdf_url: null,
       completed_at: null,
       error_message: null,
     });
 
-    return new StepResponse(invoice, { id: invoice.id });
+    return new StepResponse({ invoice, settings }, { id: invoice.id });
   },
   async (context, { container }) => {
     const invoiceModuleService: InvoiceModuleService =
@@ -90,12 +117,152 @@ const generateInvoiceStep = createStep(
   },
 );
 
+const renderPdfStep = createStep(
+  "render-pdf-step",
+  async (
+    { order_id, invoice, settings }: RenderPdfStepInput,
+    { container },
+  ) => {
+    const query = container.resolve(ContainerRegistrationKeys.QUERY);
+    const fileModuleService = container.resolve(Modules.FILE);
+    const invoiceModuleService: InvoiceModuleService =
+      container.resolve(INVOICE_MODULE);
+
+    const { data: orders } = await query.graph({
+      entity: "order",
+      fields: [
+        "id",
+        "status",
+        "created_at",
+        "canceled_at",
+        "email",
+        "display_id",
+        "currency_code",
+        "metadata",
+        "total",
+        "credit_line_total",
+        "item_subtotal",
+        "item_total",
+        "item_tax_total",
+        "original_item_tax_total",
+        "item_discount_total",
+        "shipping_subtotal",
+        "original_total",
+        "original_tax_total",
+        "subtotal",
+        "discount_total",
+        "discount_subtotal",
+        "shipping_total",
+        "shipping_tax_total",
+        "original_shipping_tax_total",
+        "shipping_discount_total",
+        "tax_total",
+        "refundable_total",
+        "order_change",
+        "customer.*",
+        "items.*",
+        "items.variant.*",
+        "items.variant.product.*",
+        "items.variant.options.*",
+        "items.variant.manage_inventory",
+        "items.variant.inventory_items.inventory.*",
+        "items.variant.inventory_items.required_quantity",
+        "summary",
+        "shipping_address.*",
+        "billing_address.*",
+        "sales_channel.*",
+        "promotions.*",
+        "shipping_methods.*",
+        "credit_lines.*",
+        "fulfillments.*",
+        "fulfillments.shipping_option.service_zone.fulfillment_set.type",
+        "fulfillments.items.*",
+        "fulfillments.labels.*",
+        "payment_collections.*",
+        "payment_collections.payments.*",
+        "payment_collections.payments.refunds.*",
+        "payment_collections.payments.refunds.refund_reason.*",
+        "region.automatic_taxes",
+      ],
+      filters: { id: order_id },
+      pagination: { take: 1 },
+    });
+
+    const order = orders?.[0];
+
+    if (!order) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_FOUND,
+        `Order with id ${order_id} not found`,
+      );
+    }
+
+    const ReactPDF = await import("@react-pdf/renderer");
+    const element = await getTemp();
+
+    const pdfStream = await ReactPDF.renderToStream(element);
+
+    console.log(pdfStream);
+
+    const pdfBuffer = await ReactPDF.renderToBuffer(element);
+    const base64Pdf = pdfBuffer.toString("base64");
+
+    console.log(base64Pdf);
+
+    const file = await fileModuleService.createFiles({
+      filename: "invoice.pdf",
+      mimeType: "application/pdf",
+      content: base64Pdf,
+    });
+
+    //const template = getTemplate(invoice.template_id);
+
+    // if (!template) {
+    //   throw new MedusaError(
+    //     MedusaError.Types.INVALID_DATA,
+    //     `Template ${invoice.template_id} not found`,
+    //   );
+    // }
+
+    // const templateProps = {
+    //   order,
+    //   settings: {
+    //     template_id: invoice.settings_snapshot.template_id,
+    //     template_version: invoice.settings_snapshot.template_version,
+    //     header_logo_type: invoice.settings_snapshot.header_logo.type,
+    //     header_logo_text: invoice.settings_snapshot.header_logo.text,
+    //     header_logo_url: invoice.settings_snapshot.header_logo.url,
+    //     header_content: invoice.settings_snapshot.header_content,
+    //     footer_content: invoice.settings_snapshot.footer_content,
+    //     store_name: invoice.settings_snapshot.store_name,
+    //     store_address: invoice.settings_snapshot.store_address,
+    //     store_tax_id: invoice.settings_snapshot.store_tax_id,
+    //     bank_account_iban: invoice.settings_snapshot.bank_account_iban,
+    //     bank_account_swift: invoice.settings_snapshot.bank_account_swift,
+    //   },
+    // };
+
+    // const Component = template.Component;
+    //const pdfStream = await pdf(<Component {...templateProps} />)
+  },
+);
+
 const generateInvoiceWorkflow = createWorkflow(
   "generate-invoice-workflow",
   (input: GenerateInvoiceWorkflowInput) => {
-    validateOrderStep(input);
+    const validateOrderResult = validateOrderStep(input);
 
-    const invoice = generateInvoiceStep(input);
+    const generateInvoiceResult = generateInvoiceStep({
+      ...input,
+      ...validateOrderResult,
+    });
+
+    const invoice = transform(generateInvoiceResult, (input) => input.invoice);
+
+    const settings = transform(
+      generateInvoiceResult,
+      (input) => input.settings,
+    );
 
     createRemoteLinkStep([
       {
@@ -107,6 +274,12 @@ const generateInvoiceWorkflow = createWorkflow(
         },
       },
     ]);
+
+    renderPdfStep({
+      order_id: input.order_id,
+      invoice: invoice as unknown as InvoiceDTO,
+      settings,
+    });
 
     return new WorkflowResponse(invoice);
   },

@@ -6,8 +6,8 @@ import {
 } from "@tanstack/react-query";
 import { sdk } from "../lib/sdk";
 import {
+  InvoiceSettingsDTO,
   InvoiceSettingsRequestBody,
-  InvoiceSettingsResponse,
 } from "../../types/invoice-settings";
 
 export const useUpsertInvoiceSettings = () => {
@@ -15,7 +15,7 @@ export const useUpsertInvoiceSettings = () => {
 
   return useMutation({
     mutationFn: async (payload: InvoiceSettingsRequestBody) => {
-      const invoiceSettings = await sdk.client.fetch<InvoiceSettingsResponse>(
+      const invoiceSettings = await sdk.client.fetch<InvoiceSettingsDTO>(
         `/admin/invoice-settings`,
         {
           method: "PUT",
@@ -37,9 +37,9 @@ export const useUpsertInvoiceSettings = () => {
 export const useInvoiceSettings = (
   options?: Omit<
     UndefinedInitialDataOptions<
-      InvoiceSettingsResponse,
+      InvoiceSettingsDTO,
       Error,
-      InvoiceSettingsResponse,
+      InvoiceSettingsDTO,
       (string | undefined)[]
     >,
     "queryKey" | "queryFn"
@@ -48,7 +48,7 @@ export const useInvoiceSettings = (
   return useQuery({
     queryKey: ["invoice-settings"],
     queryFn: async () => {
-      const invoiceSettings = await sdk.client.fetch<InvoiceSettingsResponse>(
+      const invoiceSettings = await sdk.client.fetch<InvoiceSettingsDTO>(
         `/admin/invoice-settings`,
       );
 

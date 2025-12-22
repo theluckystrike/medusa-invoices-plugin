@@ -55,25 +55,25 @@ const MyFocusModal = ({
     );
   }
 
-  const templateSettings: TemplateSettings = {
-    style: invoiceSettingsQuery.data?.style,
-    headerType: invoiceSettingsQuery.data?.header_type,
-    imageUrl: invoiceSettingsQuery.data?.image_url ?? "",
-    headerText: invoiceSettingsQuery.data?.header_text ?? "",
-    additionalHeaderContent:
-      invoiceSettingsQuery.data?.additional_header_content ?? {},
-    additionalFooterContent:
-      invoiceSettingsQuery.data?.additional_footer_content ?? {},
-    business: {
-      name: invoiceSettingsQuery.data?.business.name ?? "",
-      address: invoiceSettingsQuery.data?.business.address ?? "",
-      tax_id: invoiceSettingsQuery.data?.business.tax_id ?? "",
-      iban: invoiceSettingsQuery.data?.business.iban ?? "",
-      swift: invoiceSettingsQuery.data?.business.swift ?? "",
-    },
-    orderCompleted: invoiceSettingsQuery.data?.auto_order_completed,
-    paymentCaptured: invoiceSettingsQuery.data?.auto_payment_captured,
-    fulfillmentCreated: invoiceSettingsQuery.data?.auto_fullfillment_created,
+  const templateSettings: Omit<
+    TemplateSettings,
+    "order_completed" | "payment_captured" | "fulfillment_created"
+  > = {
+    template_id: invoiceSettingsQuery.data?.template_id,
+    header_logo_type: invoiceSettingsQuery.data?.header_logo_type,
+    header_logo_url: invoiceSettingsQuery.data?.header_logo_url ?? "",
+    header_logo_text: invoiceSettingsQuery.data?.header_logo_text ?? "",
+    header_content: invoiceSettingsQuery.data?.header_content
+      ? JSON.parse(invoiceSettingsQuery.data.header_content)
+      : {},
+    footer_content: invoiceSettingsQuery.data?.footer_content
+      ? JSON.parse(invoiceSettingsQuery.data.footer_content)
+      : {},
+    store_name: invoiceSettingsQuery.data?.store_name ?? "",
+    store_address: invoiceSettingsQuery.data?.store_address ?? "",
+    store_tax_id: invoiceSettingsQuery.data?.store_tax_id ?? "",
+    bank_account_iban: invoiceSettingsQuery.data?.bank_account_iban ?? "",
+    bank_account_swift: invoiceSettingsQuery.data?.bank_account_swift ?? "",
   };
 
   const orderWithInvoices = orderQuery.data?.order as

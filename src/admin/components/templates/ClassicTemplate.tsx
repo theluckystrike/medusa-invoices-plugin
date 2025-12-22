@@ -73,7 +73,7 @@ const ClassicTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
       <Page size="A4" style={styles.page}>
         <View
           render={() =>
-            settings?.header_logo_type === "heading" &&
+            settings?.header_logo_type === "text" &&
             settings.header_logo_text && (
               <Text style={styles.heading}>{settings.header_logo_text}</Text>
             )
