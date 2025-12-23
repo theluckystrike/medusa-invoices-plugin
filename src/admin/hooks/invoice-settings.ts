@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { sdk } from "../lib/sdk";
 import {
+  GetInvoiceSettingsResponse,
   InvoiceSettingsDTO,
   InvoiceSettingsRequestBody,
 } from "../../types/invoice-settings";
@@ -37,9 +38,9 @@ export const useUpsertInvoiceSettings = () => {
 export const useInvoiceSettings = (
   options?: Omit<
     UndefinedInitialDataOptions<
-      InvoiceSettingsDTO,
+      GetInvoiceSettingsResponse,
       Error,
-      InvoiceSettingsDTO,
+      GetInvoiceSettingsResponse,
       (string | undefined)[]
     >,
     "queryKey" | "queryFn"
@@ -48,9 +49,10 @@ export const useInvoiceSettings = (
   return useQuery({
     queryKey: ["invoice-settings"],
     queryFn: async () => {
-      const invoiceSettings = await sdk.client.fetch<InvoiceSettingsDTO>(
-        `/admin/invoice-settings`,
-      );
+      const invoiceSettings =
+        await sdk.client.fetch<GetInvoiceSettingsResponse>(
+          `/admin/invoice-settings`,
+        );
 
       return invoiceSettings;
     },

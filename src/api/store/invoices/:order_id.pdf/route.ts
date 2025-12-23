@@ -41,7 +41,7 @@ export async function GET(
 
   if (firstInvoiceLink.order.customer_id !== id) {
     throw new MedusaError(
-      MedusaError.Types.NOT_ALLOWED,
+      MedusaError.Types.UNAUTHORIZED,
       "You do not have access to this invoice",
     );
   }

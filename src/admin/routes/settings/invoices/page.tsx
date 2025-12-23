@@ -79,7 +79,7 @@ export default function Invoices() {
       return;
     }
 
-    const settings = invoiceSettingsQuery.data;
+    const { settings } = invoiceSettingsQuery.data;
 
     setTemplateSettings({
       template_id: settings.template_id,

@@ -38,3 +38,15 @@ export type InvoiceSettingsRequestBody = {
   bank_account_swift: string | null;
   auto_generate_on: InvoiceSettingsAutoGenerateTrigger[];
 };
+
+export type Template = {
+  id: string;
+  label: string;
+  version: string;
+};
+
+export type GetInvoiceSettingsResponse = {
+  settings: InvoiceSettingsDTO;
+  availableTriggers: InvoiceSettingsAutoGenerateTrigger[];
+  templates: Template[];
+};
