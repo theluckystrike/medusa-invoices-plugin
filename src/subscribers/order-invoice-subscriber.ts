@@ -1,6 +1,7 @@
 import { SubscriberArgs, type SubscriberConfig } from "@medusajs/framework";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 import createInvoiceWorkflow from "../workflows/generate-invoice";
+import { InvoiceSettingsAutoGenerateTrigger } from "../constants/invoice";
 
 type orderCompletedPayload = {
   id: string; //ID of order
@@ -100,21 +101,23 @@ export default async function orderInvoiceHandler({
   }
 
   const storeInvoiceSettings = storeInvoiceSettingsList[0].invoice_settings;
-  const {
-    auto_order_completed,
-    auto_fullfillment_created,
-    auto_payment_captured,
-  } = storeInvoiceSettings;
+  const { auto_generate_on } = storeInvoiceSettings;
 
-  console.log(
-    "storeInvoiceSettings.auto_order_completed: ",
-    auto_order_completed,
-  );
+  console.log("storeInvoiceSettings.auto_order_completed: ", auto_generate_on);
 
   if (
-    (auto_order_completed && name === "order.completed") ||
-    (auto_fullfillment_created && name === "order.fulfillment_created") ||
-    (auto_payment_captured && name === "payment.captured")
+    (auto_generate_on.includes(
+      InvoiceSettingsAutoGenerateTrigger.ORDER_COMPLETED,
+    ) &&
+      name === "order.completed") ||
+    (auto_generate_on.includes(
+      InvoiceSettingsAutoGenerateTrigger.FULFILLMENT_CREATED,
+    ) &&
+      name === "order.fulfillment_created") ||
+    (auto_generate_on.includes(
+      InvoiceSettingsAutoGenerateTrigger.PAYMENT_CAPTURED,
+    ) &&
+      name === "payment.captured")
   ) {
     await createInvoiceWorkflow(container).run({
       input: { order_id: orderId },
