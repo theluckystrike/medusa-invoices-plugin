@@ -19,6 +19,7 @@ import {
 import {
   InvoiceSettingsAutoGenerateTrigger,
   InvoiceStatus,
+  InvoiceTemplateId,
 } from "../constants/invoice";
 import {
   GenerateInvoiceWorkflowInput,
@@ -37,9 +38,11 @@ type RenderPdfStepInput = {
 
 const validateOrderStep = createStep(
   "validate-order-exists-step",
-  async ({ order_id }: GenerateInvoiceWorkflowInput, { container }) => {
+  async (
+    { order_id, template_id }: GenerateInvoiceWorkflowInput,
+    { container },
+  ) => {
     const orderModuleService = container.resolve(Modules.ORDER);
-
     const order = await orderModuleService.retrieveOrder(order_id);
 
     if (!order) {
@@ -49,7 +52,10 @@ const validateOrderStep = createStep(
       );
     }
 
-    return new StepResponse({ order_display_id: order.display_id });
+    return new StepResponse({
+      order_display_id: order.display_id,
+      template_id,
+    });
   },
 );
 
@@ -58,8 +64,8 @@ const generateInvoiceStep = createStep(
   async (
     {
       order_display_id,
-      opts,
-    }: GenerateInvoiceWorkflowInput & { order_display_id: number },
+      template_id,
+    }: { template_id: InvoiceTemplateId | undefined; order_display_id: number },
     { container },
   ) => {
     const invoiceModuleService: InvoiceModuleService =
@@ -100,7 +106,7 @@ const generateInvoiceStep = createStep(
     const invoice = await invoiceModuleService.createInvoices({
       status: InvoiceStatus.GENERATING,
       order_display_id: order_display_id,
-      template_id: opts?.template_id ?? settings.template_id,
+      template_id: template_id ?? settings.template_id,
       template_version: settings.template_version,
       settings_snapshot: settingsSnapshot,
       pdf_url: null,
@@ -322,7 +328,6 @@ const generateInvoiceWorkflow = createWorkflow(
     const validateOrderResult = validateOrderStep(input);
 
     const generateInvoiceResult = generateInvoiceStep({
-      ...input,
       ...validateOrderResult,
     });
 

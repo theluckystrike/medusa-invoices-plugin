@@ -19,7 +19,15 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 
   const { data: orderInvoices } = await query.graph({
     entity: OrderInvoiceLink.entryPoint,
-    fields: ["invoice.*"],
+    fields: [
+      "invoice.status",
+      "invoice.completed_at",
+      "invoice.pdf_url",
+      "invoice.template_id",
+      "invoice.template_version",
+      "invoice.error_message",
+      "invoice.order_display_id",
+    ],
     filters: { order_id },
     pagination: {
       take: 1,
@@ -29,27 +37,16 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     },
   });
 
-  console.log(orderInvoices);
+  const firstInvoiceLink = orderInvoices?.[0];
 
-  res.json(orderInvoices);
+  if (!firstInvoiceLink?.invoice) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      `Invoice for order with id ${order_id} not found`,
+    );
+  }
 
-  // const order = orders[0];
+  const { id, ...orderInvoiceResponse } = firstInvoiceLink.invoice;
 
-  // if (!order) {
-  //   throw new MedusaError(
-  //     MedusaError.Types.NOT_FOUND,
-  //     `Order with ID ${order_id} was not found.`,
-  //   );
-  // }
-
-  // const activeInvoice = order.invoices?.find((inv) => inv.is_active) || null;
-
-  // if (!activeInvoice) {
-  //   throw new MedusaError(
-  //     MedusaError.Types.NOT_FOUND,
-  //     `Active invoice for order with ID ${order_id} was not found.`,
-  //   );
-  // }
-
-  // res.json(activeInvoice);
+  res.json(orderInvoiceResponse);
 }

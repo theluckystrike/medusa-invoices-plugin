@@ -18,7 +18,7 @@ export default defineMiddlewares({
   routes: [
     {
       matcher: "/admin/invoice-settings/",
-      method: "PUT",
+      method: "POST",
       middlewares: [validateAndTransformBody(createInvoiceSettingsSchema)],
     },
     {
@@ -34,7 +34,7 @@ export default defineMiddlewares({
     {
       matcher: "/admin/invoices/:order_id/generate",
       method: "POST",
-      middlewares: [validateAndTransformBody(generateInvoiceSchema)],
+      middlewares: [validateAndTransformBody(generateInvoiceSchema.unwrap())],
     },
   ],
 });

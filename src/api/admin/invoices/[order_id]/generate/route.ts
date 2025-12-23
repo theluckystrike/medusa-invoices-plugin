@@ -7,10 +7,10 @@ export async function POST(
   res: MedusaResponse,
 ) {
   const { order_id } = req.params;
-  const { opts } = req.validatedBody ?? {};
+  const { template_id } = req.validatedBody ?? {};
 
   const { result } = await createInvoiceWorkflow(req.scope).run({
-    input: { order_id, opts },
+    input: { order_id, ...(template_id && { template_id }) },
   });
 
   res.json(result);

@@ -38,9 +38,7 @@ export type InvoiceDTO = {
 
 export type GenerateInvoiceWorkflowInput = {
   order_id: string;
-  opts?: {
-    template_id?: InvoiceTemplateId; // clean | classic | compact
-  };
+  template_id?: InvoiceTemplateId; // clean | classic | compact
 };
 
 export type InvoiceGeneratedPayload = {

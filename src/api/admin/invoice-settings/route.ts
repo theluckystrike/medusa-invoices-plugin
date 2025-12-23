@@ -8,6 +8,7 @@ import updateInvoiceSettingsWorkflow, {
   UpsertInvoiceSettingsWorkflowInput,
 } from "../../../workflows/update-invoice-settings";
 import { InvoiceSettingsDTO } from "../../../types/invoice-settings";
+import { InvoiceSettingsAutoGenerateTrigger } from "../../../constants/invoice";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
@@ -42,10 +43,36 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     );
   }
 
-  res.json(invoiceSettings);
+  const invoiceSettingsResponse = {
+    settings: invoiceSettings,
+    templates: [
+      {
+        id: "clean",
+        label: "Clean",
+        version: "1.0.0",
+      },
+      {
+        id: "classic",
+        label: "Classic",
+        version: "1.0.0",
+      },
+      {
+        id: "compact",
+        label: "Compact",
+        version: "1.0.0",
+      },
+    ],
+    availableTriggers: [
+      InvoiceSettingsAutoGenerateTrigger.ORDER_COMPLETED,
+      InvoiceSettingsAutoGenerateTrigger.FULFILLMENT_CREATED,
+      InvoiceSettingsAutoGenerateTrigger.PAYMENT_CAPTURED,
+    ],
+  };
+
+  res.json(invoiceSettingsResponse);
 }
 
-export async function PUT(
+export async function POST(
   req: MedusaRequest<Omit<UpsertInvoiceSettingsWorkflowInput, "store_id">>,
   res: MedusaResponse,
 ) {
