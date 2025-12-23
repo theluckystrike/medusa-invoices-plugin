@@ -3,15 +3,16 @@ import {
   InvoiceFailedPayload,
   InvoiceGeneratedPayload,
 } from "../types/invoice";
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 
 export default async function orderInvoiceHandler({
   event,
   container,
 }: SubscriberArgs<InvoiceGeneratedPayload | InvoiceFailedPayload>) {
+  const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
   const { name, data } = event;
 
-  console.log("Event name: ", name);
-  console.log("Event data: ", data);
+  logger.info(`invoices: subscriber triggered for event ${name}`);
 }
 
 export const config: SubscriberConfig = {

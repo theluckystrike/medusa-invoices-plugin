@@ -19,7 +19,7 @@ export const useUpsertInvoiceSettings = () => {
       const invoiceSettings = await sdk.client.fetch<InvoiceSettingsDTO>(
         `/admin/invoice-settings`,
         {
-          method: "PUT",
+          method: "POST",
           body: payload,
         },
       );

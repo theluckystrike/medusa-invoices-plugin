@@ -25,10 +25,13 @@ export default async function orderInvoiceHandler({
   | orderFulfillmentCreatedPayload
   | paymentCapturedPayload
 >) {
+  const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
   const { name, data } = event;
   let orderId: string | undefined;
 
   const query = container.resolve(ContainerRegistrationKeys.QUERY);
+
+  logger.info(`invoices: subscriber triggered for event ${name}`);
 
   if (name === "order.completed") {
     orderId = (data as orderCompletedPayload).id;
@@ -44,7 +47,7 @@ export default async function orderInvoiceHandler({
     });
 
     if (!payments?.[0]?.payment_collection) {
-      console.log("No payment collection found for payment:", data);
+      logger.info("invoices: no payment collection found for payment");
       return;
     }
 
@@ -59,21 +62,20 @@ export default async function orderInvoiceHandler({
     });
 
     if (!orders?.[0]) {
-      console.log(
-        "No order found for payment collection:",
-        paymentCollection.id,
+      logger.info(
+        `invoices: no order found for payment collection with id ${paymentCollection.id}`,
       );
       return;
     }
 
     orderId = orders[0].id;
   } else {
-    console.log("Unhandled event type:", name);
+    logger.debug(`invoices: unhandled event type ${name}`);
     return;
   }
 
   if (!orderId) {
-    console.log("No orderId found for event:", name);
+    logger.error(`invoices: orderId not resolved for event ${name}`);
     return;
   }
 
@@ -81,7 +83,7 @@ export default async function orderInvoiceHandler({
   const stores = await storeModuleService.listStores();
 
   if (!stores?.[0]) {
-    console.log("No store found");
+    logger.error("invoices: no store found");
     return;
   }
 
@@ -96,14 +98,18 @@ export default async function orderInvoiceHandler({
   });
 
   if (!storeInvoiceSettingsList?.[0]?.invoice_settings) {
-    console.log("No invoice settings found for store");
+    logger.info(
+      `invoices: no invoice settings found for store with id ${store.id}`,
+    );
     return;
   }
 
   const storeInvoiceSettings = storeInvoiceSettingsList[0].invoice_settings;
   const { auto_generate_on } = storeInvoiceSettings;
 
-  console.log("storeInvoiceSettings.auto_order_completed: ", auto_generate_on);
+  logger.debug(
+    `invoices: auto_generate_on triggers: ${auto_generate_on.join(",")}, event ${name}`,
+  );
 
   if (
     (auto_generate_on.includes(
@@ -122,6 +128,8 @@ export default async function orderInvoiceHandler({
     await createInvoiceWorkflow(container).run({
       input: { order_id: orderId },
     });
+
+    logger.info(`invoices: workflow started for order ${orderId}`);
   }
 }
 
