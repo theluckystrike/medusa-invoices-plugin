@@ -1,4 +1,5 @@
 import {
+  authenticate,
   defineMiddlewares,
   validateAndTransformBody,
   validateAndTransformQuery,
@@ -35,6 +36,11 @@ export default defineMiddlewares({
       matcher: "/admin/invoices/:order_id/generate",
       method: "POST",
       middlewares: [validateAndTransformBody(generateInvoiceSchema.unwrap())],
+    },
+    {
+      matcher: "/store/invoices/:order_id.pdf",
+      method: "GET",
+      middlewares: [authenticate("customer", ["session", "bearer"])],
     },
   ],
 });
