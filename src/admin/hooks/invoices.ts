@@ -5,22 +5,15 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { sdk } from "../lib/sdk";
-
-export type AdminInvoice = {
-  id: string;
-  is_active: boolean;
-  number: string | null;
-  pdf_url: string | null;
-  created_at: string;
-};
+import { GetInvoiceResponse, InvoiceDTO } from "../../types/invoice";
 
 export const useOrderInvoice = (
   orderId: string,
   options?: Omit<
     UndefinedInitialDataOptions<
-      AdminInvoice,
+      GetInvoiceResponse,
       Error,
-      AdminInvoice,
+      GetInvoiceResponse,
       (string | undefined)[]
     >,
     "queryKey" | "queryFn"
@@ -29,7 +22,7 @@ export const useOrderInvoice = (
   return useQuery({
     queryKey: ["active-invoice", orderId],
     queryFn: async () => {
-      const invoice = await sdk.client.fetch<AdminInvoice>(
+      const invoice = await sdk.client.fetch<GetInvoiceResponse>(
         `/admin/invoices/${orderId}`,
       );
 
@@ -45,7 +38,7 @@ export const useGenerateInvoice = (order_id: string) => {
 
   return useMutation({
     mutationFn: async () => {
-      const invoice = await sdk.client.fetch<AdminInvoice>(
+      const invoice = await sdk.client.fetch<InvoiceDTO>(
         `/admin/invoices/${order_id}/generate`,
         {
           method: "POST",

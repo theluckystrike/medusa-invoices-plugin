@@ -5,6 +5,7 @@ import {
   DropdownMenu,
   Heading,
   IconButton,
+  StatusBadge,
   Text,
   toast,
 } from "@medusajs/ui";
@@ -14,11 +15,13 @@ import {
   ArrowDownTray,
   ArrowUpRightOnBox,
   EllipsisHorizontal,
-  Spinner,
+  Link,
 } from "@medusajs/icons";
 import React from "react";
 import MyFocusModal from "../components/MyFocusModal";
 import JsonViewSection from "../components/JsonViewSection";
+import { InvoiceStatus } from "../../constants/invoice";
+import CollapsiblePanel from "../components/CollapsiblePanel";
 
 const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   const orderId = data?.id;
@@ -41,11 +44,31 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
     }
   };
 
-  if (!invoiceQuery.data) {
+  const invoice = invoiceQuery.data;
+  let invoiceStatusBadge = <StatusBadge color="grey">Queued</StatusBadge>;
+
+  if (generateInvoice.isPending) {
+    invoiceStatusBadge = <StatusBadge color="blue">Generating</StatusBadge>;
+  } else if (invoice?.status === InvoiceStatus.COMPLETED) {
+    invoiceStatusBadge = <StatusBadge color="green">Completed</StatusBadge>;
+  } else if (
+    generateInvoice.isError ||
+    invoice?.status === InvoiceStatus.FAILED
+  ) {
+    invoiceStatusBadge = <StatusBadge color="red">Failed</StatusBadge>;
+  }
+
+  console.log(invoiceQuery.data);
+
+  if (!invoice) {
     return (
       <Container className="p-0 divide-y">
-        <Heading level="h2" className="px-6 py-4">
-          Invoice Template
+        <Heading
+          level="h2"
+          className="w-full flex justify-between items-center px-6 py-4"
+        >
+          Invoice
+          {invoiceStatusBadge}
         </Heading>
 
         <div className="flex flex-col items-center justify-center gap-y-4 p-6">
@@ -61,8 +84,9 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
             onClick={handleGenerateInvoice}
             variant="secondary"
             disabled={generateInvoice.isPending}
+            isLoading={generateInvoice.isPending}
           >
-            {generateInvoice.isPending ? <Spinner /> : "Generate Invoice"}
+            {generateInvoice.isError ? "Retry" : "Generate Invoice"}
           </Button>
         </div>
       </Container>
@@ -75,49 +99,66 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
         level="h2"
         className="w-full flex justify-between items-center px-6 py-4"
       >
-        Invoice Template
-        <DropdownMenu>
-          <DropdownMenu.Trigger asChild>
-            <IconButton size="small" variant="transparent">
-              <EllipsisHorizontal />
-            </IconButton>
-          </DropdownMenu.Trigger>
-          <DropdownMenu.Content>
-            <DropdownMenu.Item
-              onSelect={() => setIsModalOpen(true)}
-              className="flex gap-2 items-center"
-            >
-              <ArrowUpRightOnBox className="text-ui-fg-subtle" />
-              Preview
-            </DropdownMenu.Item>
-            <DropdownMenu.Item className="flex gap-2 items-center">
-              <ArrowDownTray className="text-ui-fg-subtle" />
-              Download
-            </DropdownMenu.Item>
-          </DropdownMenu.Content>
-        </DropdownMenu>
+        Invoice
+        <div className="flex gap-4 items-center">
+          {invoiceStatusBadge}
+
+          <DropdownMenu>
+            <DropdownMenu.Trigger asChild>
+              <IconButton size="small" variant="transparent">
+                <EllipsisHorizontal />
+              </IconButton>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content>
+              <DropdownMenu.Item
+                onSelect={() => setIsModalOpen(true)}
+                className="flex gap-2 items-center"
+              >
+                <ArrowUpRightOnBox className="text-ui-fg-subtle" />
+                Preview
+              </DropdownMenu.Item>
+              <DropdownMenu.Item className="flex gap-2 items-center">
+                <ArrowDownTray className="text-ui-fg-subtle" />
+                Download
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu>
+        </div>
       </Heading>
 
-      <div className="grid w-full grid-cols-2 items-center gap-4 px-6 py-4">
-        <Text className="text-ui-fg-subtle" weight="plus" size="small">
-          Number
-        </Text>
-        <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
-          {invoiceQuery.data.number}
-        </Text>
-      </div>
+      {invoice.status === InvoiceStatus.COMPLETED && (
+        <>
+          <div className="grid w-full grid-cols-2 items-center gap-4 px-6 py-4">
+            <Text className="text-ui-fg-subtle" weight="plus" size="small">
+              Generated At
+            </Text>
+            <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
+              {new Date(invoice.completed_at!).toLocaleDateString()}
+            </Text>
+          </div>
 
-      <div className="grid w-full grid-cols-2 items-center gap-4 px-6 py-4">
-        <Text className="text-ui-fg-subtle" weight="plus" size="small">
-          Created At
-        </Text>
-        <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
-          {new Date(invoiceQuery.data.created_at).toLocaleDateString()}
-        </Text>
-      </div>
+          <div className="flex w-full items-center justify-between gap-4 px-6 py-4">
+            <Text className="text-ui-fg-subtle" weight="plus" size="small">
+              PDF Link
+            </Text>
+            <a href={invoice.pdf_url!}>
+              <IconButton size="small" variant="transparent">
+                <Link />
+              </IconButton>
+            </a>
+          </div>
+        </>
+      )}
+
+      {(generateInvoice.isError || invoice.status === InvoiceStatus.FAILED) && (
+        <CollapsiblePanel
+          label="Error"
+          content={invoice.error_message || "Invoice generation failed"}
+        />
+      )}
 
       <div className="w-full items-center gap-4 px-6 py-4">
-        <JsonViewSection data={invoiceQuery.data} />
+        <JsonViewSection data={invoice} />
       </div>
 
       <div className="flex justify-center items-center px-6 py-4">
@@ -125,8 +166,11 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
           onClick={handleGenerateInvoice}
           variant="secondary"
           disabled={generateInvoice.isPending}
+          isLoading={generateInvoice.isPending}
         >
-          {generateInvoice.isPending ? <Spinner /> : "Generate New Invoice"}
+          {generateInvoice.isError || invoice.status === InvoiceStatus.FAILED
+            ? "Retry"
+            : "Generate New Invoice"}
         </Button>
       </div>
 

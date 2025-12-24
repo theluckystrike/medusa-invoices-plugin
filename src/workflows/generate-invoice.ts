@@ -232,6 +232,13 @@ const renderPdfStep = createStep(
       pdf_url: file.url,
     });
 
+    if (!updatedInvoice) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "Invoice pdf url update failed",
+      );
+    }
+
     //const template = getTemplate(invoice.template_id);
 
     // if (!template) {
@@ -292,6 +299,13 @@ const completeInvoiceStep = createStep(
       status: InvoiceStatus.COMPLETED,
       completed_at: new Date(),
     });
+
+    if (!completeInvoiceStep) {
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "Invoice completion failed",
+      );
+    }
 
     return new StepResponse(
       {

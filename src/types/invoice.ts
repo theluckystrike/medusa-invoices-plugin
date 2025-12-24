@@ -55,3 +55,13 @@ export type InvoiceFailedPayload = {
   order_id: string;
   error_message: string;
 };
+
+export type GetInvoiceResponse = {
+  order_display_id: number;
+  status: InvoiceStatus;
+  completed_at: string | null;
+  pdf_url: string | null;
+  template_id: InvoiceTemplateId;
+  template_version: string;
+  error_message: string | null;
+};
