@@ -1,7 +1,6 @@
 import { DocumentText as DocumentTextIcon, Spinner } from "@medusajs/icons";
 import {
   Button,
-  Checkbox,
   Heading,
   Input,
   Label,
@@ -15,8 +14,8 @@ import { TemplateSettings } from "../routes/settings/invoices/page";
 import { JSONContent } from "@tiptap/react";
 import { useUpsertInvoiceSettings } from "../hooks/invoice-settings";
 import { getTemplate } from "./templates/registry";
-import { InvoiceSettingsAutoGenerateTrigger } from "../../constants/invoice";
 import FileUploader from "./FileUploader";
+import MultiSelect from "./MultiSelect";
 
 const RenderTemplateSettings: React.FC<{
   previewType: string;
@@ -88,29 +87,6 @@ const RenderTemplateSettings: React.FC<{
           ...prev,
           [field]: value,
         }));
-      },
-      [],
-    );
-
-    const handleTriggerChange = React.useCallback(
-      (trigger: InvoiceSettingsAutoGenerateTrigger, checked: boolean) => {
-        setTemplateSettings((prev) => {
-          const { auto_generate_on } = prev;
-
-          if (checked && !auto_generate_on.includes(trigger)) {
-            return {
-              ...prev,
-              auto_generate_on: [...auto_generate_on, trigger],
-            };
-          } else if (!checked && auto_generate_on.includes(trigger)) {
-            return {
-              ...prev,
-              auto_generate_on: auto_generate_on.filter((t) => t !== trigger),
-            };
-          }
-
-          return prev;
-        });
       },
       [],
     );
@@ -284,51 +260,11 @@ const RenderTemplateSettings: React.FC<{
           <Heading level="h2" className="mb-4">
             Auto-generation Triggers
           </Heading>
-          <div className="flex items-center gap-x-1.5 mb-3">
-            <Checkbox
-              id="order-completed"
-              checked={templateSettings.auto_generate_on.includes(
-                InvoiceSettingsAutoGenerateTrigger.ORDER_COMPLETED,
-              )}
-              onCheckedChange={(checked) =>
-                handleTriggerChange(
-                  InvoiceSettingsAutoGenerateTrigger.ORDER_COMPLETED,
-                  !!checked,
-                )
-              }
-            />
-            <Label htmlFor="order-completed">Order Completed</Label>
-          </div>
-          <div className="flex items-center gap-x-1.5 mb-3">
-            <Checkbox
-              id="payment-captured"
-              checked={templateSettings.auto_generate_on.includes(
-                InvoiceSettingsAutoGenerateTrigger.PAYMENT_CAPTURED,
-              )}
-              onCheckedChange={(checked) =>
-                handleTriggerChange(
-                  InvoiceSettingsAutoGenerateTrigger.PAYMENT_CAPTURED,
-                  !!checked,
-                )
-              }
-            />
-            <Label htmlFor="payment-captured">Payment Captured</Label>
-          </div>
-          <div className="flex items-center gap-x-1.5">
-            <Checkbox
-              id="fulfillment-created"
-              checked={templateSettings.auto_generate_on.includes(
-                InvoiceSettingsAutoGenerateTrigger.FULFILLMENT_CREATED,
-              )}
-              onCheckedChange={(checked) =>
-                handleTriggerChange(
-                  InvoiceSettingsAutoGenerateTrigger.FULFILLMENT_CREATED,
-                  !!checked,
-                )
-              }
-            />
-            <Label htmlFor="fulfillment-created">Fulfillment Created</Label>
-          </div>
+
+          <MultiSelect
+            templateSettings={templateSettings}
+            setTemplateSettings={setTemplateSettings}
+          />
         </div>
         <div className="px-6 py-4 sticky bottom-0 bg-ui-bg-base">
           <Button

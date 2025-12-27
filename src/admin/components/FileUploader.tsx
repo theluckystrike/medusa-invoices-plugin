@@ -17,7 +17,6 @@ const FileUploader = ({ setTemplateSettings }: FileUploaderProps) => {
 
     setIsUploading(true);
     try {
-      // The SDK sends the file to POST /admin/uploads
       const { files } = await sdk.admin.upload.create({
         files: [file],
       });
@@ -28,7 +27,6 @@ const FileUploader = ({ setTemplateSettings }: FileUploaderProps) => {
         ...prev,
         header_logo_url: uploadedUrl,
       }));
-      // You can now save this URL to a product, category, or setting
     } catch (error) {
       toast.error("Failed to upload image");
     } finally {
@@ -50,9 +48,10 @@ const FileUploader = ({ setTemplateSettings }: FileUploaderProps) => {
       <Button
         variant="secondary"
         isLoading={isUploading}
+        disabled={isUploading}
         onClick={() => fileInputRef.current?.click()}
       >
-        Upload Image
+        {isUploading ? "Uplaoding image..." : "Upload Image"}
       </Button>
     </div>
   );
