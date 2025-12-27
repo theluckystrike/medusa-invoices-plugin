@@ -34,9 +34,7 @@ export type TemplateSettings = {
   store_tax_id: string;
   bank_account_iban: string;
   bank_account_swift: string;
-  order_completed: boolean;
-  payment_captured: boolean;
-  fulfillment_created: boolean;
+  auto_generate_on: InvoiceSettingsAutoGenerateTrigger[];
 };
 
 export default function Invoices() {
@@ -64,9 +62,7 @@ export default function Invoices() {
       store_tax_id: "",
       bank_account_iban: "",
       bank_account_swift: "",
-      order_completed: false,
-      payment_captured: false,
-      fulfillment_created: false,
+      auto_generate_on: [],
     });
 
   const handlePreviewChange = React.useCallback((value: string) => {
@@ -97,15 +93,7 @@ export default function Invoices() {
       store_tax_id: settings.store_tax_id ?? "",
       bank_account_iban: settings.bank_account_iban ?? "",
       bank_account_swift: settings.bank_account_swift ?? "",
-      order_completed: settings.auto_generate_on.includes(
-        InvoiceSettingsAutoGenerateTrigger.ORDER_COMPLETED,
-      ),
-      payment_captured: settings.auto_generate_on.includes(
-        InvoiceSettingsAutoGenerateTrigger.PAYMENT_CAPTURED,
-      ),
-      fulfillment_created: settings.auto_generate_on.includes(
-        InvoiceSettingsAutoGenerateTrigger.FULFILLMENT_CREATED,
-      ),
+      auto_generate_on: settings.auto_generate_on,
     });
   }, [invoiceSettingsQuery.data]);
 

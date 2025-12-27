@@ -16,6 +16,7 @@ import { JSONContent } from "@tiptap/react";
 import { useUpsertInvoiceSettings } from "../hooks/invoice-settings";
 import { getTemplate } from "./templates/registry";
 import { InvoiceSettingsAutoGenerateTrigger } from "../../constants/invoice";
+import FileUploader from "./FileUploader";
 
 const RenderTemplateSettings: React.FC<{
   previewType: string;
@@ -29,26 +30,6 @@ const RenderTemplateSettings: React.FC<{
 
     const handleSave = async () => {
       const template = getTemplate(templateSettings.template_id);
-
-      const auto_generate_on = [];
-
-      if (templateSettings.order_completed) {
-        auto_generate_on.push(
-          InvoiceSettingsAutoGenerateTrigger.ORDER_COMPLETED,
-        );
-      }
-
-      if (templateSettings.payment_captured) {
-        auto_generate_on.push(
-          InvoiceSettingsAutoGenerateTrigger.PAYMENT_CAPTURED,
-        );
-      }
-
-      if (templateSettings.fulfillment_created) {
-        auto_generate_on.push(
-          InvoiceSettingsAutoGenerateTrigger.FULFILLMENT_CREATED,
-        );
-      }
 
       try {
         await upsertInvoiceSettings.mutateAsync({
@@ -64,7 +45,7 @@ const RenderTemplateSettings: React.FC<{
           store_tax_id: templateSettings.store_tax_id || null,
           bank_account_iban: templateSettings.bank_account_iban || null,
           bank_account_swift: templateSettings.bank_account_swift || null,
-          auto_generate_on: auto_generate_on,
+          auto_generate_on: templateSettings.auto_generate_on,
         });
 
         toast.success("Updated invoice settings", {
@@ -112,11 +93,24 @@ const RenderTemplateSettings: React.FC<{
     );
 
     const handleTriggerChange = React.useCallback(
-      (field: keyof TemplateSettings, checked: boolean) => {
-        setTemplateSettings((prev) => ({
-          ...prev,
-          [field]: checked,
-        }));
+      (trigger: InvoiceSettingsAutoGenerateTrigger, checked: boolean) => {
+        setTemplateSettings((prev) => {
+          const { auto_generate_on } = prev;
+
+          if (checked && !auto_generate_on.includes(trigger)) {
+            return {
+              ...prev,
+              auto_generate_on: [...auto_generate_on, trigger],
+            };
+          } else if (!checked && auto_generate_on.includes(trigger)) {
+            return {
+              ...prev,
+              auto_generate_on: auto_generate_on.filter((t) => t !== trigger),
+            };
+          }
+
+          return prev;
+        });
       },
       [],
     );
@@ -187,6 +181,8 @@ const RenderTemplateSettings: React.FC<{
                   handleInputChange("header_logo_url", e.target.value)
                 }
               />
+
+              <FileUploader setTemplateSettings={setTemplateSettings} />
             </div>
           )}
           {templateSettings.header_logo_type === "text" && (
@@ -291,9 +287,14 @@ const RenderTemplateSettings: React.FC<{
           <div className="flex items-center gap-x-1.5 mb-3">
             <Checkbox
               id="order-completed"
-              checked={templateSettings.order_completed}
+              checked={templateSettings.auto_generate_on.includes(
+                InvoiceSettingsAutoGenerateTrigger.ORDER_COMPLETED,
+              )}
               onCheckedChange={(checked) =>
-                handleTriggerChange("order_completed", !!checked)
+                handleTriggerChange(
+                  InvoiceSettingsAutoGenerateTrigger.ORDER_COMPLETED,
+                  !!checked,
+                )
               }
             />
             <Label htmlFor="order-completed">Order Completed</Label>
@@ -301,9 +302,14 @@ const RenderTemplateSettings: React.FC<{
           <div className="flex items-center gap-x-1.5 mb-3">
             <Checkbox
               id="payment-captured"
-              checked={templateSettings.payment_captured}
+              checked={templateSettings.auto_generate_on.includes(
+                InvoiceSettingsAutoGenerateTrigger.PAYMENT_CAPTURED,
+              )}
               onCheckedChange={(checked) =>
-                handleTriggerChange("payment_captured", !!checked)
+                handleTriggerChange(
+                  InvoiceSettingsAutoGenerateTrigger.PAYMENT_CAPTURED,
+                  !!checked,
+                )
               }
             />
             <Label htmlFor="payment-captured">Payment Captured</Label>
@@ -311,9 +317,14 @@ const RenderTemplateSettings: React.FC<{
           <div className="flex items-center gap-x-1.5">
             <Checkbox
               id="fulfillment-created"
-              checked={templateSettings.fulfillment_created}
+              checked={templateSettings.auto_generate_on.includes(
+                InvoiceSettingsAutoGenerateTrigger.FULFILLMENT_CREATED,
+              )}
               onCheckedChange={(checked) =>
-                handleTriggerChange("fulfillment_created", !!checked)
+                handleTriggerChange(
+                  InvoiceSettingsAutoGenerateTrigger.FULFILLMENT_CREATED,
+                  !!checked,
+                )
               }
             />
             <Label htmlFor="fulfillment-created">Fulfillment Created</Label>
