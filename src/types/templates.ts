@@ -22,9 +22,17 @@ export type TemplateSettings = {
   auto_generate_on: InvoiceSettingsAutoGenerateTrigger[];
 };
 
+export type TemplateSettingsForTemplate = Omit<
+  InvoiceSettingsSnapshot,
+  "header_content" | "footer_content"
+> & {
+  header_content: JSONContent | null;
+  footer_content: JSONContent | null;
+};
+
 export type TemplateProps = {
   order: OrderDTO;
-  settings: InvoiceSettingsSnapshot;
+  settings: TemplateSettingsForTemplate;
   invoice: {
     id: string;
     created_at: Date;

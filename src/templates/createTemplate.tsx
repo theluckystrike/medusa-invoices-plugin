@@ -57,7 +57,7 @@ const createTemplate = async ({
             settings.header_content && (
               <View style={styles.header}>
                 {renderTipTapNode({
-                  node: JSON.parse(settings.header_content),
+                  node: settings.header_content,
                   index: 0,
                   tipTapStyles,
                   components,
@@ -69,12 +69,13 @@ const createTemplate = async ({
         <View style={styles.section}>
           <Text style={styles.heading}>Invoice</Text>
           <Text style={{ marginBottom: "2px" }}>
-            <Text style={styles.label}>Invoice number:</Text>{" "}
-            {invoice.display_number}
+            <Text style={styles.label}>Invoice number:</Text> {order.display_id}
           </Text>
           <Text style={{ marginBottom: "2px" }}>
             <Text style={styles.label}>Invoice date: </Text>
-            {new Date(invoice.created_at).toLocaleDateString()}
+            {new Date(
+              invoice.created_at ?? order.created_at,
+            ).toLocaleDateString()}
           </Text>
           <Text>
             <Text style={styles.label}>Order ID:</Text> {order.id}
@@ -229,7 +230,7 @@ const createTemplate = async ({
         {settings.footer_content && (
           <View style={styles.footer}>
             {renderTipTapNode({
-              node: JSON.parse(settings.footer_content),
+              node: settings.footer_content,
               index: 0,
               tipTapStyles,
               components,

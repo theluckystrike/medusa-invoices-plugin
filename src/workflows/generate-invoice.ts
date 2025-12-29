@@ -29,7 +29,7 @@ import {
 import { InvoiceSettingsDTO } from "../types/invoice-settings";
 import getTemp from "../templates/getTemp";
 import { getTemplate } from "../templates/registry";
-import { TemplateProps } from "../types/templates";
+import { TemplateProps, TemplateSettingsForTemplate } from "../types/templates";
 //import { getTemplate } from "../admin/components/templates/registry";
 
 type RenderPdfStepInput = {
@@ -88,7 +88,7 @@ const generateInvoiceStep = createStep(
         invoiceSettings.auto_generate_on as InvoiceSettingsAutoGenerateTrigger[],
     };
 
-    const settingsSnapshot: InvoiceSettingsSnapshot = {
+    const settingsSnapshot: TemplateSettingsForTemplate = {
       template_id: settings.template_id,
       template_version: settings.template_version,
       header_logo: {
@@ -96,8 +96,12 @@ const generateInvoiceStep = createStep(
         text: settings.header_logo_text,
         url: settings.header_logo_url,
       },
-      header_content: settings.header_content,
-      footer_content: settings.footer_content,
+      header_content: settings.header_content
+        ? JSON.parse(settings.header_content)
+        : null,
+      footer_content: settings.footer_content
+        ? JSON.parse(settings.footer_content)
+        : null,
       store_name: settings.store_name,
       store_address: settings.store_address,
       store_tax_id: settings.store_tax_id,
