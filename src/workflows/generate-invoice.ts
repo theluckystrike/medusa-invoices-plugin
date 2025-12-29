@@ -30,6 +30,7 @@ import { InvoiceSettingsDTO } from "../types/invoice-settings";
 import getTemp from "../templates/getTemp";
 import { getTemplate } from "../templates/registry";
 import { TemplateProps } from "../types/templates";
+import { FILE } from "dns";
 //import { getTemplate } from "../admin/components/templates/registry";
 
 type RenderPdfStepInput = {
@@ -289,18 +290,33 @@ const renderPdfStep = createStep(
     // const Component = template.Component;
     //const pdfStream = await pdf(<Component {...templateProps} />)
 
-    return new StepResponse(updatedInvoice, { updatedInvoice, order_id });
+    return new StepResponse(updatedInvoice, {
+      updatedInvoice,
+      order_id,
+      file_id: file.id,
+    });
   },
   async (context, { container }) => {
     const invoiceModuleService: InvoiceModuleService =
       container.resolve(INVOICE_MODULE);
+    const fileModuleService = container.resolve(Modules.FILE);
 
-    if (!context?.updatedInvoice.pdf_url) {
+    if (
+      !context?.updatedInvoice?.id ||
+      !context?.order_id ||
+      !context?.file_id
+    ) {
+      return;
+    }
+
+    if (!context.updatedInvoice.pdf_url) {
       await invoiceModuleService.generationFailed(
         context?.updatedInvoice.id!,
         "Invoice PDF file was not created",
         context?.order_id!,
       );
+
+      await fileModuleService.deleteFiles(context.file_id);
     }
   },
 );

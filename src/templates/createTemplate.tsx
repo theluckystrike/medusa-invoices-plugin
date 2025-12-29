@@ -63,7 +63,7 @@ const createTemplate = async ({
             {new Date(invoice.created_at).toLocaleDateString()}
           </Text>
           <Text>
-            <Text style={styles.label}>Order ID:</Text> {order.display_id}
+            <Text style={styles.label}>Order ID:</Text> {order.id}
           </Text>
         </View>
 
@@ -145,7 +145,7 @@ const createTemplate = async ({
                 <Text>{i.variant_sku}</Text>
               </View>
               <View style={{ flex: 1 }}>
-                <Text>{i.raw_quantity.value}</Text>
+                <Text>{normalizeNumber(i.quantity)}</Text>
               </View>
               <View style={{ flex: 1 }}>
                 <Text>{`${currency_code.toUpperCase()} ${normalizeNumber(i.unit_price).toFixed(2)}`}</Text>
