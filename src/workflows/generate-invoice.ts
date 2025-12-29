@@ -28,6 +28,8 @@ import {
 } from "../types/invoice";
 import { InvoiceSettingsDTO } from "../types/invoice-settings";
 import getTemp from "../templates/getTemp";
+import { getTemplate } from "../templates/registry";
+import { TemplateProps } from "../types/templates";
 //import { getTemplate } from "../admin/components/templates/registry";
 
 type RenderPdfStepInput = {
@@ -133,6 +135,7 @@ const renderPdfStep = createStep(
     { container },
   ) => {
     const query = container.resolve(ContainerRegistrationKeys.QUERY);
+    const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const fileModuleService = container.resolve(Modules.FILE);
     const invoiceModuleService: InvoiceModuleService =
       container.resolve(INVOICE_MODULE);
@@ -206,10 +209,39 @@ const renderPdfStep = createStep(
       );
     }
 
-    const ReactPDF = await import("@react-pdf/renderer");
-    const element = await getTemp();
+    console.log("Order", order);
 
-    const pdfStream = await ReactPDF.renderToStream(element);
+    const ReactPDF = await import("@react-pdf/renderer");
+
+    const template = getTemplate(invoice.template_id);
+
+    const templateProps: Omit<TemplateProps, "_styles"> = {
+      order,
+      settings: {
+        template_id: invoice.settings_snapshot.template_id,
+        template_version: invoice.settings_snapshot.template_version,
+        header_logo: invoice.settings_snapshot.header_logo,
+        header_content: invoice.settings_snapshot.header_content,
+        footer_content: invoice.settings_snapshot.footer_content,
+        store_name: invoice.settings_snapshot.store_name,
+        store_address: invoice.settings_snapshot.store_address,
+        store_tax_id: invoice.settings_snapshot.store_tax_id,
+        bank_account_iban: invoice.settings_snapshot.bank_account_iban,
+        bank_account_swift: invoice.settings_snapshot.bank_account_swift,
+      },
+      invoice: {
+        id: invoice.id,
+        created_at: invoice.created_at,
+        display_number: invoice.order_display_id,
+      },
+      currency_code: order.currency_code,
+    };
+
+    const element = await template.render(templateProps);
+
+    //const element = await getTemp();
+
+    //const pdfStream = await ReactPDF.renderToStream(element);
 
     const pdfBuffer = await ReactPDF.renderToBuffer(element);
     const base64Pdf = pdfBuffer.toString("base64");
@@ -239,7 +271,13 @@ const renderPdfStep = createStep(
       );
     }
 
-    //const template = getTemplate(invoice.template_id);
+    // const template = getTemplate(invoice.template_id);
+
+    // logger.debug(`Invoice: ${JSON.stringify(invoice)}`);
+    // logger.debug(`Template: ${JSON.stringify(template)}`);
+
+    // console.log("Invoice: ", invoice);
+    // console.log("Template: ", template);
 
     // if (!template) {
     //   throw new MedusaError(
@@ -247,24 +285,6 @@ const renderPdfStep = createStep(
     //     `Template ${invoice.template_id} not found`,
     //   );
     // }
-
-    // const templateProps = {
-    //   order,
-    //   settings: {
-    //     template_id: invoice.settings_snapshot.template_id,
-    //     template_version: invoice.settings_snapshot.template_version,
-    //     header_logo_type: invoice.settings_snapshot.header_logo.type,
-    //     header_logo_text: invoice.settings_snapshot.header_logo.text,
-    //     header_logo_url: invoice.settings_snapshot.header_logo.url,
-    //     header_content: invoice.settings_snapshot.header_content,
-    //     footer_content: invoice.settings_snapshot.footer_content,
-    //     store_name: invoice.settings_snapshot.store_name,
-    //     store_address: invoice.settings_snapshot.store_address,
-    //     store_tax_id: invoice.settings_snapshot.store_tax_id,
-    //     bank_account_iban: invoice.settings_snapshot.bank_account_iban,
-    //     bank_account_swift: invoice.settings_snapshot.bank_account_swift,
-    //   },
-    // };
 
     // const Component = template.Component;
     //const pdfStream = await pdf(<Component {...templateProps} />)
