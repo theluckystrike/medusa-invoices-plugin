@@ -574,6 +574,8 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
     }
   }, [editor, initialContent]);
 
+  console.log(editor.getHTML());
+
   return (
     <div className={editorClasses}>
       {!disabled && <MenuBar editor={editor} />}

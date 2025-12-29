@@ -1,6 +1,8 @@
 import React from "react";
 import { TemplateProps } from "../types/templates";
 import { normalizeNumber } from "../utils/normalize";
+import renderTipTapNode from "./renderTipTapNode";
+import tipTapNodeStyles from "./styles/tipTapNode";
 
 const createTemplate = async ({
   order,
@@ -10,9 +12,16 @@ const createTemplate = async ({
   _styles,
 }: TemplateProps): Promise<React.ReactElement> => {
   const ReactPDF = await import("@react-pdf/renderer");
-  const { Document, Page, View, Text, Image, StyleSheet } = ReactPDF;
+  const { Document, Page, View, Text, Image, Link, StyleSheet } = ReactPDF;
 
   const styles = StyleSheet.create(_styles);
+
+  const tipTapStyles = StyleSheet.create(tipTapNodeStyles);
+  const components = {
+    View,
+    Text,
+    Link,
+  };
 
   console.log("Order: ", order);
 
@@ -43,15 +52,20 @@ const createTemplate = async ({
             )
           }
         />
-        {/*<View
+        <View
           render={() =>
-            settings?.header_content && (
+            settings.header_content && (
               <View style={styles.header}>
-                {renderTiptapNode(settings.header_content, 0)}
+                {renderTipTapNode({
+                  node: JSON.parse(settings.header_content),
+                  index: 0,
+                  tipTapStyles,
+                  components,
+                })}
               </View>
             )
           }
-        />*/}
+        />
         <View style={styles.section}>
           <Text style={styles.heading}>Invoice</Text>
           <Text style={{ marginBottom: "2px" }}>
@@ -212,11 +226,16 @@ const createTemplate = async ({
           }
         />
 
-        {/*{settings?.footer_content && (
+        {settings.footer_content && (
           <View style={styles.footer}>
-            {renderTiptapNode(settings.footer_content, 0)}
+            {renderTipTapNode({
+              node: JSON.parse(settings.footer_content),
+              index: 0,
+              tipTapStyles,
+              components,
+            })}
           </View>
-        )}*/}
+        )}
       </Page>
     </Document>
   );

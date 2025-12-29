@@ -30,7 +30,6 @@ import { InvoiceSettingsDTO } from "../types/invoice-settings";
 import getTemp from "../templates/getTemp";
 import { getTemplate } from "../templates/registry";
 import { TemplateProps } from "../types/templates";
-import { FILE } from "dns";
 //import { getTemplate } from "../admin/components/templates/registry";
 
 type RenderPdfStepInput = {
