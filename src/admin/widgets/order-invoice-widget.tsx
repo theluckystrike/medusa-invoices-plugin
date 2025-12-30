@@ -11,14 +11,7 @@ import {
 } from "@medusajs/ui";
 import { AdminOrder, DetailWidgetProps } from "@medusajs/framework/types";
 import { useGenerateInvoice, useOrderInvoice } from "../hooks/invoices";
-import {
-  ArrowDownTray,
-  ArrowUpRightOnBox,
-  EllipsisHorizontal,
-  Link,
-} from "@medusajs/icons";
-import React from "react";
-import MyFocusModal from "../components/MyFocusModal";
+import { ArrowDownTray, EllipsisHorizontal, Link } from "@medusajs/icons";
 import JsonViewSection from "../components/JsonViewSection";
 import { InvoiceStatus } from "../../constants/invoice";
 import CollapsiblePanel from "../components/CollapsiblePanel";
@@ -27,8 +20,6 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   const orderId = data?.id;
   const invoiceQuery = useOrderInvoice(orderId);
   const generateInvoice = useGenerateInvoice(orderId!);
-
-  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
 
   const handleGenerateInvoice = async () => {
     try {
@@ -57,8 +48,6 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   ) {
     invoiceStatusBadge = <StatusBadge color="red">Failed</StatusBadge>;
   }
-
-  console.log(invoiceQuery.data);
 
   if (!invoice) {
     return (
@@ -110,13 +99,6 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
               </IconButton>
             </DropdownMenu.Trigger>
             <DropdownMenu.Content>
-              <DropdownMenu.Item
-                onSelect={() => setIsModalOpen(true)}
-                className="flex gap-2 items-center"
-              >
-                <ArrowUpRightOnBox className="text-ui-fg-subtle" />
-                Preview
-              </DropdownMenu.Item>
               <DropdownMenu.Item className="flex gap-2 items-center">
                 <ArrowDownTray className="text-ui-fg-subtle" />
                 Download
@@ -173,12 +155,6 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
             : "Generate New Invoice"}
         </Button>
       </div>
-
-      <MyFocusModal
-        isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
-        orderId={orderId}
-      />
     </Container>
   );
 };

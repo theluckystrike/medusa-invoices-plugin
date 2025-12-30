@@ -2,8 +2,9 @@ import { PDFViewer } from "@react-pdf/renderer";
 import React from "react";
 import { TemplateSettings } from "../routes/settings/invoices/page";
 import { useOrder } from "../hooks/orders";
-import { InvoicePdfDocument } from "./InvoicePdfDocument";
+//import { InvoicePdfDocument } from "./InvoicePdfDocument";
 import { getTemplate } from "./templates/registry";
+import { Text } from "@medusajs/ui";
 
 type MyPdfViewerProps = {
   templateSettings: TemplateSettings;
@@ -30,7 +31,11 @@ const MyPdfViewer: React.FC<MyPdfViewerProps> = ({
   const order = orderQuery.data?.order;
 
   if (previewType === "select-order" && !selectedOrderId) {
-    return <div>Please select an order to preview the invoice.</div>;
+    return (
+      <Text className="text-ui-fg-subtle" size="small">
+        Please select an order to preview the invoice.
+      </Text>
+    );
   }
 
   if (
@@ -38,11 +43,19 @@ const MyPdfViewer: React.FC<MyPdfViewerProps> = ({
     selectedOrderId &&
     orderQuery.isLoading
   ) {
-    return <div>Loading order invoice preview...</div>;
+    return (
+      <Text className="text-ui-fg-subtle" size="small">
+        Loading order invoice preview...
+      </Text>
+    );
   }
 
   if (selectedOrderId && orderQuery.isError) {
-    return <div>Failed to load order data</div>;
+    return (
+      <Text className="text-ui-fg-subtle" size="small">
+        Failed to load order data
+      </Text>
+    );
   }
 
   const template = getTemplate(templateSettings.template_id);

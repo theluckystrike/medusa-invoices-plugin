@@ -5,6 +5,7 @@ import {
   Input,
   Label,
   RadioGroup,
+  Text,
   Textarea,
   toast,
 } from "@medusajs/ui";
@@ -13,9 +14,13 @@ import TiptapEditor from "./TiptapEditor";
 import { TemplateSettings } from "../routes/settings/invoices/page";
 import { JSONContent } from "@tiptap/react";
 import { useUpsertInvoiceSettings } from "../hooks/invoice-settings";
-import { getTemplate } from "./templates/registry";
+import { getTemplate, templates } from "./templates/registry";
 import FileUploader from "./FileUploader";
 import MultiSelect from "./MultiSelect";
+import {
+  InvoiceSettingsHeaderLogoType,
+  InvoiceTemplateId,
+} from "../../constants/invoice";
 
 const RenderTemplateSettings: React.FC<{
   previewType: string;
@@ -107,21 +112,30 @@ const RenderTemplateSettings: React.FC<{
             onValueChange={handleTemplateIdChange}
           >
             <RadioGroup.ChoiceBox
-              value="clean"
-              label="Clean"
+              value={InvoiceTemplateId.CLEAN}
+              label={`Clean (v${templates.clean.version})`}
               description="A clean template style"
             />
             <RadioGroup.ChoiceBox
-              value="classic"
-              label="Classic"
+              value={InvoiceTemplateId.CLASSIC}
+              label={`Classic (v${templates.classic.version})`}
               description="A classic template style"
             />
             <RadioGroup.ChoiceBox
-              value="compact"
-              label="Compact"
+              value={InvoiceTemplateId.COMPACT}
+              label={`Compact (v${templates.compact.version})`}
               description="A compact template style"
             />
           </RadioGroup>
+
+          <Text className="mt-2 text-center text-ui-fg-subtle" size="xsmall">
+            Current version: v{templateSettings.template_version}
+          </Text>
+
+          <Text className="text-center text-ui-fg-subtle" size="xsmall">
+            Version that will be saved: v
+            {getTemplate(templateSettings.template_id).version}
+          </Text>
         </div>
         <div className="px-6 py-4">
           <Heading level="h2" className="mb-4">
@@ -133,16 +147,25 @@ const RenderTemplateSettings: React.FC<{
             onValueChange={handleHeaderLogoTypeChange}
           >
             <div className="flex items-center gap-x-1.5">
-              <RadioGroup.Item value="image" id="image" />
-              <Label htmlFor="image">Image</Label>
-            </div>
-            <div className="flex items-center gap-x-1.5">
-              <RadioGroup.Item value="text" id="heading" />
-              <Label htmlFor="heading">Heading</Label>
-            </div>
-            <div className="flex items-center gap-x-1.5">
-              <RadioGroup.Item value="none" id="none" />
+              <RadioGroup.Item
+                value={InvoiceSettingsHeaderLogoType.NONE}
+                id="none"
+              />
               <Label htmlFor="none">None</Label>
+            </div>
+            <div className="flex items-center gap-x-1.5">
+              <RadioGroup.Item
+                value={InvoiceSettingsHeaderLogoType.TEXT}
+                id="text"
+              />
+              <Label htmlFor="text">Text</Label>
+            </div>
+            <div className="flex items-center gap-x-1.5">
+              <RadioGroup.Item
+                value={InvoiceSettingsHeaderLogoType.IMAGE}
+                id="image"
+              />
+              <Label htmlFor="image">Image</Label>
             </div>
           </RadioGroup>
           {templateSettings.header_logo_type === "image" && (

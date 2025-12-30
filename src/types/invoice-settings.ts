@@ -7,6 +7,7 @@ import {
 export type InvoiceSettingsDTO = {
   id: string;
   template_id: InvoiceTemplateId; // clean | classic | compact
+  template_version: string;
   header_logo_type: InvoiceSettingsHeaderLogoType; // none | text | image
   header_logo_text: string | null;
   header_logo_url: string | null;

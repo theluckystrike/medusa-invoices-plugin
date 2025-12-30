@@ -1,9 +1,4 @@
-import {
-  InvoiceSettingsHeaderLogoType,
-  InvoiceTemplateId,
-} from "../../constants/invoice";
-
-const orderData = {
+export const orderDummyData = {
   id: "order_01DKF45RS7TH",
   display_id: 4234234,
   created_at: new Date(),
@@ -46,33 +41,8 @@ const orderData = {
   total: 316,
 };
 
-const settingsData = {
-  id: "settings_1",
-  template_id: InvoiceTemplateId.CLEAN,
-  template_version: "1.0.0",
-  header_logo: {
-    type: InvoiceSettingsHeaderLogoType.NONE,
-    text: null,
-    url: null,
-  },
-  header_content: null,
-  footer_content: null,
-  store_name: null,
-  store_address: null,
-  store_tax_id: null,
-  bank_account_iban: null,
-  bank_account_swift: null,
-};
-
-const invoiceData = {
+export const invoiceDummyData = {
   id: "inv_1",
   created_at: new Date(),
   display_number: 4234234,
-};
-
-export const templateDummyData = {
-  order: orderData,
-  settings: settingsData,
-  invoice: invoiceData,
-  currency_code: "eur",
 };

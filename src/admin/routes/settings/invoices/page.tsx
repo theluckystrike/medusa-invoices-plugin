@@ -20,11 +20,16 @@ import { JSONContent } from "@tiptap/react";
 import RenderTemplateSettings from "../../../components/RenderTemplateSettings";
 import { useInvoiceSettings } from "../../../hooks/invoice-settings";
 import MyPdfViewer from "../../../components/MyPdfViewer";
-import { InvoiceSettingsAutoGenerateTrigger } from "../../../../constants/invoice";
+import {
+  InvoiceSettingsAutoGenerateTrigger,
+  InvoiceSettingsHeaderLogoType,
+  InvoiceTemplateId,
+} from "../../../../constants/invoice";
 
 export type TemplateSettings = {
-  template_id: "clean" | "classic" | "compact";
-  header_logo_type: "image" | "text" | "none";
+  template_id: InvoiceTemplateId;
+  template_version: string;
+  header_logo_type: InvoiceSettingsHeaderLogoType;
   header_logo_url: string;
   header_logo_text: string;
   header_content: JSONContent;
@@ -51,8 +56,9 @@ export default function Invoices() {
 
   const [templateSettings, setTemplateSettings] =
     React.useState<TemplateSettings>({
-      template_id: "clean",
-      header_logo_type: "image",
+      template_id: InvoiceTemplateId.CLEAN,
+      template_version: "1.0.0",
+      header_logo_type: InvoiceSettingsHeaderLogoType.NONE,
       header_logo_url: "",
       header_logo_text: "",
       header_content: {},
@@ -79,6 +85,7 @@ export default function Invoices() {
 
     setTemplateSettings({
       template_id: settings.template_id,
+      template_version: settings.template_version,
       header_logo_type: settings.header_logo_type,
       header_logo_url: settings.header_logo_url ?? "",
       header_logo_text: settings.header_logo_text ?? "",
