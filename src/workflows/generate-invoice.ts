@@ -21,11 +21,7 @@ import {
   InvoiceStatus,
   InvoiceTemplateId,
 } from "../constants/invoice";
-import {
-  GenerateInvoiceWorkflowInput,
-  InvoiceDTO,
-  InvoiceSettingsSnapshot,
-} from "../types/invoice";
+import { GenerateInvoiceWorkflowInput, InvoiceDTO } from "../types/invoice";
 import { InvoiceSettingsDTO } from "../types/invoice-settings";
 import getTemp from "../templates/getTemp";
 import { getTemplate } from "../templates/registry";
