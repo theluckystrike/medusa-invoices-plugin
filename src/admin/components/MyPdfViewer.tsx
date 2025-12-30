@@ -54,7 +54,7 @@ const MyPdfViewer: React.FC<MyPdfViewerProps> = ({
   const TemplateComponent = template.Component;
 
   return (
-    <PDFViewer showToolbar={false} height="100%" width="100%">
+    <PDFViewer showToolbar={false} height={600} width="100%">
       <TemplateComponent settings={templateSettings} order={order} />
       {/*<InvoicePdfDocument templateSettings={templateSettings} order={order} />*/}
     </PDFViewer>

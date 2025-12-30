@@ -241,7 +241,8 @@ export default function Invoices() {
               onClick={handleDownloadPreview}
               disabled={
                 isDownloading ||
-                (previewType === "select-order" && !selectedOrderId)
+                (previewType === "select-order" &&
+                  (!selectedOrderId || orderQuery.isError))
               }
               isLoading={isDownloading}
             >

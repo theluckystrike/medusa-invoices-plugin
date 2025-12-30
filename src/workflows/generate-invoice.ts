@@ -209,8 +209,6 @@ const renderPdfStep = createStep(
       );
     }
 
-    console.log("Order", order);
-
     const ReactPDF = await import("@react-pdf/renderer");
 
     const template = getTemplate(invoice.template_id);

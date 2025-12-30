@@ -2,7 +2,6 @@ import { defineWidgetConfig } from "@medusajs/admin-sdk";
 import {
   Button,
   Container,
-  DropdownMenu,
   Heading,
   IconButton,
   StatusBadge,
@@ -11,7 +10,7 @@ import {
 } from "@medusajs/ui";
 import { AdminOrder, DetailWidgetProps } from "@medusajs/framework/types";
 import { useGenerateInvoice, useOrderInvoice } from "../hooks/invoices";
-import { ArrowDownTray, EllipsisHorizontal, Link } from "@medusajs/icons";
+import { Link } from "@medusajs/icons";
 import JsonViewSection from "../components/JsonViewSection";
 import { InvoiceStatus } from "../../constants/invoice";
 import CollapsiblePanel from "../components/CollapsiblePanel";
@@ -86,26 +85,10 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
     <Container className="divide-y p-0">
       <Heading
         level="h2"
-        className="w-full flex justify-between items-center px-6 py-4"
+        className="w-full flex justify-between items-center px-6 py-4 gap-4"
       >
         Invoice
-        <div className="flex gap-4 items-center">
-          {invoiceStatusBadge}
-
-          <DropdownMenu>
-            <DropdownMenu.Trigger asChild>
-              <IconButton size="small" variant="transparent">
-                <EllipsisHorizontal />
-              </IconButton>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Content>
-              <DropdownMenu.Item className="flex gap-2 items-center">
-                <ArrowDownTray className="text-ui-fg-subtle" />
-                Download
-              </DropdownMenu.Item>
-            </DropdownMenu.Content>
-          </DropdownMenu>
-        </div>
+        {invoiceStatusBadge}
       </Heading>
 
       {invoice.status === InvoiceStatus.COMPLETED && (

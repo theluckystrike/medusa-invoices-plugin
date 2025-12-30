@@ -23,8 +23,6 @@ const createTemplate = async ({
     Link,
   };
 
-  console.log("Order: ", order);
-
   return (
     <Document>
       <Page size="A4" style={styles.page}>
