@@ -13,9 +13,10 @@ import {
   Select,
   Tabs,
   Text,
+  toast,
 } from "@medusajs/ui";
 import React from "react";
-import { useOrders } from "../../../hooks/orders";
+import { useOrder, useOrders } from "../../../hooks/orders";
 import { JSONContent } from "@tiptap/react";
 import RenderTemplateSettings from "../../../components/RenderTemplateSettings";
 import { useInvoiceSettings } from "../../../hooks/invoice-settings";
@@ -25,6 +26,8 @@ import {
   InvoiceSettingsHeaderLogoType,
   InvoiceTemplateId,
 } from "../../../../constants/invoice";
+import { getTemplate } from "../../../components/templates/registry";
+import { pdf } from "@react-pdf/renderer";
 
 export type TemplateSettings = {
   template_id: InvoiceTemplateId;
@@ -53,6 +56,18 @@ export default function Invoices() {
   const [previewType, setPreviewType] = React.useState<
     "dummy-data" | "select-order"
   >("dummy-data");
+  const [isDownloading, setIsDownloading] = React.useState<boolean>(false);
+
+  const orderQuery = useOrder(
+    selectedOrderId,
+    {
+      fields:
+        "id,status,created_at,canceled_at,email,display_id,currency_code,metadata,total,credit_line_total,item_subtotal,item_total,item_tax_total,original_item_tax_total,item_discount_total,shipping_subtotal,original_total,original_tax_total,subtotal,discount_total,discount_subtotal,shipping_total,shipping_tax_total,original_shipping_tax_total,shipping_discount_total,tax_total,refundable_total,order_change,*customer,*items,*items.variant,*items.variant.product,*items.variant.options,+items.variant.manage_inventory,*items.variant.inventory_items.inventory,+items.variant.inventory_items.required_quantity,+summary,*shipping_address,*billing_address,*sales_channel,*promotions,*shipping_methods,*credit_lines,*fulfillments,+fulfillments.shipping_option.service_zone.fulfillment_set.type,*fulfillments.items,*fulfillments.labels,*fulfillments.labels,*payment_collections,*payment_collections.payments,*payment_collections.payments.refunds,*payment_collections.payments.refunds.refund_reason,region.automatic_taxes,",
+    },
+    {
+      enabled: !!selectedOrderId,
+    },
+  );
 
   const [templateSettings, setTemplateSettings] =
     React.useState<TemplateSettings>({
@@ -71,10 +86,62 @@ export default function Invoices() {
       auto_generate_on: [],
     });
 
-  const handlePreviewChange = React.useCallback((value: string) => {
-    if (value === "dummy-data") setSelectedOrderId("");
-    setPreviewType(value as "dummy-data" | "select-order");
-  }, []);
+  const handlePreviewChange = React.useCallback(
+    (value: string) => {
+      if (value === "dummy-data") setSelectedOrderId("");
+      setPreviewType(value as "dummy-data" | "select-order");
+    },
+    [setSelectedOrderId, setPreviewType],
+  );
+
+  const handleDownloadPreview = React.useCallback(async () => {
+    if (previewType === "select-order" && !selectedOrderId) {
+      toast.warning("No Order Selected", {
+        description: "Please select an order to download the preview.",
+      });
+      return;
+    }
+
+    setIsDownloading(true);
+
+    try {
+      const template = getTemplate(templateSettings.template_id);
+      const TemplateComponent = template.Component;
+      const order = orderQuery.data?.order;
+
+      const doc = (
+        <TemplateComponent settings={templateSettings} order={order} />
+      );
+
+      const blob = await pdf(doc).toBlob();
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+
+      const filename = `invoice-preview-${new Date().getTime()}.pdf`;
+
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast.success("Preview Downloaded", {
+        description: "Invoice preview downloaded successfully.",
+      });
+    } catch (error) {
+      toast.error("Error", {
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to generate invoice preview. Please try again.",
+      });
+    } finally {
+      setIsDownloading(false);
+    }
+  }, [templateSettings, orderQuery.data, previewType, selectedOrderId]);
 
   React.useEffect(() => {
     if (!invoiceSettingsQuery.data) {
@@ -168,7 +235,16 @@ export default function Invoices() {
         <Container className="xl:w-2/3 p-0 divide-y">
           <div className="px-6 flex items-center justify-between flex-wrap gap-2 py-4">
             <Heading level="h2">Live Preview</Heading>
-            <Button variant="secondary" className="shrink-0">
+            <Button
+              variant="secondary"
+              className="shrink-0"
+              onClick={handleDownloadPreview}
+              disabled={
+                isDownloading ||
+                (previewType === "select-order" && !selectedOrderId)
+              }
+              isLoading={isDownloading}
+            >
               <ArrowDownTrayIcon />
               Download Preview
             </Button>
@@ -195,6 +271,7 @@ export default function Invoices() {
                   templateSettings={templateSettings}
                   previewType={previewType}
                   selectedOrderId={selectedOrderId}
+                  orderQuery={orderQuery}
                 />
               </Tabs.Content>
               <Tabs.Content
@@ -229,6 +306,7 @@ export default function Invoices() {
                   templateSettings={templateSettings}
                   previewType={previewType}
                   selectedOrderId={selectedOrderId}
+                  orderQuery={orderQuery}
                 />
               </Tabs.Content>
             </Tabs>
