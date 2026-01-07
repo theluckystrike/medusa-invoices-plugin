@@ -23,10 +23,8 @@ import {
 } from "../constants/invoice";
 import { GenerateInvoiceWorkflowInput, InvoiceDTO } from "../types/invoice";
 import { InvoiceSettingsDTO } from "../types/invoice-settings";
-import getTemp from "../templates/getTemp";
 import { getTemplate } from "../templates/registry";
 import { TemplateProps, TemplateSettingsForTemplate } from "../types/templates";
-//import { getTemplate } from "../admin/components/templates/registry";
 
 type RenderPdfStepInput = {
   order_id: string;

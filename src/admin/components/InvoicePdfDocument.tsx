@@ -8,14 +8,14 @@ import {
 } from "@react-pdf/renderer";
 import { TemplateSettings } from "../routes/settings/invoices/page";
 import renderTiptapNode from "./renderTiptapNode";
-import { AdminOrderWithInvoices } from "./MyFocusModal";
+import { AdminOrder } from "@medusajs/framework/types";
 
 type InvoicePdfDocumentProps = {
   templateSettings: Omit<
     TemplateSettings,
     "order_completed" | "payment_captured" | "fulfillment_created"
   >;
-  order?: AdminOrderWithInvoices;
+  order?: AdminOrder;
 };
 
 const templateStyles = StyleSheet.create({
@@ -179,8 +179,6 @@ export const InvoicePdfDocument = ({
   templateSettings,
   order,
 }: InvoicePdfDocumentProps) => {
-  const orderInvoice = order?.invoices?.find((i) => i.is_active);
-
   return (
     <Document>
       <Page size="A4" style={templateStyles[templateSettings.template_id].page}>
@@ -229,14 +227,14 @@ export const InvoicePdfDocument = ({
             <Text style={templateStyles[templateSettings.template_id].label}>
               Invoice number:
             </Text>{" "}
-            #{orderInvoice ? orderInvoice.number : "4234234"}
+            #{order ? order.display_id : "4234234"}
           </Text>
           <Text style={{ marginBottom: "2px" }}>
             <Text style={templateStyles[templateSettings.template_id].label}>
               Invoice date:
             </Text>{" "}
-            {orderInvoice
-              ? new Date(orderInvoice.created_at).toLocaleDateString()
+            {order
+              ? new Date(order.created_at).toLocaleDateString()
               : new Date().toLocaleDateString()}
           </Text>
           <Text>

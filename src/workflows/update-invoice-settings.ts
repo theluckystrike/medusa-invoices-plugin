@@ -12,7 +12,7 @@ import {
   createRemoteLinkStep,
   useQueryGraphStep,
 } from "@medusajs/medusa/core-flows";
-import { Modules } from "@medusajs/framework/utils";
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 import {
   InvoiceSettingsAutoGenerateTrigger,
   InvoiceSettingsHeaderLogoType,
@@ -55,6 +55,9 @@ const upsertInvoiceSettingsStep = createStep(
   ) => {
     const invoiceModuleService: InvoiceModuleService =
       container.resolve(INVOICE_MODULE);
+    const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
+
+    logger.info(`invoices: Starting upsert invoice settings step`);
 
     const serializedInput = {
       ...input,
@@ -67,6 +70,7 @@ const upsertInvoiceSettingsStep = createStep(
     };
 
     if (existing) {
+      logger.info(`invoices: Updating existing settings`);
       const updated = await invoiceModuleService.updateInvoiceSettings({
         id: existing.id,
         ...serializedInput,
@@ -77,9 +81,11 @@ const upsertInvoiceSettingsStep = createStep(
         previousData: existing,
       };
 
+      logger.info(`invoices: Finished updating invoice settings`);
       return new StepResponse(updated, rollbackContext);
     }
 
+    logger.info(`invoices: Creating new settings`);
     const created =
       await invoiceModuleService.createInvoiceSettings(serializedInput);
 
@@ -88,18 +94,22 @@ const upsertInvoiceSettingsStep = createStep(
       createdId: created.id,
     };
 
+    logger.info(`invoices: Finished creating invoice settings`);
     return new StepResponse(created, rollbackContext);
   },
   async (context, { container }) => {
     const invoiceModuleService: InvoiceModuleService =
       container.resolve(INVOICE_MODULE);
+    const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
 
     if (context?.action === "created" && context?.createdId) {
+      logger.info(`invoices: Rolling back created invoice settings`);
       await invoiceModuleService.deleteInvoiceSettings(context.createdId);
       return;
     }
 
     if (context?.action === "updated" && context?.previousData) {
+      logger.info(`invoices: Rolling back updated invoice settings`);
       await invoiceModuleService.updateInvoiceSettings(
         context.previousData.id,
         context.previousData,
@@ -136,13 +146,15 @@ const updateInvoiceSettingsWorkflow = createWorkflow(
     when({ linkNeeded }, ({ linkNeeded }) => {
       return linkNeeded;
     }).then(() => {
+      const settingsId = transform({ settings }, ({ settings }) => settings.id);
+
       createRemoteLinkStep([
         {
           [Modules.STORE]: {
             store_id: input.store_id,
           },
           [INVOICE_MODULE]: {
-            invoice_settings_id: settings.id,
+            invoice_settings_id: settingsId,
           },
         },
       ]);
