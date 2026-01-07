@@ -38,15 +38,23 @@ const validateOrderStep = createStep(
     { order_id, template_id }: GenerateInvoiceWorkflowInput,
     { container },
   ) => {
+    const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const orderModuleService = container.resolve(Modules.ORDER);
+
     const order = await orderModuleService.retrieveOrder(order_id);
 
+    logger.info(`invoices: Validating order existence`);
+
     if (!order) {
+      logger.error(`invoices: Validation failed: Order not found`);
+
       throw new MedusaError(
         MedusaError.Types.NOT_FOUND,
         `Order with id ${order_id} does not exist`,
       );
     }
+
+    logger.info(`invoices: Order validated successfully`);
 
     return new StepResponse({
       order_display_id: order.display_id,
@@ -64,12 +72,16 @@ const generateInvoiceStep = createStep(
     }: { template_id: InvoiceTemplateId | undefined; order_display_id: number },
     { container },
   ) => {
+    const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const invoiceModuleService: InvoiceModuleService =
       container.resolve(INVOICE_MODULE);
+
+    logger.info(`invoices: Starting invoice generation`);
 
     const [invoiceSettings] = await invoiceModuleService.listInvoiceSettings();
 
     if (!invoiceSettings) {
+      logger.error(`invoices: Invoice settings not found`);
       throw new MedusaError(
         MedusaError.Types.NOT_FOUND,
         "Invoice settings does not exist",
@@ -114,11 +126,24 @@ const generateInvoiceStep = createStep(
       error_message: null,
     });
 
+    if (!invoice) {
+      logger.error(`invoices: Invoice creation failed`);
+      throw new MedusaError(
+        MedusaError.Types.UNEXPECTED_STATE,
+        "Invoice creation failed",
+      );
+    }
+
+    logger.info(`invoices: Invoice generated for order successfully`);
+
     return new StepResponse({ invoice, settings }, { id: invoice.id });
   },
   async (context, { container }) => {
+    const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const invoiceModuleService: InvoiceModuleService =
       container.resolve(INVOICE_MODULE);
+
+    logger.warn("invoices: Rolling back invoice generation");
 
     if (context?.id) {
       await invoiceModuleService.deleteInvoices(context.id);
@@ -132,11 +157,13 @@ const renderPdfStep = createStep(
     { order_id, invoice, settings }: RenderPdfStepInput,
     { container },
   ) => {
-    const query = container.resolve(ContainerRegistrationKeys.QUERY);
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
+    const query = container.resolve(ContainerRegistrationKeys.QUERY);
     const fileModuleService = container.resolve(Modules.FILE);
     const invoiceModuleService: InvoiceModuleService =
       container.resolve(INVOICE_MODULE);
+
+    logger.info(`invoices: Starting PDF rendering for order invoice`);
 
     const { data: orders } = await query.graph({
       entity: "order",
@@ -249,6 +276,8 @@ const renderPdfStep = createStep(
     });
 
     if (!file) {
+      logger.error(`invoices: PDF file creation failed for order invoice`);
+
       throw new MedusaError(
         MedusaError.Types.UNEXPECTED_STATE,
         "Invoice PDF file was not created",
@@ -261,6 +290,8 @@ const renderPdfStep = createStep(
     });
 
     if (!updatedInvoice) {
+      logger.error(`invoices: Invoice pdf url update failed`);
+
       throw new MedusaError(
         MedusaError.Types.UNEXPECTED_STATE,
         "Invoice pdf url update failed",
@@ -285,6 +316,10 @@ const renderPdfStep = createStep(
     // const Component = template.Component;
     //const pdfStream = await pdf(<Component {...templateProps} />)
 
+    logger.info(
+      `invoices: PDF rendered and uploaded successfully for order invoice`,
+    );
+
     return new StepResponse(updatedInvoice, {
       updatedInvoice,
       order_id,
@@ -292,9 +327,12 @@ const renderPdfStep = createStep(
     });
   },
   async (context, { container }) => {
+    const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const invoiceModuleService: InvoiceModuleService =
       container.resolve(INVOICE_MODULE);
     const fileModuleService = container.resolve(Modules.FILE);
+
+    logger.warn("invoices: Rolling back PDF rendering for order invoice");
 
     if (
       !context?.updatedInvoice?.id ||
@@ -322,8 +360,11 @@ const completeInvoiceStep = createStep(
     { invoice, order_id }: { invoice: InvoiceDTO; order_id: string },
     { container },
   ) => {
+    const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const invoiceModuleService: InvoiceModuleService =
       await container.resolve(INVOICE_MODULE);
+
+    logger.info(`invoices: Starting completion for order invoice`);
 
     const completedInvoice = await invoiceModuleService.updateInvoices({
       id: invoice.id,
@@ -332,11 +373,15 @@ const completeInvoiceStep = createStep(
     });
 
     if (!completeInvoiceStep) {
+      logger.error(`invoices: Invoice completion failed`);
+
       throw new MedusaError(
         MedusaError.Types.UNEXPECTED_STATE,
         "Invoice completion failed",
       );
     }
+
+    logger.info(`invoices: Invoice completed successfully`);
 
     return new StepResponse(
       {
@@ -350,8 +395,11 @@ const completeInvoiceStep = createStep(
     );
   },
   async (context, { container }) => {
+    const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const invoiceModuleService: InvoiceModuleService =
       await container.resolve(INVOICE_MODULE);
+
+    logger.warn("invoices: Rolling back invoice completion");
 
     if (
       !context?.invoice ||
