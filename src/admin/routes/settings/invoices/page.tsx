@@ -32,9 +32,11 @@ import { pdf } from "@react-pdf/renderer";
 export type TemplateSettings = {
   template_id: InvoiceTemplateId;
   template_version: string;
-  header_logo_type: InvoiceSettingsHeaderLogoType;
-  header_logo_url: string;
-  header_logo_text: string;
+  header_logo: {
+    type: InvoiceSettingsHeaderLogoType;
+    text: string;
+    url: string;
+  };
   header_content: JSONContent;
   footer_content: JSONContent;
   store_name: string;
@@ -73,9 +75,11 @@ export default function Invoices() {
     React.useState<TemplateSettings>({
       template_id: InvoiceTemplateId.CLEAN,
       template_version: "1.0.0",
-      header_logo_type: InvoiceSettingsHeaderLogoType.NONE,
-      header_logo_url: "",
-      header_logo_text: "",
+      header_logo: {
+        type: InvoiceSettingsHeaderLogoType.NONE,
+        text: "",
+        url: "",
+      },
       header_content: {},
       footer_content: {},
       store_name: "",
@@ -151,9 +155,11 @@ export default function Invoices() {
     setTemplateSettings({
       template_id: settings.template_id,
       template_version: settings.template_version,
-      header_logo_type: settings.header_logo_type,
-      header_logo_url: settings.header_logo_url ?? "",
-      header_logo_text: settings.header_logo_text ?? "",
+      header_logo: {
+        type: settings.header_logo_type,
+        text: settings.header_logo_text ?? "",
+        url: settings.header_logo_url ?? "",
+      },
       header_content: settings.header_content
         ? JSON.parse(settings.header_content)
         : {},

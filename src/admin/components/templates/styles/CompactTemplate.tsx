@@ -66,18 +66,18 @@ const CompactTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
       <Page size="A4" style={styles.page}>
         <View
           render={() =>
-            settings?.header_logo_type === "text" &&
-            settings.header_logo_text && (
-              <Text style={styles.heading}>{settings.header_logo_text}</Text>
+            settings?.header_logo.type === "text" &&
+            settings.header_logo.text && (
+              <Text style={styles.heading}>{settings.header_logo.text}</Text>
             )
           }
         />
         <View
           render={() =>
-            settings?.header_logo_type === "image" &&
-            settings.header_logo_url && (
+            settings?.header_logo.type === "image" &&
+            settings.header_logo.url && (
               <Image
-                src={settings.header_logo_url}
+                src={settings.header_logo.url}
                 style={{
                   width: "auto",
                   height: "40px",

@@ -39,10 +39,10 @@ const RenderTemplateSettings: React.FC<{
         await upsertInvoiceSettings.mutateAsync({
           template_id: templateSettings.template_id,
           template_version: template.version,
-          header_logo_type: templateSettings.header_logo_type,
-          header_logo_url: templateSettings.header_logo_url || null,
-          header_logo_text: templateSettings.header_logo_text,
-          header_content: templateSettings.header_content,
+          header_logo_type: templateSettings.header_logo.type,
+          header_logo_url: templateSettings.header_logo.url || null,
+          header_logo_text: templateSettings.header_logo.text || null,
+          header_content: templateSettings.header_content || null,
           footer_content: templateSettings.footer_content || null,
           store_name: templateSettings.store_name || null,
           store_address: templateSettings.store_address || null,
@@ -72,7 +72,30 @@ const RenderTemplateSettings: React.FC<{
     const handleHeaderLogoTypeChange = React.useCallback((value: string) => {
       setTemplateSettings((prev) => ({
         ...prev,
-        header_logo_type: value as TemplateSettings["header_logo_type"],
+        header_logo: {
+          ...prev.header_logo,
+          type: value as TemplateSettings["header_logo"]["type"],
+        },
+      }));
+    }, []);
+
+    const handleHeaderLogoUrlChange = React.useCallback((value: string) => {
+      setTemplateSettings((prev) => ({
+        ...prev,
+        header_logo: {
+          ...prev.header_logo,
+          url: value,
+        },
+      }));
+    }, []);
+
+    const handleHeaderLogoTextChange = React.useCallback((value: string) => {
+      setTemplateSettings((prev) => ({
+        ...prev,
+        header_logo: {
+          ...prev.header_logo,
+          text: value,
+        },
       }));
     }, []);
 
@@ -142,7 +165,7 @@ const RenderTemplateSettings: React.FC<{
             Header / Logo
           </Heading>
           <RadioGroup
-            value={templateSettings.header_logo_type}
+            value={templateSettings.header_logo.type}
             className="flex gap-3 justify-between flex-wrap"
             onValueChange={handleHeaderLogoTypeChange}
           >
@@ -168,33 +191,29 @@ const RenderTemplateSettings: React.FC<{
               <Label htmlFor="image">Image</Label>
             </div>
           </RadioGroup>
-          {templateSettings.header_logo_type === "image" && (
+          {templateSettings.header_logo.type === "image" && (
             <div className="mt-3">
               <Label htmlFor="image-url">Image URL</Label>
               <Input
                 placeholder="https://example.com/image.jpg"
                 id="image-url"
                 className="mt-1"
-                value={templateSettings.header_logo_url}
-                onChange={(e) =>
-                  handleInputChange("header_logo_url", e.target.value)
-                }
+                value={templateSettings.header_logo.url}
+                onChange={(e) => handleHeaderLogoUrlChange(e.target.value)}
               />
 
               <FileUploader setTemplateSettings={setTemplateSettings} />
             </div>
           )}
-          {templateSettings.header_logo_type === "text" && (
+          {templateSettings.header_logo.type === "text" && (
             <div className="mt-3">
               <Label htmlFor="header-text">Header Text</Label>
               <Input
                 placeholder="My Company"
                 id="header-text"
                 className="mt-1"
-                value={templateSettings.header_logo_text}
-                onChange={(e) =>
-                  handleInputChange("header_logo_text", e.target.value)
-                }
+                value={templateSettings.header_logo.text}
+                onChange={(e) => handleHeaderLogoTextChange(e.target.value)}
               />
             </div>
           )}

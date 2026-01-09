@@ -22,7 +22,6 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
   orderQuery,
 }) => {
   const order = orderQuery.data?.order;
-  //const templateComponentQuery = useTemplateComponent(templateSettings.template_id, {order, });
 
   if (previewType === "select-order" && !selectedOrderId) {
     return (
@@ -51,6 +50,11 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
       </Text>
     );
   }
+
+  // const templateComponentQuery = useTemplateComponent(
+  //   templateSettings.template_id,
+  //   { order, settings: templateSettings },
+  // );
 
   const template = getTemplate(templateSettings.template_id);
   const TemplateComponent = template.Component;

@@ -2,6 +2,8 @@ import { MathBN } from "@medusajs/utils";
 import renderTipTapNode from "../renderTipTapNode";
 import defaultTipTapNodeStyles from "./defaultTipTapNodeStyles";
 import { TemplateProps } from "../types";
+import { formatCurrency, formatNumber } from "../../utils/currency";
+import { format } from "path";
 
 const CompactTemplate = (async () => {
   const { Document, Image, Page, StyleSheet, Text, View, Link } =
@@ -208,41 +210,15 @@ const CompactTemplate = (async () => {
                     <Text>{i.variant_sku}</Text>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text>{i.quantity}</Text>
+                    <Text>{formatNumber(i.quantity)}</Text>
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text>
-                      {
-                        // TODO: move this to an utility function
-                        MathBN.convert(i.unit_price).toNumber().toLocaleString(
-                          // TODO: retrieve locale from medusa, if not available add a new setting
-                          undefined,
-                          {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                            style: "currency",
-                            currency: order.currency_code,
-                          },
-                        )
-                      }
+                      {formatCurrency(i.unit_price, order.currency_code)}
                     </Text>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text>
-                      {
-                        // TODO: move this to an utility function
-                        MathBN.convert(i.total).toNumber().toLocaleString(
-                          // TODO: retrieve locale from medusa, if not available add a new setting
-                          undefined,
-                          {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                            style: "currency",
-                            currency: order.currency_code,
-                          },
-                        )
-                      }
-                    </Text>
+                    <Text>{formatCurrency(i.total, order.currency_code)}</Text>
                   </View>
                 </View>
               ))
@@ -294,12 +270,30 @@ const CompactTemplate = (async () => {
               <Text style={styles.grandTotal}>Grand Total:</Text>
             </View>
             <View style={{ gap: "6px" }}>
-              <Text>{order ? `$${order.subtotal}` : "$234.00"}</Text>
-              <Text>{order ? `$${order.discount_total}` : "$2.00"}</Text>
-              <Text>{order ? `$${order.shipping_total}` : "$234.00"}</Text>
-              <Text>{order ? `$${order.tax_total}` : "$234.00"}</Text>
+              <Text>
+                {order
+                  ? `${formatCurrency(order.subtotal, order.currency_code)}`
+                  : "$234.00"}
+              </Text>
+              <Text>
+                {order
+                  ? `${formatCurrency(order.discount_total, order.currency_code)}`
+                  : "$2.00"}
+              </Text>
+              <Text>
+                {order
+                  ? `${formatCurrency(order.shipping_total, order.currency_code)}`
+                  : "$234.00"}
+              </Text>
+              <Text>
+                {order
+                  ? `${formatCurrency(order.tax_total, order.currency_code)}`
+                  : "$234.00"}
+              </Text>
               <Text style={styles.grandTotal}>
-                {order ? `$${order.total}` : "$234.00"}
+                {order
+                  ? `${formatCurrency(order.total, order.currency_code)}`
+                  : "$234.00"}
               </Text>
             </View>
           </View>

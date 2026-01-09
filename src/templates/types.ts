@@ -1,38 +1,39 @@
-import { BigNumberValue, OrderDTO } from "@medusajs/framework/types";
+import { AdminOrder, OrderDTO } from "@medusajs/framework/types";
 import { JSONContent } from "@tiptap/react";
 
-export type TemplateOrderPropAddress = {
-  id: string;
-  first_name?: string;
-  last_name?: string;
-  phone?: string;
-  address_1?: string;
-  city?: string;
-};
+export type TemplateOrderDTO = Pick<
+  OrderDTO,
+  // TODO: reorder these based on OrderDTO definition
+  | "id"
+  | "display_id"
+  | "currency_code"
+  | "shipping_address"
+  | "billing_address"
+  | "items"
+  | "created_at"
+  | "total"
+  | "subtotal"
+  | "tax_total"
+  | "discount_total"
+  | "shipping_total"
+>;
 
-export type TemplateOrderPropItem = {
-  id: string;
-  title: string;
-  variant_sku?: string | null;
-  quantity: number;
-  unit_price: number;
-  total: BigNumberValue;
-};
-
-export type TemplateOrderProp = {
-  id: string;
-  display_id: number;
-  currency_code: string;
-  shipping_address?: TemplateOrderPropAddress;
-  billing_address?: TemplateOrderPropAddress;
-  items?: TemplateOrderPropItem[];
-  created_at: string | Date;
-  total: BigNumberValue;
-  subtotal: BigNumberValue;
-  tax_total: BigNumberValue;
-  discount_total: BigNumberValue;
-  shipping_total: BigNumberValue;
-};
+export type TemplateAdminOrder = Pick<
+  AdminOrder,
+  // TODO: reorder these based on AdminOrder definition
+  | "id"
+  | "display_id"
+  | "currency_code"
+  | "shipping_address"
+  | "billing_address"
+  | "items"
+  | "created_at"
+  | "total"
+  | "subtotal"
+  | "tax_total"
+  | "discount_total"
+  | "shipping_total"
+>;
 
 export type TemplateSettings = {
   template_id: "clean" | "classic" | "compact";
@@ -70,23 +71,7 @@ export type TemplateSettingsForTemplate = {
 };
 
 export type TemplateProps = {
-  // order: Pick<
-  //   OrderDTO,
-  //   // TODO: reorder these based on OrderDTO definition
-  //   | "id"
-  //   | "display_id"
-  //   | "currency_code"
-  //   | "shipping_address"
-  //   | "billing_address"
-  //   | "items"
-  //   | "created_at"
-  //   | "total"
-  //   | "subtotal"
-  //   | "tax_total"
-  //   | "discount_total"
-  //   | "shipping_total"
-  // >;
-  order: TemplateOrderProp;
+  order: TemplateOrderDTO | TemplateAdminOrder;
   settings: TemplateSettingsForTemplate;
   invoice: {
     id: string;
