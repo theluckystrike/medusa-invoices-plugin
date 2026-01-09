@@ -24,7 +24,7 @@ import {
 import { GenerateInvoiceWorkflowInput, InvoiceDTO } from "../types/invoice";
 import { InvoiceSettingsDTO } from "../types/invoice-settings";
 import { getTemplate } from "../templates/registry";
-import { TemplateProps, TemplateSettingsForTemplate } from "../types/templates";
+import { TemplateProps, TemplateSettingsForTemplate } from "../templates/types";
 
 type RenderPdfStepInput = {
   order_id: string;
@@ -238,7 +238,7 @@ const renderPdfStep = createStep(
 
     const template = getTemplate(invoice.template_id);
 
-    const templateProps: Omit<TemplateProps, "_styles"> = {
+    const templateProps: TemplateProps = {
       order,
       settings: {
         template_id: invoice.settings_snapshot.template_id,
@@ -257,12 +257,9 @@ const renderPdfStep = createStep(
         created_at: invoice.created_at,
         display_number: invoice.order_display_id,
       },
-      currency_code: order.currency_code,
     };
 
     const element = await template.render(templateProps);
-
-    //const element = await getTemp();
 
     //const pdfStream = await ReactPDF.renderToStream(element);
 

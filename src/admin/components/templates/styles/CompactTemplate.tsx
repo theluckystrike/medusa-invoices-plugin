@@ -1,5 +1,5 @@
 import React from "react";
-import { TemplateProps } from "./registry";
+import { TemplateProps } from "../registry";
 import {
   Document,
   Image,
@@ -8,29 +8,30 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import renderTiptapNode from "../renderTiptapNode";
+import renderTipTapNode from "../renderTipTapNode";
 
 const styles = StyleSheet.create({
   page: {
     backgroundColor: "#fff",
-    padding: "32px",
+    padding: "12px",
+    fontSize: "12px",
     color: "#52525b",
   },
   header: {},
   section: {
-    marginBottom: "32px",
-    paddingBottom: "32px",
+    marginBottom: "12px",
+    paddingBottom: "12px",
   },
   heading: {
-    fontSize: "36px",
-    fontWeight: "bold",
-    marginBottom: "32px",
+    fontSize: "20px",
+    fontWeight: "medium",
+    marginBottom: "12px",
     color: "#18181b",
   },
   label: {
     fontWeight: "bold",
     textTransform: "uppercase" as const,
-    fontSize: "14px",
+    fontSize: "10px",
     letterSpacing: "1px",
     color: "#18181b",
   },
@@ -46,12 +47,11 @@ const styles = StyleSheet.create({
     flexDirection: "row" as const,
     gap: "40px",
     justifyContent: "flex-end" as const,
-    marginBottom: "32px",
-    paddingBottom: "32px",
+    marginBottom: "12px",
+    paddingBottom: "12px",
   },
   grandTotal: {
-    fontWeight: "bold",
-    fontSize: "22px",
+    fontSize: "15px",
     marginTop: "6px",
     color: "#18181b",
   },
@@ -60,9 +60,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const CleanTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
-  console.log("Order: ", order);
-
+const CompactTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -94,7 +92,7 @@ const CleanTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
           render={() =>
             settings?.header_content && (
               <View style={styles.header}>
-                {renderTiptapNode(settings.header_content, 0)}
+                {renderTipTapNode(settings.header_content, 0)}
               </View>
             )
           }
@@ -312,7 +310,7 @@ const CleanTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
 
         {settings?.footer_content && (
           <View style={styles.footer}>
-            {renderTiptapNode(settings.footer_content, 0)}
+            {renderTipTapNode(settings.footer_content, 0)}
           </View>
         )}
       </Page>
@@ -320,4 +318,4 @@ const CleanTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
   );
 };
 
-export default CleanTemplate;
+export default CompactTemplate;

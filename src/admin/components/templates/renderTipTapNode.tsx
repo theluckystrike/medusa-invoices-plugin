@@ -109,7 +109,7 @@ const renderTextWithMarks = (node: JSONContent, key: number) => {
   );
 };
 
-export const renderTiptapNode = (
+export const renderTipTapNode = (
   node: JSONContent | undefined | null,
   index: number = 0,
 ): any => {
@@ -119,7 +119,7 @@ export const renderTiptapNode = (
 
   switch (type) {
     case "doc":
-      return content.map((child, i) => renderTiptapNode(child, i));
+      return content.map((child, i) => renderTipTapNode(child, i));
 
     case "paragraph":
       if (!content || content.length === 0) {
@@ -137,7 +137,7 @@ export const renderTiptapNode = (
             {content.map((child, i) =>
               child.type === "text"
                 ? renderTextWithMarks(child, i)
-                : renderTiptapNode(child, i),
+                : renderTipTapNode(child, i),
             )}
           </Text>
         </View>
@@ -178,7 +178,7 @@ export const renderTiptapNode = (
             {content.map((child, i) =>
               child.type === "text"
                 ? renderTextWithMarks(child, i)
-                : renderTiptapNode(child, i),
+                : renderTipTapNode(child, i),
             )}
           </Text>
         </View>
@@ -187,7 +187,7 @@ export const renderTiptapNode = (
     case "bulletList":
       return (
         <View key={index} style={{ marginBottom: 8, marginLeft: 10 }}>
-          {content.map((child, i) => renderTiptapNode(child, i))}
+          {content.map((child, i) => renderTipTapNode(child, i))}
         </View>
       );
 
@@ -197,7 +197,7 @@ export const renderTiptapNode = (
         <View key={index} style={{ marginBottom: 8, marginLeft: 10 }}>
           {content.map((child, i) => {
             const itemNumber = start + i;
-            return renderTiptapNode({ ...child, _orderNumber: itemNumber }, i);
+            return renderTipTapNode({ ...child, _orderNumber: itemNumber }, i);
           })}
         </View>
       );
@@ -214,7 +214,7 @@ export const renderTiptapNode = (
             {isOrdered ? `${itemNumber}. ` : "• "}
           </Text>
           <View style={{ flex: 1 }}>
-            {content.map((child, i) => renderTiptapNode(child, i))}
+            {content.map((child, i) => renderTipTapNode(child, i))}
           </View>
         </View>
       );
@@ -224,10 +224,10 @@ export const renderTiptapNode = (
 
     default:
       if (content && content.length > 0) {
-        return content.map((child, i) => renderTiptapNode(child, i));
+        return content.map((child, i) => renderTipTapNode(child, i));
       }
       return null;
   }
 };
 
-export default renderTiptapNode;
+export default renderTipTapNode;

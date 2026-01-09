@@ -20,7 +20,7 @@ import { useOrder, useOrders } from "../../../hooks/orders";
 import { JSONContent } from "@tiptap/react";
 import RenderTemplateSettings from "../../../components/RenderTemplateSettings";
 import { useInvoiceSettings } from "../../../hooks/invoice-settings";
-import MyPdfViewer from "../../../components/MyPdfViewer";
+import PdfViewer from "../../../components/PdfViewer";
 import {
   InvoiceSettingsAutoGenerateTrigger,
   InvoiceSettingsHeaderLogoType,
@@ -109,11 +109,9 @@ export default function Invoices() {
       const TemplateComponent = template.Component;
       const order = orderQuery.data?.order;
 
-      const doc = (
-        <TemplateComponent settings={templateSettings} order={order} />
-      );
-
-      const blob = await pdf(doc).toBlob();
+      const blob = await pdf(
+        <TemplateComponent settings={templateSettings} order={order} />,
+      ).toBlob();
 
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -268,7 +266,7 @@ export default function Invoices() {
                 <Text className="mb-4 text-ui-fg-subtle">
                   Using built-in sample order data for preview
                 </Text>
-                <MyPdfViewer
+                <PdfViewer
                   templateSettings={templateSettings}
                   previewType={previewType}
                   selectedOrderId={selectedOrderId}
@@ -303,7 +301,7 @@ export default function Invoices() {
                     </Select.Content>
                   </Select>
                 </div>
-                <MyPdfViewer
+                <PdfViewer
                   templateSettings={templateSettings}
                   previewType={previewType}
                   selectedOrderId={selectedOrderId}

@@ -2,9 +2,9 @@ import React from "react";
 import { InvoiceTemplateId } from "../../../constants/invoice";
 import { AdminOrder } from "@medusajs/framework/types";
 import { TemplateSettings } from "../../routes/settings/invoices/page";
-import CleanTemplate from "./CleanTemplate";
-import ClassicTemplate from "./ClassicTemplate";
-import CompactTemplate from "./CompactTemplate";
+import CleanTemplate from "./styles/CleanTemplate";
+import ClassicTemplate from "./styles/ClassicTemplate";
+import CompactTemplate from "./styles/CompactTemplate";
 
 export type TemplateProps = {
   order?: AdminOrder;

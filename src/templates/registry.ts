@@ -1,30 +1,34 @@
 import { MedusaError } from "@medusajs/framework/utils";
-import { InvoiceTemplateId } from "../constants/invoice";
-import { InvoiceTemplate } from "../types/templates";
-import createTemplate from "./createTemplate";
-import classicTemplate from "./styles/classicTemplate";
-import cleanTemplate from "./styles/cleanTemplate";
-import compactTemplate from "./styles/compactTemplate";
+import * as React from "react";
+import CleanTemplate from "./styles/CleanTemplate";
+import ClassicTemplate from "./styles/ClassicTemplate";
+import CompactTemplate from "./styles/CompactTemplate";
+import { InvoiceTemplate } from "./types";
 
-export const templates: Record<InvoiceTemplateId, InvoiceTemplate> = {
+export const templates: Record<
+  "clean" | "classic" | "compact",
+  InvoiceTemplate
+> = {
   clean: {
-    id: InvoiceTemplateId.CLEAN,
+    id: "clean",
     version: "1.0.0",
-    render: (props) => createTemplate({ ...props, _styles: cleanTemplate }),
+    render: async (props) => React.createElement(await CleanTemplate, props),
   },
   classic: {
-    id: InvoiceTemplateId.CLASSIC,
+    id: "classic",
     version: "1.0.0",
-    render: (props) => createTemplate({ ...props, _styles: classicTemplate }),
+    render: async (props) => React.createElement(await ClassicTemplate, props),
   },
   compact: {
-    id: InvoiceTemplateId.COMPACT,
+    id: "compact",
     version: "1.0.0",
-    render: (props) => createTemplate({ ...props, _styles: compactTemplate }),
+    render: async (props) => React.createElement(await CompactTemplate, props),
   },
 };
 
-export function getTemplate(id: InvoiceTemplateId): InvoiceTemplate {
+export function getTemplate(
+  id: "clean" | "classic" | "compact",
+): InvoiceTemplate {
   const template = templates[id];
 
   if (!template) {

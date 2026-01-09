@@ -1,5 +1,5 @@
 import React from "react";
-import { TemplateProps } from "./registry";
+import { TemplateProps } from "../registry";
 import {
   Document,
   Image,
@@ -8,30 +8,33 @@ import {
   Text,
   View,
 } from "@react-pdf/renderer";
-import renderTiptapNode from "../renderTiptapNode";
+import renderTipTapNode from "../renderTipTapNode";
 
 const styles = StyleSheet.create({
   page: {
     backgroundColor: "#fff",
-    padding: "12px",
-    fontSize: "12px",
+    padding: "32px",
     color: "#52525b",
   },
-  header: {},
+  header: {
+    padding: "8px",
+    border: "1px solid #eee",
+    marginBottom: "32px",
+  },
   section: {
-    marginBottom: "12px",
-    paddingBottom: "12px",
+    marginBottom: "32px",
+    paddingBottom: "32px",
   },
   heading: {
-    fontSize: "20px",
-    fontWeight: "medium",
-    marginBottom: "12px",
+    fontSize: "36px",
+    fontWeight: "bold",
+    marginBottom: "32px",
     color: "#18181b",
   },
   label: {
     fontWeight: "bold",
     textTransform: "uppercase" as const,
-    fontSize: "10px",
+    fontSize: "14px",
     letterSpacing: "1px",
     color: "#18181b",
   },
@@ -42,16 +45,20 @@ const styles = StyleSheet.create({
     gap: "10px",
     paddingBottom: "8px",
     marginBottom: "8px",
+    borderBottom: "1px solid #eee",
   },
   totals: {
     flexDirection: "row" as const,
     gap: "40px",
-    justifyContent: "flex-end" as const,
-    marginBottom: "12px",
-    paddingBottom: "12px",
+    justifyContent: "space-between" as const,
+    padding: "8px",
+    border: "1px solid #eee",
+    backgroundColor: "#f9f9f9",
+    marginBottom: "32px",
+    paddingBottom: "32px",
   },
   grandTotal: {
-    fontSize: "15px",
+    fontSize: "22px",
     marginTop: "6px",
     color: "#18181b",
   },
@@ -60,7 +67,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const CompactTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
+const ClassicTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -92,7 +99,7 @@ const CompactTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
           render={() =>
             settings?.header_content && (
               <View style={styles.header}>
-                {renderTiptapNode(settings.header_content, 0)}
+                {renderTipTapNode(settings.header_content, 0)}
               </View>
             )
           }
@@ -310,7 +317,7 @@ const CompactTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
 
         {settings?.footer_content && (
           <View style={styles.footer}>
-            {renderTiptapNode(settings.footer_content, 0)}
+            {renderTipTapNode(settings.footer_content, 0)}
           </View>
         )}
       </Page>
@@ -318,4 +325,4 @@ const CompactTemplate: React.FC<TemplateProps> = ({ order, settings }) => {
   );
 };
 
-export default CompactTemplate;
+export default ClassicTemplate;

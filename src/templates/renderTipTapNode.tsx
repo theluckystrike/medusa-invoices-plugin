@@ -8,7 +8,7 @@ type TipTapNodeComponents = {
 
 type RenderTipTapNode = {
   node: JSONContent | undefined | null;
-  index: number;
+  index?: number;
   tipTapStyles: Record<string, any>;
   components: TipTapNodeComponents;
 };

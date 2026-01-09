@@ -1,4 +1,4 @@
-const tipTapNodeStyles = {
+const defaultTipTapNodeStyles = {
   paragraph: {
     marginBottom: 8,
     lineHeight: 1.5,
@@ -51,4 +51,4 @@ const tipTapNodeStyles = {
   },
 };
 
-export default tipTapNodeStyles;
+export default defaultTipTapNodeStyles;
