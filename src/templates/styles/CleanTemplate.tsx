@@ -1,7 +1,7 @@
 import renderTipTapNode from "../renderTipTapNode";
 import defaultTipTapNodeStyles from "./defaultTipTapNodeStyles";
 import { TemplateProps } from "../types";
-import { formatCurrency, formatNumber } from "../utils/number-format";
+import { formatCurrency, formatNumber } from "../helpers/number-format";
 
 const CleanTemplate = (async () => {
   const { Document, Image, Page, StyleSheet, Text, View, Link } =

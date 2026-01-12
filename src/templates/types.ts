@@ -1,8 +1,4 @@
-import {
-  AdminOrder,
-  BigNumberValue,
-  OrderDTO,
-} from "@medusajs/framework/types";
+import { BigNumberValue } from "@medusajs/framework/types";
 import { JSONContent } from "@tiptap/react";
 
 export type TemplateOrderPropAddress = {
@@ -78,7 +74,7 @@ export type TemplateProps = {
   invoice: {
     id: string;
     created_at: Date | string;
-    display_number: number;
+    display_number?: number;
   };
 };
 

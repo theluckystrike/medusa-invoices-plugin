@@ -1,4 +1,3 @@
-import { MedusaError } from "@medusajs/framework/utils";
 import * as React from "react";
 import CleanTemplate from "./styles/CleanTemplate";
 import ClassicTemplate from "./styles/ClassicTemplate";
@@ -32,10 +31,7 @@ export function getTemplate(
   const template = templates[id];
 
   if (!template) {
-    throw new MedusaError(
-      MedusaError.Types.INVALID_DATA,
-      `Template ${id} not found`,
-    );
+    console.log(`Template with id ${id} not found`);
   }
 
   return template;

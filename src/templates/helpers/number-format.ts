@@ -1,4 +1,3 @@
-import { MathBN } from "@medusajs/framework/utils";
 import { BigNumberInput } from "@medusajs/framework/types";
 
 /**
@@ -9,15 +8,12 @@ import { BigNumberInput } from "@medusajs/framework/types";
 
 export function formatNumber(value: number | string | BigNumberInput) {
   // Convert to number if it's a BigNumber or string
-  let numericValue;
-
   if (typeof value === "number") {
-    numericValue = value;
-  } else {
-    numericValue = MathBN.convert(value).toNumber();
+    return value;
   }
 
-  return numericValue;
+  // For string | IBigNumber | BigNumberRawValue
+  return Number(value as any);
 }
 
 /**

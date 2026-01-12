@@ -24,14 +24,12 @@ const DummyPdfViewer: React.FC<DummyPdfViewerProps> = ({
   if (templateComponentQuery.isLoading) {
     return (
       <Text className="text-ui-fg-subtle" size="small">
-        Loading load dummy preview...
+        Loading dummy preview...
       </Text>
     );
   }
 
   if (!templateComponent || templateComponentQuery.isError) {
-    console.log(templateComponentQuery.error);
-
     return (
       <Text className="text-ui-fg-subtle" size="small">
         Failed to load dummy preview

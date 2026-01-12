@@ -4,26 +4,22 @@ import { Text } from "@medusajs/ui";
 import { AdminOrderResponse } from "@medusajs/framework/types";
 import { UseQueryResult } from "@tanstack/react-query";
 import { TemplateSettings } from "../routes/settings/invoices/page";
-import { getTemplate } from "./templates/registry";
 import { useTemplateComponent } from "../hooks/useTemplateComponent";
-import { orderDummyData } from "./templateDummyData";
 
 type PdfViewerProps = {
   templateSettings: TemplateSettings;
-  previewType: "dummy-data" | "select-order";
   selectedOrderId: string;
   orderQuery: UseQueryResult<AdminOrderResponse>;
 };
 
 const PdfViewer: React.FC<PdfViewerProps> = ({
   templateSettings,
-  previewType,
   selectedOrderId,
   orderQuery,
 }) => {
   const order = orderQuery.data?.order;
 
-  if (previewType === "select-order" && !selectedOrderId) {
+  if (!selectedOrderId) {
     return (
       <Text className="text-ui-fg-subtle" size="small">
         Please select an order to preview the invoice.
@@ -31,23 +27,15 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
     );
   }
 
-  if (
-    previewType === "select-order" &&
-    selectedOrderId &&
-    orderQuery.isLoading
-  ) {
+  if (selectedOrderId && orderQuery.isLoading) {
     return (
       <Text className="text-ui-fg-subtle" size="small">
-        Loading order invoice preview...
+        Loading selected order data...
       </Text>
     );
   }
 
-  if (
-    previewType === "select-order" &&
-    selectedOrderId &&
-    (orderQuery.isError || !order)
-  ) {
+  if (selectedOrderId && orderQuery.isError) {
     return (
       <Text className="text-ui-fg-subtle" size="small">
         Failed to load order data
@@ -55,12 +43,45 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
     );
   }
 
-  const template = getTemplate(templateSettings.template_id);
-  const TemplateComponent = template.Component;
+  if (!order) {
+    return (
+      <Text className="text-ui-fg-subtle" size="small">
+        Failed to load order data
+      </Text>
+    );
+  }
+
+  const invoice = {
+    id: "inv_01",
+    created_at: order.created_at,
+    display_number: order.display_id,
+  };
+
+  const templateComponentQuery = useTemplateComponent(
+    templateSettings.template_id,
+    { order, settings: templateSettings, invoice },
+  );
+  const templateComponent = templateComponentQuery.data;
+
+  if (templateComponentQuery.isLoading) {
+    return (
+      <Text className="text-ui-fg-subtle" size="small">
+        Loading order invoice preview...
+      </Text>
+    );
+  }
+
+  if (!templateComponent || templateComponentQuery.isError) {
+    return (
+      <Text className="text-ui-fg-subtle" size="small">
+        Failed to load order invoice preview
+      </Text>
+    );
+  }
 
   return (
     <ReactPDFViewer showToolbar={false} height={600} width="100%">
-      <TemplateComponent settings={templateSettings} order={order} />
+      {templateComponent}
     </ReactPDFViewer>
   );
 };

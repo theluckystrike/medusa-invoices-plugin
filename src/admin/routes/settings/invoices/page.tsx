@@ -278,7 +278,6 @@ export default function Invoices() {
                 ) : (
                   <PdfViewer
                     templateSettings={templateSettings}
-                    previewType={previewType}
                     selectedOrderId={selectedOrderId}
                     orderQuery={orderQuery}
                   />
@@ -317,7 +316,6 @@ export default function Invoices() {
                 ) : (
                   <PdfViewer
                     templateSettings={templateSettings}
-                    previewType={previewType}
                     selectedOrderId={selectedOrderId}
                     orderQuery={orderQuery}
                   />
