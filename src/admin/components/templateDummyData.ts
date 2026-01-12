@@ -1,7 +1,12 @@
-export const orderDummyData = {
+// import { TemplateAdminOrder } from "../templates/types";
+
+import { TemplateOrderProp } from "../templates/types";
+
+export const orderDummyData: TemplateOrderProp = {
   id: "order_01DKF45RS7TH",
   display_id: 4234234,
   created_at: new Date(),
+  currency_code: "eur",
   billing_address: {
     first_name: "John",
     last_name: "Doe",

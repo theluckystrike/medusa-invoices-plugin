@@ -1,9 +1,7 @@
-import { MathBN } from "@medusajs/utils";
 import renderTipTapNode from "../renderTipTapNode";
-
 import defaultTipTapNodeStyles from "./defaultTipTapNodeStyles";
 import { TemplateProps } from "../types";
-import { formatCurrency, formatNumber } from "../../utils/currency";
+import { formatCurrency, formatNumber } from "../utils/number-format";
 
 const CleanTemplate = (async () => {
   const { Document, Image, Page, StyleSheet, Text, View, Link } =

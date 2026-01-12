@@ -1,39 +1,41 @@
-import { AdminOrder, OrderDTO } from "@medusajs/framework/types";
+import {
+  AdminOrder,
+  BigNumberValue,
+  OrderDTO,
+} from "@medusajs/framework/types";
 import { JSONContent } from "@tiptap/react";
 
-export type TemplateOrderDTO = Pick<
-  OrderDTO,
-  // TODO: reorder these based on OrderDTO definition
-  | "id"
-  | "display_id"
-  | "currency_code"
-  | "shipping_address"
-  | "billing_address"
-  | "items"
-  | "created_at"
-  | "total"
-  | "subtotal"
-  | "tax_total"
-  | "discount_total"
-  | "shipping_total"
->;
+export type TemplateOrderPropAddress = {
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+  address_1?: string;
+  city?: string;
+};
 
-export type TemplateAdminOrder = Pick<
-  AdminOrder,
-  // TODO: reorder these based on AdminOrder definition
-  | "id"
-  | "display_id"
-  | "currency_code"
-  | "shipping_address"
-  | "billing_address"
-  | "items"
-  | "created_at"
-  | "total"
-  | "subtotal"
-  | "tax_total"
-  | "discount_total"
-  | "shipping_total"
->;
+export type TemplateOrderPropItem = {
+  id: string;
+  title: string;
+  variant_sku?: string | null;
+  unit_price: number;
+  quantity: number;
+  total: BigNumberValue | number;
+};
+
+export type TemplateOrderProp = {
+  id: string;
+  display_id?: number;
+  currency_code: string;
+  shipping_address?: TemplateOrderPropAddress | null;
+  billing_address?: TemplateOrderPropAddress | null;
+  items?: TemplateOrderPropItem[];
+  created_at: Date | string;
+  total: BigNumberValue | number;
+  subtotal: BigNumberValue | number;
+  tax_total: BigNumberValue | number;
+  discount_total: BigNumberValue | number;
+  shipping_total: BigNumberValue | number;
+};
 
 export type TemplateSettings = {
   template_id: "clean" | "classic" | "compact";
@@ -71,11 +73,11 @@ export type TemplateSettingsForTemplate = {
 };
 
 export type TemplateProps = {
-  order: TemplateOrderDTO | TemplateAdminOrder;
+  order: TemplateOrderProp;
   settings: TemplateSettingsForTemplate;
   invoice: {
     id: string;
-    created_at: Date;
+    created_at: Date | string;
     display_number: number;
   };
 };

@@ -3,10 +3,10 @@ import { PDFViewer as ReactPDFViewer } from "@react-pdf/renderer";
 import { Text } from "@medusajs/ui";
 import { AdminOrderResponse } from "@medusajs/framework/types";
 import { UseQueryResult } from "@tanstack/react-query";
-
 import { TemplateSettings } from "../routes/settings/invoices/page";
 import { getTemplate } from "./templates/registry";
 import { useTemplateComponent } from "../hooks/useTemplateComponent";
+import { orderDummyData } from "./templateDummyData";
 
 type PdfViewerProps = {
   templateSettings: TemplateSettings;
@@ -43,18 +43,17 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
     );
   }
 
-  if (selectedOrderId && orderQuery.isError) {
+  if (
+    previewType === "select-order" &&
+    selectedOrderId &&
+    (orderQuery.isError || !order)
+  ) {
     return (
       <Text className="text-ui-fg-subtle" size="small">
         Failed to load order data
       </Text>
     );
   }
-
-  // const templateComponentQuery = useTemplateComponent(
-  //   templateSettings.template_id,
-  //   { order, settings: templateSettings },
-  // );
 
   const template = getTemplate(templateSettings.template_id);
   const TemplateComponent = template.Component;

@@ -28,6 +28,7 @@ import {
 } from "../../../../constants/invoice";
 import { getTemplate } from "../../../components/templates/registry";
 import { pdf } from "@react-pdf/renderer";
+import DummyPdfViewer from "../../../components/DummyPdfViewer";
 
 export type TemplateSettings = {
   template_id: InvoiceTemplateId;
@@ -272,12 +273,16 @@ export default function Invoices() {
                 <Text className="mb-4 text-ui-fg-subtle">
                   Using built-in sample order data for preview
                 </Text>
-                <PdfViewer
-                  templateSettings={templateSettings}
-                  previewType={previewType}
-                  selectedOrderId={selectedOrderId}
-                  orderQuery={orderQuery}
-                />
+                {previewType === "dummy-data" ? (
+                  <DummyPdfViewer templateSettings={templateSettings} />
+                ) : (
+                  <PdfViewer
+                    templateSettings={templateSettings}
+                    previewType={previewType}
+                    selectedOrderId={selectedOrderId}
+                    orderQuery={orderQuery}
+                  />
+                )}
               </Tabs.Content>
               <Tabs.Content
                 value="select-order"
@@ -307,12 +312,16 @@ export default function Invoices() {
                     </Select.Content>
                   </Select>
                 </div>
-                <PdfViewer
-                  templateSettings={templateSettings}
-                  previewType={previewType}
-                  selectedOrderId={selectedOrderId}
-                  orderQuery={orderQuery}
-                />
+                {previewType === "dummy-data" ? (
+                  <DummyPdfViewer templateSettings={templateSettings} />
+                ) : (
+                  <PdfViewer
+                    templateSettings={templateSettings}
+                    previewType={previewType}
+                    selectedOrderId={selectedOrderId}
+                    orderQuery={orderQuery}
+                  />
+                )}
               </Tabs.Content>
             </Tabs>
           </div>
