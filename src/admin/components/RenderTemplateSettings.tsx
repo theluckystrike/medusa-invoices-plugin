@@ -21,6 +21,7 @@ import {
   InvoiceSettingsHeaderLogoType,
   InvoiceTemplateId,
 } from "../../constants/invoice";
+import { sdk } from "../lib/sdk";
 
 const RenderTemplateSettings: React.FC<{
   previewType: string;
@@ -30,18 +31,47 @@ const RenderTemplateSettings: React.FC<{
   setTemplateSettings: React.Dispatch<React.SetStateAction<TemplateSettings>>;
 }> = React.memo(
   ({ renderHeading = true, templateSettings, setTemplateSettings }) => {
+    const [headerLogoFile, setHeaderLogoFile] = React.useState<File | null>(
+      null,
+    );
     const upsertInvoiceSettings = useUpsertInvoiceSettings();
 
     const handleSave = async () => {
       const template = getTemplate(templateSettings.template_id);
 
       try {
+        let uploadedUrl: string | null = null;
+
+        if (templateSettings.header_logo.type === "image") {
+          uploadedUrl = templateSettings.header_logo.url || null;
+
+          if (headerLogoFile) {
+            try {
+              const { files } = await sdk.admin.upload.create({
+                files: [headerLogoFile],
+              });
+
+              if (!files?.length || !files[0]?.url) {
+                throw new Error("Upload did not return a file URL");
+              }
+
+              uploadedUrl = files[0].url;
+            } catch (uploadError) {
+              throw new Error("Header logo upload failed. Please try again.");
+            }
+          }
+        }
+
         await upsertInvoiceSettings.mutateAsync({
           template_id: templateSettings.template_id,
           template_version: template.version,
           header_logo_type: templateSettings.header_logo.type,
-          header_logo_url: templateSettings.header_logo.url || null,
-          header_logo_text: templateSettings.header_logo.text || null,
+          header_logo_url:
+            templateSettings.header_logo.type === "image" ? uploadedUrl : null,
+          header_logo_text:
+            templateSettings.header_logo.type === "text"
+              ? templateSettings.header_logo.text || null
+              : null,
           header_content: templateSettings.header_content || null,
           footer_content: templateSettings.footer_content || null,
           store_name: templateSettings.store_name || null,
@@ -202,7 +232,12 @@ const RenderTemplateSettings: React.FC<{
                 onChange={(e) => handleHeaderLogoUrlChange(e.target.value)}
               />
 
-              <FileUploader setTemplateSettings={setTemplateSettings} />
+              <FileUploader
+                templateSettings={templateSettings}
+                setTemplateSettings={setTemplateSettings}
+                headerLogoFile={headerLogoFile}
+                setHeaderLogoFile={setHeaderLogoFile}
+              />
             </div>
           )}
           {templateSettings.header_logo.type === "text" && (
