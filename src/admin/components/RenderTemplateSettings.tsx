@@ -1,4 +1,8 @@
-import { DocumentText as DocumentTextIcon, Spinner } from "@medusajs/icons";
+import {
+  DocumentText as DocumentTextIcon,
+  ExclamationCircleSolid,
+  Spinner,
+} from "@medusajs/icons";
 import {
   Button,
   Heading,
@@ -34,10 +38,36 @@ const RenderTemplateSettings: React.FC<{
     const [headerLogoFile, setHeaderLogoFile] = React.useState<File | null>(
       null,
     );
+    const [headerTextError, setHeaderTextError] = React.useState<string | null>(
+      null,
+    );
+    const [headerUrlError, setHeaderUrlError] = React.useState<string | null>(
+      null,
+    );
+
     const upsertInvoiceSettings = useUpsertInvoiceSettings();
 
     const handleSave = async () => {
       const template = getTemplate(templateSettings.template_id);
+
+      if (
+        templateSettings.header_logo.type ===
+          InvoiceSettingsHeaderLogoType.TEXT &&
+        !templateSettings.header_logo.text?.trim()
+      ) {
+        setHeaderTextError("String must contain at least 1 character(s)");
+        return;
+      } else if (
+        templateSettings.header_logo.type ===
+          InvoiceSettingsHeaderLogoType.IMAGE &&
+        !templateSettings.header_logo.url?.trim()
+      ) {
+        setHeaderUrlError("Provide an image URL or upload a file");
+        return;
+      } else {
+        setHeaderTextError(null);
+        setHeaderUrlError(null);
+      }
 
       try {
         let uploadedUrl: string | null = null;
@@ -107,6 +137,8 @@ const RenderTemplateSettings: React.FC<{
           type: value as TemplateSettings["header_logo"]["type"],
         },
       }));
+      setHeaderTextError(null);
+      setHeaderUrlError(null);
     }, []);
 
     const handleHeaderLogoUrlChange = React.useCallback((value: string) => {
@@ -238,6 +270,12 @@ const RenderTemplateSettings: React.FC<{
                 headerLogoFile={headerLogoFile}
                 setHeaderLogoFile={setHeaderLogoFile}
               />
+
+              {headerUrlError && (
+                <Text className="flex items-center gap-1 mt-1 text-red-500">
+                  <ExclamationCircleSolid /> {headerUrlError}
+                </Text>
+              )}
             </div>
           )}
           {templateSettings.header_logo.type === "text" && (
@@ -250,6 +288,12 @@ const RenderTemplateSettings: React.FC<{
                 value={templateSettings.header_logo.text}
                 onChange={(e) => handleHeaderLogoTextChange(e.target.value)}
               />
+
+              {headerTextError && (
+                <Text className="flex items-center gap-1 mt-1 text-red-500">
+                  <ExclamationCircleSolid /> {headerTextError}
+                </Text>
+              )}
             </div>
           )}
         </div>
