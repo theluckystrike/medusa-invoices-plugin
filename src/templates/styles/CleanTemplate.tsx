@@ -13,16 +13,19 @@ const CleanTemplate = (async () => {
       padding: "32px",
       color: "#52525b",
     },
-    header: {},
-    section: {
-      marginBottom: "32px",
-      paddingBottom: "32px",
+    header: {
+      margin: "0 auto 64px auto",
     },
     heading: {
       fontSize: "36px",
       fontWeight: "bold",
-      marginBottom: "32px",
       color: "#18181b",
+    },
+    tipTapNode: {},
+    section: {
+      display: "flex",
+      flexDirection: "column",
+      gap: "22px",
     },
     label: {
       fontWeight: "bold",
@@ -34,17 +37,16 @@ const CleanTemplate = (async () => {
     itemRow: {
       display: "flex" as const,
       flexDirection: "row" as const,
-      justifyContent: "space-between" as const,
       gap: "10px",
       paddingBottom: "8px",
       marginBottom: "8px",
     },
     totals: {
+      display: "flex" as const,
       flexDirection: "row" as const,
       gap: "40px",
       justifyContent: "flex-end" as const,
-      marginBottom: "32px",
-      paddingBottom: "32px",
+      marginBottom: "64px",
     },
     grandTotal: {
       fontWeight: "bold",
@@ -63,17 +65,13 @@ const CleanTemplate = (async () => {
     return (
       <Document>
         <Page size="A4" style={styles.page}>
-          <View
-            render={() =>
-              settings?.header_logo.type === "text" &&
+          <View style={styles.header}>
+            {settings.header_logo.type === "text" &&
               settings.header_logo.text && (
                 <Text style={styles.heading}>{settings.header_logo.text}</Text>
-              )
-            }
-          />
-          <View
-            render={() =>
-              settings?.header_logo.type === "image" &&
+              )}
+
+            {settings.header_logo.type === "image" &&
               settings.header_logo.url && (
                 <Image
                   src={settings.header_logo.url}
@@ -84,182 +82,145 @@ const CleanTemplate = (async () => {
                     marginBottom: "20px",
                   }}
                 />
-              )
-            }
-          />
-          <View
-            render={() =>
-              settings?.header_content && (
-                <View style={styles.header}>
-                  {renderTipTapNode({
-                    node: settings.header_content,
-                    components: { View, Text, Link },
-                    tipTapStyles: tipTapNodeStyles,
-                  })}
-                </View>
-              )
-            }
-          />
-          <View style={styles.section}>
-            <Text style={styles.heading}>Invoice</Text>
-            <Text style={{ marginBottom: "2px" }}>
-              <Text style={styles.label}>Invoice number:</Text> #4234234
-            </Text>
-            <Text style={{ marginBottom: "2px" }}>
-              <Text style={styles.label}>Invoice date:</Text>{" "}
-              {order
-                ? new Date(order.created_at).toLocaleDateString()
-                : new Date().toLocaleDateString()}
-            </Text>
-            <Text>
-              <Text style={styles.label}>Order ID:</Text>{" "}
-              {order ? order.display_id : "#12345678"}
-            </Text>
-          </View>
+              )}
 
-          <View
-            style={[
-              styles.section,
-              {
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              },
-            ]}
-          >
-            <View>
-              <Text style={[styles.label, { marginBottom: "2px" }]}>
-                Bill to:
-              </Text>
-              <Text style={{ marginBottom: "2px" }}>
-                {order
-                  ? `${order.billing_address?.first_name} ${order.billing_address?.last_name}`
-                  : "John Doe"}
-              </Text>
-              <Text style={{ marginBottom: "2px" }}>
-                {order
-                  ? `${order.billing_address?.address_1}, ${order.billing_address?.city}`
-                  : "Apple street 123, New York"}
-              </Text>
-              <Text>
-                {order ? order.billing_address?.phone : "+1 234 567 8901"}
-              </Text>
-            </View>
-
-            <View>
-              <Text style={[styles.label, { marginBottom: "2px" }]}>
-                Ship to:
-              </Text>
-              <Text style={{ marginBottom: "2px" }}>
-                {order
-                  ? `${order.shipping_address?.first_name} ${order.shipping_address?.last_name}`
-                  : "John Doe"}
-              </Text>
-              <Text style={{ marginBottom: "2px" }}>
-                {order
-                  ? `${order.shipping_address?.address_1}, ${order.shipping_address?.city}`
-                  : "Apple street 123, New York"}
-              </Text>
-              <Text>
-                {order ? order.shipping_address?.phone : "+1 234 567 8901"}
-              </Text>
-            </View>
-          </View>
-          <View
-            style={[
-              styles.section,
-              settings?.template_id === "compact"
-                ? { borderBottom: "1px solid #eee" }
-                : {},
-            ]}
-          >
-            <View
-              style={[
-                styles.itemRow,
-                {
-                  marginBottom: "16px",
-                },
-              ]}
-            >
-              <View style={{ flex: 1 }}>
-                <Text style={styles.label}>Item Title</Text>
+            {settings.header_content && (
+              <View style={{ marginTop: "15px" }}>
+                {renderTipTapNode({
+                  node: settings.header_content,
+                  components: { View, Text, Link },
+                  tipTapStyles: tipTapNodeStyles,
+                })}
               </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.label}>SKU</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.label}>QTY</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.label}>Unit price</Text>
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.label}>Line total</Text>
-              </View>
-            </View>
-
-            {order && order.items ? (
-              order.items.map((i) => (
-                <View key={i.id} style={styles.itemRow}>
-                  <View style={{ flex: 1 }}>
-                    <Text>{i.title}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>{i.variant_sku}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>{formatNumber(i.quantity)}</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>
-                      {formatCurrency(i.unit_price, order.currency_code)}
-                    </Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>{formatCurrency(i.total, order.currency_code)}</Text>
-                  </View>
-                </View>
-              ))
-            ) : (
-              <>
-                <View style={styles.itemRow}>
-                  <View style={{ flex: 1 }}>
-                    <Text>Premium Widget</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>SKU123</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>1</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>$100.00</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>$100.00</Text>
-                  </View>
-                </View>
-                <View style={styles.itemRow}>
-                  <View style={{ flex: 1 }}>
-                    <Text>Standard Service</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>SKU4324</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>4</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>$134.00</Text>
-                  </View>
-                  <View style={{ flex: 1 }}>
-                    <Text>$134.00</Text>
-                  </View>
-                </View>
-              </>
             )}
           </View>
-          <View style={styles.totals}>
+
+          <View style={{ marginBottom: "64px" }}>
+            <Text
+              style={{
+                marginBottom: "32px",
+                fontSize: "36px",
+                fontWeight: "bold",
+                color: "#18181b",
+              }}
+            >
+              Invoice
+            </Text>
+
+            <View>
+              <Text style={{ marginBottom: "5px" }}>
+                <Text style={styles.label}>Invoice number:</Text>{" "}
+                {order.display_id}
+              </Text>
+
+              <Text style={{ marginBottom: "5px" }}>
+                <Text style={styles.label}>Invoice date:</Text>{" "}
+                {new Date(order.created_at).toLocaleDateString()}
+              </Text>
+
+              <Text>
+                <Text style={styles.label}>Order ID:</Text> {order.id}
+              </Text>
+            </View>
+          </View>
+
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              gap: "10px",
+              marginBottom: "64px",
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+              }}
+            >
+              <Text style={[styles.label, { marginBottom: "7px" }]}>
+                Bill to:
+              </Text>
+              {order.billing_address && (
+                <View>
+                  <Text style={{ marginBottom: "5px" }}>
+                    {`${order.billing_address.first_name} ${order.billing_address.last_name}`}
+                  </Text>
+
+                  <Text style={{ marginBottom: "5px" }}>
+                    {`${order.billing_address.address_1}, ${order.billing_address.city}`}
+                  </Text>
+
+                  <Text>{order.billing_address.phone}</Text>
+                </View>
+              )}
+            </View>
+
+            <View
+              style={{
+                flex: 1,
+              }}
+            >
+              <Text style={[styles.label, { marginBottom: "7px" }]}>
+                Ship to:
+              </Text>
+
+              {order.shipping_address && (
+                <View>
+                  <Text style={{ marginBottom: "5px" }}>
+                    {`${order.shipping_address.first_name} ${order.shipping_address.last_name}`}
+                  </Text>
+
+                  <Text style={{ marginBottom: "5px" }}>
+                    {`${order.shipping_address.address_1}, ${order.shipping_address.city}`}
+                  </Text>
+
+                  <Text>{order.shipping_address.phone}</Text>
+                </View>
+              )}
+            </View>
+          </View>
+
+          <View
+            style={{
+              marginBottom: "64px",
+            }}
+          >
+            <View style={[styles.itemRow]}>
+              <Text style={[styles.label, { width: "30%" }]}>Item Title</Text>
+
+              <Text style={[styles.label, { width: "20%" }]}>SKU</Text>
+
+              <Text style={[styles.label, { width: "10%" }]}>QTY</Text>
+
+              <Text style={[styles.label, { width: "20%" }]}>Unit price</Text>
+
+              <Text style={[styles.label, { width: "20%" }]}>Line total</Text>
+            </View>
+
+            {order.items &&
+              order.items.map((i) => (
+                <View key={i.id} style={styles.itemRow}>
+                  <Text style={{ width: "30%" }}>{i.title}</Text>
+
+                  <Text style={{ width: "20%" }}>{i.variant_sku}</Text>
+
+                  <Text style={{ width: "10%" }}>
+                    {formatNumber(i.quantity)}
+                  </Text>
+
+                  <Text style={{ width: "20%" }}>
+                    {formatCurrency(i.unit_price, order.currency_code)}
+                  </Text>
+
+                  <Text style={{ width: "20%" }}>
+                    {formatCurrency(i.total, order.currency_code)}
+                  </Text>
+                </View>
+              ))}
+          </View>
+
+          <View style={styles.totals} wrap={false}>
             <View style={{ gap: "6px" }}>
               <Text>Subtotal:</Text>
               <Text>Discount:</Text>
@@ -267,43 +228,31 @@ const CleanTemplate = (async () => {
               <Text>Tax:</Text>
               <Text style={styles.grandTotal}>Grand Total:</Text>
             </View>
+
             <View style={{ gap: "6px" }}>
+              <Text>{formatCurrency(order.subtotal, order.currency_code)}</Text>
               <Text>
-                {order
-                  ? `${formatCurrency(order.subtotal, order.currency_code)}`
-                  : "$234.00"}
+                {formatCurrency(order.discount_total, order.currency_code)}
               </Text>
               <Text>
-                {order
-                  ? `${formatCurrency(order.discount_total, order.currency_code)}`
-                  : "$2.00"}
+                {formatCurrency(order.shipping_total, order.currency_code)}
               </Text>
               <Text>
-                {order
-                  ? `${formatCurrency(order.shipping_total, order.currency_code)}`
-                  : "$234.00"}
-              </Text>
-              <Text>
-                {order
-                  ? `${formatCurrency(order.tax_total, order.currency_code)}`
-                  : "$234.00"}
+                {formatCurrency(order.tax_total, order.currency_code)}
               </Text>
               <Text style={styles.grandTotal}>
-                {order
-                  ? `${formatCurrency(order.total, order.currency_code)}`
-                  : "$234.00"}
+                {formatCurrency(order.total, order.currency_code)}
               </Text>
             </View>
           </View>
 
           <View
-            style={styles.section}
             render={() =>
-              (settings?.store_name ||
-                settings?.store_address ||
-                settings?.store_tax_id ||
-                settings?.bank_account_iban ||
-                settings?.bank_account_swift) && (
+              (settings.store_name ||
+                settings.store_address ||
+                settings.store_tax_id ||
+                settings.bank_account_iban ||
+                settings.bank_account_swift) && (
                 <>
                   {settings.store_name && (
                     <Text style={{ marginBottom: "4px" }}>
@@ -333,7 +282,7 @@ const CleanTemplate = (async () => {
             }
           />
 
-          {settings?.footer_content && (
+          {settings.footer_content && (
             <View style={styles.footer}>
               {renderTipTapNode({
                 node: settings.footer_content,

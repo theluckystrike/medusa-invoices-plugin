@@ -25,7 +25,10 @@ const FileUploader = ({ setTemplateSettings }: FileUploaderProps) => {
       toast.success(`Uploaded successfully: ${uploadedUrl}`);
       setTemplateSettings((prev) => ({
         ...prev,
-        header_logo_url: uploadedUrl,
+        header_logo: {
+          ...prev.header_logo,
+          url: uploadedUrl,
+        },
       }));
     } catch (error) {
       toast.error("Failed to upload image");

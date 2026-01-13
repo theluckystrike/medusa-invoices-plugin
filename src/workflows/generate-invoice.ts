@@ -261,8 +261,6 @@ const renderPdfStep = createStep(
 
     const element = await template.render(templateProps);
 
-    //const pdfStream = await ReactPDF.renderToStream(element);
-
     const pdfBuffer = await ReactPDF.renderToBuffer(element);
     const base64Pdf = pdfBuffer.toString("base64");
 
@@ -294,24 +292,6 @@ const renderPdfStep = createStep(
         "Invoice pdf url update failed",
       );
     }
-
-    // const template = getTemplate(invoice.template_id);
-
-    // logger.debug(`Invoice: ${JSON.stringify(invoice)}`);
-    // logger.debug(`Template: ${JSON.stringify(template)}`);
-
-    // console.log("Invoice: ", invoice);
-    // console.log("Template: ", template);
-
-    // if (!template) {
-    //   throw new MedusaError(
-    //     MedusaError.Types.INVALID_DATA,
-    //     `Template ${invoice.template_id} not found`,
-    //   );
-    // }
-
-    // const Component = template.Component;
-    //const pdfStream = await pdf(<Component {...templateProps} />)
 
     logger.info(
       `invoices: PDF rendered and uploaded successfully for order invoice`,

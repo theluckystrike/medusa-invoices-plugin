@@ -1,5 +1,3 @@
-// import { TemplateAdminOrder } from "../templates/types";
-
 import { TemplateOrderProp } from "../templates/types";
 
 export const orderDummyData: TemplateOrderProp = {
@@ -10,16 +8,16 @@ export const orderDummyData: TemplateOrderProp = {
   billing_address: {
     first_name: "John",
     last_name: "Doe",
-    address_1: "Soltanska 45b",
-    city: "Split",
-    phone: "+385 99 543 2345",
+    address_1: "Apple street 123",
+    city: "New York",
+    phone: "+1 234 567 8901",
   },
   shipping_address: {
     first_name: "Jane",
     last_name: "Smith",
-    address_1: "Vukovarska 25",
-    city: "Split",
-    phone: "+385 95 240 3052",
+    address_1: "Apple street 245",
+    city: "New York",
+    phone: "+1 456 789 4526",
   },
   items: [
     {
