@@ -18,7 +18,6 @@ import TiptapEditor from "./TiptapEditor";
 import { TemplateSettings } from "../routes/settings/invoices/page";
 import { JSONContent } from "@tiptap/react";
 import { useUpsertInvoiceSettings } from "../hooks/invoice-settings";
-import { getTemplate, templates } from "./templates/registry";
 import FileUploader from "./FileUploader";
 import MultiSelect from "./MultiSelect";
 import {
@@ -26,6 +25,7 @@ import {
   InvoiceTemplateId,
 } from "../../constants/invoice";
 import { sdk } from "../lib/sdk";
+import { getTemplate, templates } from "../templates/registry";
 
 const RenderTemplateSettings: React.FC<{
   previewType: string;

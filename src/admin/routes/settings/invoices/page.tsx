@@ -26,9 +26,10 @@ import {
   InvoiceSettingsHeaderLogoType,
   InvoiceTemplateId,
 } from "../../../../constants/invoice";
-import { getTemplate } from "../../../components/templates/registry";
 import { pdf } from "@react-pdf/renderer";
 import DummyPdfViewer from "../../../components/DummyPdfViewer";
+import { orderDummyData } from "../../../components/templateDummyData";
+import { getTemplate } from "../../../templates/registry";
 
 export type TemplateSettings = {
   template_id: InvoiceTemplateId;
@@ -110,13 +111,32 @@ export default function Invoices() {
     setIsDownloading(true);
 
     try {
-      const template = getTemplate(templateSettings.template_id);
-      const TemplateComponent = template.Component;
-      const order = orderQuery.data?.order;
+      let order;
 
-      const blob = await pdf(
-        <TemplateComponent settings={templateSettings} order={order} />,
-      ).toBlob();
+      if (previewType === "dummy-data") {
+        order = orderDummyData;
+      } else {
+        order = orderQuery.data?.order;
+      }
+
+      if (!order) {
+        throw new Error("Failed to fetch order data");
+      }
+
+      const invoice = {
+        id: "inv_01",
+        created_at: order.created_at,
+        display_number: order.display_id,
+      };
+
+      const template = await getTemplate(templateSettings.template_id);
+      const templateComponent = await template.render({
+        order,
+        settings: templateSettings,
+        invoice,
+      });
+
+      const blob = await pdf(templateComponent).toBlob();
 
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
