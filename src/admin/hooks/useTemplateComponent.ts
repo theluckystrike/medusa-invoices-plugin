@@ -1,11 +1,7 @@
 import { TemplateProps } from "../templates/types";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
-import { getTemplate as newGetTemplate } from "../templates/registry";
+import { getTemplate } from "../templates/registry";
 import React from "react";
-
-// TODO: rename to getTemplate
-
-// TODO: create a new component that uses this hook to fetch the template component
 
 export const useTemplateComponent = (
   templateId: "clean" | "classic" | "compact",
@@ -18,7 +14,7 @@ export const useTemplateComponent = (
       JSON.stringify(props),
     ],
     queryFn: async () => {
-      const template = newGetTemplate(templateId);
+      const template = getTemplate(templateId);
 
       return template.render(props);
     },

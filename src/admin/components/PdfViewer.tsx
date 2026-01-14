@@ -1,10 +1,10 @@
 import * as React from "react";
-import { PDFViewer as ReactPDFViewer } from "@react-pdf/renderer";
 import { Text } from "@medusajs/ui";
 import { AdminOrderResponse } from "@medusajs/framework/types";
 import { UseQueryResult } from "@tanstack/react-query";
 import { TemplateSettings } from "../routes/settings/invoices/page";
-import { useTemplateComponent } from "../hooks/useTemplateComponent";
+import { TemplateProps } from "../templates/types";
+import PdfPreview from "./PdfPreview";
 
 type PdfViewerProps = {
   templateSettings: TemplateSettings;
@@ -51,38 +51,21 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
     );
   }
 
-  const invoice = {
-    id: "inv_01",
-    created_at: order.created_at,
-    display_number: order.display_id,
+  const templateProps: TemplateProps = {
+    order,
+    settings: templateSettings,
+    invoice: {
+      id: `invoice-${order.id}`,
+      created_at: order.created_at,
+      display_number: order.display_id,
+    },
   };
 
-  const templateComponentQuery = useTemplateComponent(
-    templateSettings.template_id,
-    { order, settings: templateSettings, invoice },
-  );
-  const templateComponent = templateComponentQuery.data;
-
-  if (templateComponentQuery.isLoading) {
-    return (
-      <Text className="text-ui-fg-subtle" size="small">
-        Loading order invoice preview...
-      </Text>
-    );
-  }
-
-  if (!templateComponent || templateComponentQuery.isError) {
-    return (
-      <Text className="text-ui-fg-subtle" size="small">
-        Failed to load order invoice preview
-      </Text>
-    );
-  }
-
   return (
-    <ReactPDFViewer showToolbar={false} height={600} width="100%">
-      {templateComponent}
-    </ReactPDFViewer>
+    <PdfPreview
+      templateId={templateSettings.template_id}
+      templateProps={templateProps}
+    />
   );
 };
 
