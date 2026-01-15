@@ -33,31 +33,13 @@ export type TemplateOrderProp = {
   shipping_total: BigNumberValue | number;
 };
 
-export type TemplateSettings = {
-  template_id: "clean" | "classic" | "compact";
-  header_logo_type: "none" | "text" | "image";
-  header_logo_url: string;
-  header_logo_text: string;
-  header_content: JSONContent;
-  footer_content: JSONContent;
-  store_name: string;
-  store_address: string;
-  store_tax_id: string;
-  bank_account_iban: string;
-  bank_account_swift: string;
-  auto_generate_on:
-    | "order.completed"
-    | "order.fulfillment_created"
-    | "payment.captured"[];
-};
-
 export type TemplateSettingsForTemplate = {
   template_id: "clean" | "classic" | "compact";
   template_version: string;
   header_logo: {
-    type: "none" | "text" | "image";
-    text: string | null;
     url: string | null;
+    text: string | null;
+    type: "none" | "text" | "image";
   };
   header_content: JSONContent | null;
   footer_content: JSONContent | null;

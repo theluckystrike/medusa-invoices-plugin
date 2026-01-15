@@ -5,7 +5,7 @@ import { TemplateProps } from "../templates/types";
 import PdfPreview from "./PdfPreview";
 
 type DummyPdfViewerProps = {
-  templateSettings: TemplateSettings;
+  templateSettings: Omit<TemplateSettings, "auto_generate_on">;
 };
 
 const DummyPdfViewer: React.FC<DummyPdfViewerProps> = ({

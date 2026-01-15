@@ -7,7 +7,7 @@ import { TemplateProps } from "../templates/types";
 import PdfPreview from "./PdfPreview";
 
 type PdfViewerProps = {
-  templateSettings: TemplateSettings;
+  templateSettings: Omit<TemplateSettings, "auto_generate_on">;
   selectedOrderId: string;
   orderQuery: UseQueryResult<AdminOrderResponse>;
 };

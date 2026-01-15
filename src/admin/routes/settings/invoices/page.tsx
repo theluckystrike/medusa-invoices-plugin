@@ -196,6 +196,8 @@ export default function Invoices() {
     });
   }, [invoiceSettingsQuery.data]);
 
+  const { auto_generate_on, ...previewTemplateSettings } = templateSettings;
+
   return (
     <Container className="divide-y p-0">
       <div className="px-6 flex justify-between max-sm:flex-col sm:items-center gap-4 py-4">
@@ -294,10 +296,10 @@ export default function Invoices() {
                   Using built-in sample order data for preview
                 </Text>
                 {previewType === "dummy-data" ? (
-                  <DummyPdfViewer templateSettings={templateSettings} />
+                  <DummyPdfViewer templateSettings={previewTemplateSettings} />
                 ) : (
                   <PdfViewer
-                    templateSettings={templateSettings}
+                    templateSettings={previewTemplateSettings}
                     selectedOrderId={selectedOrderId}
                     orderQuery={orderQuery}
                   />
@@ -332,10 +334,10 @@ export default function Invoices() {
                   </Select>
                 </div>
                 {previewType === "dummy-data" ? (
-                  <DummyPdfViewer templateSettings={templateSettings} />
+                  <DummyPdfViewer templateSettings={previewTemplateSettings} />
                 ) : (
                   <PdfViewer
-                    templateSettings={templateSettings}
+                    templateSettings={previewTemplateSettings}
                     selectedOrderId={selectedOrderId}
                     orderQuery={orderQuery}
                   />

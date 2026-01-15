@@ -122,12 +122,16 @@ const RenderTemplateSettings: React.FC<{
       }
     };
 
-    const handleTemplateIdChange = React.useCallback((value: string) => {
-      setTemplateSettings((prev) => ({
-        ...prev,
-        template_id: value as TemplateSettings["template_id"],
-      }));
-    }, []);
+    const handleTemplateIdChange = React.useCallback(
+      (value: "clean" | "classic" | "compact") => {
+        setTemplateSettings((prev) => ({
+          ...prev,
+          template_id: value as TemplateSettings["template_id"],
+          template_version: getTemplate(value).version,
+        }));
+      },
+      [],
+    );
 
     const handleHeaderLogoTypeChange = React.useCallback((value: string) => {
       setTemplateSettings((prev) => ({
