@@ -7,37 +7,31 @@ const defaultTipTapNodeStyles = {
     fontSize: 24,
     fontWeight: "bold" as const,
     marginBottom: 12,
-    marginTop: 12,
   },
   heading2: {
     fontSize: 20,
     fontWeight: "bold" as const,
     marginBottom: 10,
-    marginTop: 10,
   },
   heading3: {
     fontSize: 16,
     fontWeight: "bold" as const,
     marginBottom: 8,
-    marginTop: 8,
   },
   heading4: {
     fontSize: 14,
     fontWeight: "bold" as const,
     marginBottom: 6,
-    marginTop: 6,
   },
   heading5: {
     fontSize: 12,
     fontWeight: "bold" as const,
     marginBottom: 4,
-    marginTop: 4,
   },
   heading6: {
     fontSize: 11,
     fontWeight: "bold" as const,
     marginBottom: 4,
-    marginTop: 4,
   },
   listItem: {
     flexDirection: "row" as const,
