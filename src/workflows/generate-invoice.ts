@@ -314,7 +314,7 @@ const completeInvoiceStep = createStep(
       completed_at: new Date(),
     });
 
-    if (!completeInvoiceStep) {
+    if (!completedInvoice) {
       logger.error(`invoices: Invoice completion failed`);
 
       throw new MedusaError(

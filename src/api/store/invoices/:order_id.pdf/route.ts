@@ -1,6 +1,5 @@
 import {
   AuthenticatedMedusaRequest,
-  MedusaRequest,
   MedusaResponse,
 } from "@medusajs/framework";
 import {
@@ -19,16 +18,40 @@ export async function GET(
   if (!order_id) {
     throw new MedusaError(
       MedusaError.Types.INVALID_DATA,
-      "Order ID is required.",
+      "Order display ID is required.",
+    );
+  }
+
+  const display_id = Number(order_id);
+
+  if (Number.isNaN(display_id)) {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      "Order display ID must be a number.",
     );
   }
 
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
+  const { data: orders } = await query.graph({
+    entity: "order",
+    fields: ["id", "customer_id"],
+    filters: { display_id },
+  });
+
+  const order = orders[0];
+
+  if (!order) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      `Order with display_id ${display_id} not found`,
+    );
+  }
+
   const { data: orderInvoices } = await query.graph({
     entity: OrderInvoiceLink.entryPoint,
     fields: ["invoice.pdf_url", "order.customer_id"],
-    filters: { order_id },
+    filters: { order_id: order.id },
     pagination: {
       take: 1,
       order: {
@@ -37,30 +60,35 @@ export async function GET(
     },
   });
 
-  const firstInvoiceLink = orderInvoices?.[0];
+  const orderInvoiceLink = orderInvoices?.[0];
 
-  if (firstInvoiceLink.order.customer_id !== id) {
+  if (!orderInvoiceLink) {
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      `Invoice for order with display_id ${display_id} not found`,
+    );
+  }
+
+  if (orderInvoiceLink.order.customer_id !== id) {
     throw new MedusaError(
       MedusaError.Types.UNAUTHORIZED,
       "You do not have access to this invoice",
     );
   }
 
-  if (!firstInvoiceLink?.invoice) {
-    throw new MedusaError(
-      MedusaError.Types.NOT_FOUND,
-      `Invoice for order with id ${order_id} not found`,
-    );
-  }
+  const invoiceURL = orderInvoiceLink.invoice?.pdf_url;
 
-  const invoicePdfUrl = firstInvoiceLink.invoice.pdf_url;
-
-  if (!invoicePdfUrl) {
+  if (!invoiceURL) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
       "Invoice PDF URL is missing",
     );
   }
 
-  res.redirect(invoicePdfUrl);
+  const invoiceId = orderInvoiceLink.invoice.id;
+
+  res.json({
+    invoice_id: invoiceId,
+    invoice_pdf_url: invoiceURL,
+  });
 }

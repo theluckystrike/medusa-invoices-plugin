@@ -17,7 +17,20 @@ import CollapsiblePanel from "../components/CollapsiblePanel";
 
 const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   const orderId = data?.id;
-  const invoiceQuery = useOrderInvoice(orderId);
+  const invoiceQuery = useOrderInvoice(orderId, {
+    refetchInterval: (query) => {
+      const invoice = query.state.data;
+
+      if (
+        invoice?.status === InvoiceStatus.COMPLETED ||
+        invoice?.status === InvoiceStatus.FAILED
+      ) {
+        return false;
+      }
+
+      return 3000;
+    },
+  });
   const generateInvoice = useGenerateInvoice(orderId!);
 
   const handleGenerateInvoice = async () => {
@@ -37,7 +50,10 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   const invoice = invoiceQuery.data;
   let invoiceStatusBadge = <StatusBadge color="grey">Queued</StatusBadge>;
 
-  if (generateInvoice.isPending) {
+  if (
+    generateInvoice.isPending ||
+    invoice?.status == InvoiceStatus.GENERATING
+  ) {
     invoiceStatusBadge = <StatusBadge color="blue">Generating</StatusBadge>;
   } else if (invoice?.status === InvoiceStatus.COMPLETED) {
     invoiceStatusBadge = <StatusBadge color="green">Completed</StatusBadge>;
