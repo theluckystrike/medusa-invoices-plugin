@@ -14,6 +14,9 @@ import { Link } from "@medusajs/icons";
 import JsonViewSection from "../components/JsonViewSection";
 import { InvoiceStatus } from "../../constants/invoice";
 import CollapsiblePanel from "../components/CollapsiblePanel";
+import InvoiceListModal from "../components/InvoiceListModal";
+import React from "react";
+import InvoiceDropdownMenu from "../components/InvoiceDropdownMenu";
 
 const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   const orderId = data?.id;
@@ -32,6 +35,8 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
     },
   });
   const generateInvoice = useGenerateInvoice(orderId!);
+
+  const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
 
   const handleGenerateInvoice = async () => {
     try {
@@ -71,7 +76,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
           level="h2"
           className="w-full flex justify-between items-center px-6 py-4"
         >
-          Invoice
+          Latest Invoice
           {invoiceStatusBadge}
         </Heading>
 
@@ -103,18 +108,30 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
         level="h2"
         className="w-full flex justify-between items-center px-6 py-4 gap-4"
       >
-        Invoice
-        {invoiceStatusBadge}
+        Latest Invoice
+        <div className="flex justify-between items-center gap-4">
+          {invoiceStatusBadge}
+          <InvoiceDropdownMenu setIsModalOpen={setIsModalOpen} />
+        </div>
       </Heading>
 
       {invoice.status === InvoiceStatus.COMPLETED && (
         <>
           <div className="grid w-full grid-cols-2 items-center gap-4 px-6 py-4">
             <Text className="text-ui-fg-subtle" weight="plus" size="small">
+              Template Version
+            </Text>
+            <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
+              {invoice.template_version}
+            </Text>
+          </div>
+
+          <div className="grid w-full grid-cols-2 items-center gap-4 px-6 py-4">
+            <Text className="text-ui-fg-subtle" weight="plus" size="small">
               Generated At
             </Text>
             <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
-              {new Date(invoice.completed_at!).toLocaleDateString()}
+              {new Date(invoice.completed_at!).toLocaleString()}
             </Text>
           </div>
 
@@ -154,6 +171,8 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
             : "Generate New Invoice"}
         </Button>
       </div>
+
+      <InvoiceListModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </Container>
   );
 };

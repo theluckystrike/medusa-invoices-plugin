@@ -22,3 +22,10 @@ export enum InvoiceSettingsAutoGenerateTrigger {
   FULFILLMENT_CREATED = "order.fulfillment_created",
   PAYMENT_CAPTURED = "payment.captured",
 }
+
+export enum InvoiceCreatedByEvent {
+  ORDER_COMPLETED = "order.completed",
+  FULFILLMENT_CREATED = "order.fulfillment_created",
+  PAYMENT_CAPTURED = "payment.captured",
+  MANUAL = "manual",
+}
