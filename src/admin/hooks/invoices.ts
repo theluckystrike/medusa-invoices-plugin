@@ -27,7 +27,7 @@ export const useOrderInvoice = (
     queryKey: ["active-invoice", orderId],
     queryFn: async () => {
       const invoice = await sdk.client.fetch<GetInvoiceResponse>(
-        `/admin/invoices/${orderId}`,
+        `/admin/invoices/${orderId}/latest`,
       );
 
       return invoice;

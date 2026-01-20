@@ -28,9 +28,24 @@ export default defineMiddlewares({
       middlewares: [validateGetInvoicesMiddleware],
     },
     {
-      matcher: "/admin/orders/:id/invoice",
-      method: "GET",
-      middlewares: [validateGetInvoicesMiddleware],
+      matcher: "/admin/orders/:order_id/invoices",
+      methods: ["GET"],
+      middlewares: [
+        validateAndTransformQuery(createFindParams(), {
+          isList: true,
+          defaults: [
+            "invoice.status",
+            "invoice.completed_at",
+            "invoice.pdf_url",
+            "invoice.template_id",
+            "invoice.template_version",
+            "invoice.error_message",
+            "invoice.order_display_id",
+            "created_by_event",
+          ],
+          defaultLimit: 24,
+        }),
+      ],
     },
     {
       matcher: "/admin/invoices/:order_id/generate",

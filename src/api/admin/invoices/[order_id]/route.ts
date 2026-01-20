@@ -27,27 +27,16 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       "invoice.template_version",
       "invoice.error_message",
       "invoice.order_display_id",
-      "created_by_event",
+      "invoice.created_by_event",
     ],
     filters: { order_id },
     pagination: {
-      take: 1,
+      take: 24,
       order: {
         created_at: "DESC",
       },
     },
   });
 
-  const firstInvoiceLink = orderInvoices?.[0];
-
-  if (!firstInvoiceLink?.invoice) {
-    throw new MedusaError(
-      MedusaError.Types.NOT_FOUND,
-      `Invoice for order with id ${order_id} not found`,
-    );
-  }
-
-  const { id, ...orderInvoiceResponse } = firstInvoiceLink.invoice;
-
-  res.json(orderInvoiceResponse);
+  res.json(orderInvoices);
 }
