@@ -5,7 +5,11 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { sdk } from "../lib/sdk";
-import { GetInvoiceResponse, InvoiceDTO } from "../../types/invoice";
+import {
+  GenerateInvoiceRequestBody,
+  GetInvoiceResponse,
+  InvoiceDTO,
+} from "../../types/invoice";
 
 export const useOrderInvoice = (
   orderId: string,
@@ -37,11 +41,12 @@ export const useGenerateInvoice = (order_id: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (payload: GenerateInvoiceRequestBody) => {
       const invoice = await sdk.client.fetch<InvoiceDTO>(
         `/admin/invoices/${order_id}/generate`,
         {
           method: "POST",
+          body: payload,
         },
       );
 

@@ -17,27 +17,31 @@ import {
   emitEventStep,
 } from "@medusajs/medusa/core-flows";
 import {
+  InvoiceCreatedByEvent,
   InvoiceSettingsAutoGenerateTrigger,
   InvoiceStatus,
   InvoiceTemplateId,
 } from "../constants/invoice";
 import { GenerateInvoiceWorkflowInput, InvoiceDTO } from "../types/invoice";
-import { InvoiceSettingsDTO } from "../types/invoice-settings";
 import { getTemplate } from "../templates/registry";
 import { TemplateProps, TemplateSettingsForTemplate } from "../templates/types";
+
+type GenerateInvoiceStepInput = {
+  order_display_id: number;
+  template_id: InvoiceTemplateId | undefined;
+  created_by_event: InvoiceCreatedByEvent;
+};
 
 type RenderPdfStepInput = {
   order_id: string;
   invoice: InvoiceDTO;
-  settings: InvoiceSettingsDTO;
 };
+
+type CompleteInvoiceStepInput = { invoice: InvoiceDTO; order_id: string };
 
 const validateOrderStep = createStep(
   "validate-order-exists-step",
-  async (
-    { order_id, template_id }: GenerateInvoiceWorkflowInput,
-    { container },
-  ) => {
+  async ({ order_id }: GenerateInvoiceWorkflowInput, { container }) => {
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const orderModuleService = container.resolve(Modules.ORDER);
 
@@ -58,7 +62,6 @@ const validateOrderStep = createStep(
 
     return new StepResponse({
       order_display_id: order.display_id,
-      template_id,
     });
   },
 );
@@ -69,7 +72,8 @@ const generateInvoiceStep = createStep(
     {
       order_display_id,
       template_id,
-    }: { template_id: InvoiceTemplateId | undefined; order_display_id: number },
+      created_by_event,
+    }: GenerateInvoiceStepInput,
     { container },
   ) => {
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
@@ -124,6 +128,7 @@ const generateInvoiceStep = createStep(
       pdf_url: null,
       completed_at: null,
       error_message: null,
+      created_by_event: created_by_event,
     });
 
     if (!invoice) {
@@ -136,7 +141,7 @@ const generateInvoiceStep = createStep(
 
     logger.info(`invoices: Invoice generated for order successfully`);
 
-    return new StepResponse({ invoice, settings }, { id: invoice.id });
+    return new StepResponse({ invoice }, { id: invoice.id });
   },
   async (context, { container }) => {
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
@@ -153,10 +158,7 @@ const generateInvoiceStep = createStep(
 
 const renderPdfStep = createStep(
   "render-pdf-step",
-  async (
-    { order_id, invoice, settings }: RenderPdfStepInput,
-    { container },
-  ) => {
+  async ({ order_id, invoice }: RenderPdfStepInput, { container }) => {
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const query = container.resolve(ContainerRegistrationKeys.QUERY);
     const fileModuleService = container.resolve(Modules.FILE);
@@ -298,10 +300,7 @@ const renderPdfStep = createStep(
 
 const completeInvoiceStep = createStep(
   "complete-invoice-step",
-  async (
-    { invoice, order_id }: { invoice: InvoiceDTO; order_id: string },
-    { container },
-  ) => {
+  async ({ invoice, order_id }: CompleteInvoiceStepInput, { container }) => {
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
     const invoiceModuleService: InvoiceModuleService =
       await container.resolve(INVOICE_MODULE);
@@ -362,16 +361,18 @@ const generateInvoiceWorkflow = createWorkflow(
   (input: GenerateInvoiceWorkflowInput) => {
     const validateOrderResult = validateOrderStep(input);
 
-    const generateInvoiceResult = generateInvoiceStep({
-      ...validateOrderResult,
-    });
+    const generateInvoiceStepInput = transform(
+      { validateOrderResult, input },
+      ({ validateOrderResult, input }) => ({
+        order_display_id: validateOrderResult.order_display_id,
+        template_id: input.template_id,
+        created_by_event: input.created_by_event,
+      }),
+    );
+
+    const generateInvoiceResult = generateInvoiceStep(generateInvoiceStepInput);
 
     const invoice = transform(generateInvoiceResult, (input) => input.invoice);
-
-    const settings = transform(
-      generateInvoiceResult,
-      (input) => input.settings,
-    );
 
     createRemoteLinkStep([
       {
@@ -387,7 +388,6 @@ const generateInvoiceWorkflow = createWorkflow(
     const rederPdfStepResult = renderPdfStep({
       order_id: input.order_id,
       invoice,
-      settings,
     });
 
     const completeInvoiceStepResult = completeInvoiceStep({

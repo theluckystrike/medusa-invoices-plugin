@@ -99,6 +99,21 @@
           "nullable": true,
           "mappedType": "text"
         },
+        "created_by_event": {
+          "name": "created_by_event",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "enumItems": [
+            "order.completed",
+            "order.fulfillment_created",
+            "payment.captured",
+            "manual"
+          ],
+          "mappedType": "enum"
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamptz",

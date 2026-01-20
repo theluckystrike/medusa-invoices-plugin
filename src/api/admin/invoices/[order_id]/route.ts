@@ -27,6 +27,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       "invoice.template_version",
       "invoice.error_message",
       "invoice.order_display_id",
+      "created_by_event",
     ],
     filters: { order_id },
     pagination: {

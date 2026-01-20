@@ -35,7 +35,7 @@ export default defineMiddlewares({
     {
       matcher: "/admin/invoices/:order_id/generate",
       method: "POST",
-      middlewares: [validateAndTransformBody(generateInvoiceSchema.unwrap())],
+      middlewares: [validateAndTransformBody(generateInvoiceSchema)],
     },
     {
       matcher: "/store/invoices/:order_id.pdf",

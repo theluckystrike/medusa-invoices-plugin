@@ -1,4 +1,5 @@
 import {
+  InvoiceCreatedByEvent,
   InvoiceSettingsHeaderLogoType,
   InvoiceStatus,
   InvoiceTemplateId,
@@ -31,6 +32,7 @@ export type InvoiceDTO = {
   template_version: string;
   settings_snapshot: Record<string, any>;
   error_message: string | null;
+  created_by_event: InvoiceCreatedByEvent; // order.completed | order.fulfillment_created | payment.captured | manual
   created_at: Date;
   updated_at: Date;
   deleted_at: Date | null;
@@ -39,6 +41,7 @@ export type InvoiceDTO = {
 export type GenerateInvoiceWorkflowInput = {
   order_id: string;
   template_id?: InvoiceTemplateId; // clean | classic | compact
+  created_by_event: InvoiceCreatedByEvent; // order.completed | order.fulfillment_created | payment.captured | manual
 };
 
 export type InvoiceGeneratedPayload = {
@@ -64,4 +67,10 @@ export type GetInvoiceResponse = {
   template_id: InvoiceTemplateId;
   template_version: string;
   error_message: string | null;
+  created_by_event: InvoiceCreatedByEvent; // order.completed | order.fulfillment_created | payment.captured | manual
+};
+
+export type GenerateInvoiceRequestBody = {
+  template_id?: InvoiceTemplateId; // clean | classic | compact
+  created_by_event: InvoiceCreatedByEvent; // order.completed | order.fulfillment_created | payment.captured | manual
 };

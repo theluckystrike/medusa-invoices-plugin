@@ -12,7 +12,7 @@ import { AdminOrder, DetailWidgetProps } from "@medusajs/framework/types";
 import { useGenerateInvoice, useOrderInvoice } from "../hooks/invoices";
 import { Link } from "@medusajs/icons";
 import JsonViewSection from "../components/JsonViewSection";
-import { InvoiceStatus } from "../../constants/invoice";
+import { InvoiceCreatedByEvent, InvoiceStatus } from "../../constants/invoice";
 import CollapsiblePanel from "../components/CollapsiblePanel";
 import InvoiceListModal from "../components/InvoiceListModal";
 import React from "react";
@@ -40,7 +40,9 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
 
   const handleGenerateInvoice = async () => {
     try {
-      await generateInvoice.mutateAsync();
+      await generateInvoice.mutateAsync({
+        created_by_event: InvoiceCreatedByEvent.MANUAL,
+      });
 
       toast.success("Generated invoice", {
         description: "Invoice generated successfully",

@@ -1,14 +1,18 @@
 import {
   Badge,
   createDataTableColumnHelper,
+  createDataTableFilterHelper,
   DataTable,
+  DataTableFilteringState,
   DataTablePaginationState,
   FocusModal,
+  IconButton,
   //Heading,
   useDataTable,
 } from "@medusajs/ui";
 import React from "react";
-import { InvoiceStatus } from "../../constants/invoice";
+import { InvoiceCreatedByEvent, InvoiceStatus } from "../../constants/invoice";
+import { Link } from "@medusajs/icons";
 
 const data = [
   {
@@ -16,7 +20,7 @@ const data = [
     created_by_event: "order.completed",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "08.01.2026",
+    generated_at: "2026-01-13 12:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -24,7 +28,7 @@ const data = [
     created_by_event: "order.fulfillment_created",
     status: "failed",
     template_version: "1.0.0",
-    generated_at: "01.01.2026",
+    generated_at: "2026-01-13 13:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -32,7 +36,7 @@ const data = [
     created_by_event: "payment.captured",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "16.01.2026",
+    generated_at: "2026-01-13 10:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -40,7 +44,7 @@ const data = [
     created_by_event: "order.completed",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "08.01.2026",
+    generated_at: "2026-01-13 10:15:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -48,7 +52,7 @@ const data = [
     created_by_event: "order.fulfillment_created",
     status: "failed",
     template_version: "1.0.0",
-    generated_at: "01.01.2026",
+    generated_at: "2026-01-14 10:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -56,7 +60,7 @@ const data = [
     created_by_event: "payment.captured",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "16.01.2026",
+    generated_at: "2026-01-15 10:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -64,7 +68,7 @@ const data = [
     created_by_event: "order.completed",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "08.01.2026",
+    generated_at: "2026-01-11 10:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -72,7 +76,7 @@ const data = [
     created_by_event: "order.fulfillment_created",
     status: "failed",
     template_version: "1.0.0",
-    generated_at: "01.01.2026",
+    generated_at: "2026-01-10 10:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -80,7 +84,7 @@ const data = [
     created_by_event: "payment.captured",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "16.01.2026",
+    generated_at: "2026-01-13 10:41:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -88,7 +92,7 @@ const data = [
     created_by_event: "order.completed",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "08.01.2026",
+    generated_at: "2026-01-01 10:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -96,7 +100,7 @@ const data = [
     created_by_event: "order.fulfillment_created",
     status: "failed",
     template_version: "1.0.0",
-    generated_at: "01.01.2026",
+    generated_at: "2026-01-12 09:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -104,7 +108,7 @@ const data = [
     created_by_event: "payment.captured",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "16.01.2026",
+    generated_at: "2026-01-16 10:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -112,7 +116,7 @@ const data = [
     created_by_event: "order.completed",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "08.01.2026",
+    generated_at: "2026-01-17 10:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -120,7 +124,7 @@ const data = [
     created_by_event: "order.fulfillment_created",
     status: "failed",
     template_version: "1.0.0",
-    generated_at: "01.01.2026",
+    generated_at: "2026-01-18 10:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -128,7 +132,7 @@ const data = [
     created_by_event: "payment.captured",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "16.01.2026",
+    generated_at: "2026-01-13 08:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -136,7 +140,7 @@ const data = [
     created_by_event: "order.completed",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "08.01.2026",
+    generated_at: "2026-01-13 07:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -144,7 +148,7 @@ const data = [
     created_by_event: "order.fulfillment_created",
     status: "failed",
     template_version: "1.0.0",
-    generated_at: "01.01.2026",
+    generated_at: "2026-01-13 06:11:12.197+00",
     pdf_link: "http://example.com",
   },
   {
@@ -152,13 +156,14 @@ const data = [
     created_by_event: "payment.captured",
     status: "completed",
     template_version: "1.0.0",
-    generated_at: "16.01.2026",
+    generated_at: "2026-01-13 05:11:12.197+00",
     pdf_link: "http://example.com",
   },
   // other data...
 ];
 
 const columnHelper = createDataTableColumnHelper<(typeof data)[0]>();
+const filterHelper = createDataTableFilterHelper<(typeof data)[0]>();
 
 const columns = [
   columnHelper.accessor("created_by_event", {
@@ -198,9 +203,68 @@ const columns = [
   }),
   columnHelper.accessor("generated_at", {
     header: "Generated At",
+    cell: ({ getValue }) => {
+      const raw = getValue();
+      const date = new Date(raw);
+
+      return date.toLocaleString();
+    },
   }),
   columnHelper.accessor("pdf_link", {
     header: "PDF Link",
+    cell: ({ getValue }) => {
+      const pdfUrl = getValue();
+
+      return (
+        <a href={pdfUrl}>
+          <IconButton size="small" variant="transparent">
+            <Link />
+          </IconButton>
+        </a>
+      );
+    },
+  }),
+];
+
+const filters = [
+  filterHelper.accessor("created_by_event", {
+    type: "select",
+    label: "Event",
+    options: [
+      {
+        label: InvoiceCreatedByEvent.ORDER_COMPLETED,
+        value: InvoiceCreatedByEvent.ORDER_COMPLETED,
+      },
+      {
+        label: InvoiceCreatedByEvent.FULFILLMENT_CREATED,
+        value: InvoiceCreatedByEvent.FULFILLMENT_CREATED,
+      },
+      {
+        label: InvoiceCreatedByEvent.PAYMENT_CAPTURED,
+        value: InvoiceCreatedByEvent.PAYMENT_CAPTURED,
+      },
+      {
+        label: InvoiceCreatedByEvent.MANUAL,
+        value: InvoiceCreatedByEvent.MANUAL,
+      },
+    ],
+  }),
+  filterHelper.accessor("status", {
+    type: "select",
+    label: "Status",
+    options: [
+      { label: InvoiceStatus.COMPLETED, value: InvoiceStatus.COMPLETED },
+      { label: InvoiceStatus.FAILED, value: InvoiceStatus.FAILED },
+      { label: InvoiceStatus.GENERATING, value: InvoiceStatus.GENERATING },
+    ],
+  }),
+  filterHelper.accessor("template_version", {
+    type: "select",
+    label: "Template Version",
+    options: [
+      // if you have multiple versions, list them here
+      { label: "1.0.0", value: "1.0.0" },
+    ],
   }),
 ];
 
@@ -209,20 +273,42 @@ type InvoiceListModalProps = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const PAGE_SIZE = 14;
+const limit = 14;
 
 const InvoiceListModal = ({ isOpen, setIsOpen }: InvoiceListModalProps) => {
   const [pagination, setPagination] = React.useState<DataTablePaginationState>({
-    pageSize: PAGE_SIZE,
+    pageSize: limit,
     pageIndex: 0,
   });
+  const [filtering, setFiltering] = React.useState<DataTableFilteringState>({});
+
+  const filteredData = React.useMemo(() => {
+    return data.filter((row) => {
+      return Object.entries(filtering).every(([key, value]) => {
+        if (!value) {
+          return true;
+        }
+
+        if (Array.isArray(value)) {
+          // @ts-ignore
+          return value.includes(row[key]);
+        }
+
+        if (typeof value === "string") {
+          // @ts-ignore
+          return row[key] === value;
+        }
+
+        return true;
+      });
+    });
+  }, [filtering]);
 
   const shownData = React.useMemo(() => {
-    return data.slice(
-      pagination.pageIndex * pagination.pageSize,
-      (pagination.pageIndex + 1) * pagination.pageSize,
-    );
-  }, [pagination]);
+    const start = pagination.pageIndex * pagination.pageSize;
+    const end = (pagination.pageIndex + 1) * pagination.pageSize;
+    return filteredData.slice(start, end);
+  }, [filteredData, pagination]);
 
   const table = useDataTable({
     data: shownData,
@@ -234,29 +320,32 @@ const InvoiceListModal = ({ isOpen, setIsOpen }: InvoiceListModalProps) => {
       onPaginationChange: setPagination,
     },
     isLoading: false,
+    filtering: {
+      state: filtering,
+      onFilteringChange: setFiltering,
+    },
+    filters,
   });
 
   return (
     <FocusModal open={isOpen} onOpenChange={setIsOpen}>
       <FocusModal.Content>
-        <FocusModal.Header>
+        <FocusModal.Header className="h-[50px]">
           <FocusModal.Title>Invoices</FocusModal.Title>
         </FocusModal.Header>
-        <DataTable instance={table} className="w-full">
-          <FocusModal.Body className="flex flex-col items-center w-full">
-            {/*<DataTable.Toolbar className="flex flex-col items-start justify-between gap-2 md:flex-row md:items-center">
-              <Heading>Invoices</Heading>
-            </DataTable.Toolbar>*/}
+        <FocusModal.Body className="flex flex-col h-full overflow-hidden">
+          <DataTable instance={table} className="flex flex-col h-full">
+            <DataTable.Toolbar className="flex-shrink-0 p-0 m-0"></DataTable.Toolbar>
 
-            <div className="max-h-[80vh] w-full overflow-y-auto">
+            <div className="flex-1 overflow-y-auto min-h-0">
               <DataTable.Table />
             </div>
-          </FocusModal.Body>
 
-          <FocusModal.Footer>
-            <DataTable.Pagination />
-          </FocusModal.Footer>
-        </DataTable>
+            <div className="flex-shrink-0">
+              <DataTable.Pagination />
+            </div>
+          </DataTable>
+        </FocusModal.Body>
       </FocusModal.Content>
     </FocusModal>
   );

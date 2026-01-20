@@ -1,7 +1,11 @@
 import { SubscriberArgs, type SubscriberConfig } from "@medusajs/framework";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 import createInvoiceWorkflow from "../workflows/generate-invoice";
-import { InvoiceSettingsAutoGenerateTrigger } from "../constants/invoice";
+import {
+  InvoiceCreatedByEvent,
+  InvoiceSettingsAutoGenerateTrigger,
+} from "../constants/invoice";
+import Invoice from "../modules/invoice/models/invoice";
 
 type orderCompletedPayload = {
   id: string; //ID of order
@@ -33,11 +37,11 @@ export default async function orderInvoiceHandler({
 
   logger.info(`invoices: subscriber triggered for event ${name}`);
 
-  if (name === "order.completed") {
+  if (name === InvoiceCreatedByEvent.ORDER_COMPLETED) {
     orderId = (data as orderCompletedPayload).id;
-  } else if (name === "order.fulfillment_created") {
+  } else if (name === InvoiceCreatedByEvent.FULFILLMENT_CREATED) {
     orderId = (data as orderFulfillmentCreatedPayload).order_id;
-  } else if (name === "payment.captured") {
+  } else if (name === InvoiceCreatedByEvent.PAYMENT_CAPTURED) {
     const { data: payments } = await query.graph({
       entity: "payment",
       fields: ["payment_collection.*"],
@@ -126,7 +130,7 @@ export default async function orderInvoiceHandler({
       name === "payment.captured")
   ) {
     await createInvoiceWorkflow(container).run({
-      input: { order_id: orderId },
+      input: { order_id: orderId, created_by_event: name },
     });
 
     logger.info(`invoices: workflow started for order ${orderId}`);

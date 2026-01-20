@@ -1,6 +1,6 @@
 import { model } from "@medusajs/framework/utils";
 import {
-  //InvoiceCreatedByEvent,
+  InvoiceCreatedByEvent,
   InvoiceStatus,
   InvoiceTemplateId,
 } from "../../../constants/invoice";
@@ -15,7 +15,7 @@ const Invoice = model.define("invoice", {
   template_version: model.text(),
   settings_snapshot: model.json(),
   error_message: model.text().nullable(),
-  //created_by_event: model.enum(InvoiceCreatedByEvent),
+  created_by_event: model.enum(InvoiceCreatedByEvent),
 });
 
 export default Invoice;
