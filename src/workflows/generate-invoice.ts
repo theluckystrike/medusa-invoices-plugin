@@ -27,6 +27,7 @@ import { getTemplate } from "../templates/registry";
 import { TemplateProps, TemplateSettingsForTemplate } from "../templates/types";
 
 type GenerateInvoiceStepInput = {
+  order_id: string;
   order_display_id: number;
   template_id: InvoiceTemplateId | undefined;
   created_by_event: InvoiceCreatedByEvent;
@@ -70,6 +71,7 @@ const generateInvoiceStep = createStep(
   "generate-invoice-step",
   async (
     {
+      order_id,
       order_display_id,
       template_id,
       created_by_event,
@@ -120,8 +122,9 @@ const generateInvoiceStep = createStep(
     };
 
     const invoice = await invoiceModuleService.createInvoices({
-      status: InvoiceStatus.GENERATING,
+      order_id: order_id,
       order_display_id: order_display_id,
+      status: InvoiceStatus.GENERATING,
       template_id: template_id ?? settings.template_id,
       template_version: settings.template_version,
       settings_snapshot: settingsSnapshot,
@@ -364,6 +367,7 @@ const generateInvoiceWorkflow = createWorkflow(
     const generateInvoiceStepInput = transform(
       { validateOrderResult, input },
       ({ validateOrderResult, input }) => ({
+        order_id: input.order_id,
         order_display_id: validateOrderResult.order_display_id,
         template_id: input.template_id,
         created_by_event: input.created_by_event,

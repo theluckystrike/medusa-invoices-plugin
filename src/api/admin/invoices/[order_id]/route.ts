@@ -3,10 +3,10 @@ import {
   ContainerRegistrationKeys,
   MedusaError,
 } from "@medusajs/framework/utils";
-import OrderInvoiceLink from "../../../../links/order-invoice";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { order_id } = req.params;
+  const { created_by_event, status, template_version } = req.query;
 
   if (!order_id) {
     throw new MedusaError(
@@ -17,26 +17,30 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
 
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
-  const { data: orderInvoices } = await query.graph({
-    entity: OrderInvoiceLink.entryPoint,
-    fields: [
-      "invoice.status",
-      "invoice.completed_at",
-      "invoice.pdf_url",
-      "invoice.template_id",
-      "invoice.template_version",
-      "invoice.error_message",
-      "invoice.order_display_id",
-      "invoice.created_by_event",
-    ],
-    filters: { order_id },
-    pagination: {
-      take: 24,
-      order: {
-        created_at: "DESC",
-      },
-    },
+  const filters: Record<string, any> = {
+    order_id,
+  };
+
+  if (status) {
+    filters.status = status;
+  }
+  if (created_by_event) {
+    filters.created_by_event = created_by_event;
+  }
+  if (template_version) {
+    filters.template_version = template_version;
+  }
+
+  const { data: orderInvoices, metadata } = await query.graph({
+    entity: "invoice",
+    ...req.queryConfig,
+    filters,
   });
 
-  res.json(orderInvoices);
+  res.json({
+    invoices: orderInvoices,
+    count: metadata?.count || 0,
+    offset: metadata?.skip || 0,
+    limit: metadata?.take || 0,
+  });
 }

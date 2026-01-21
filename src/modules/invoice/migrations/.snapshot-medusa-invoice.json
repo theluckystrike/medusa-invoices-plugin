@@ -15,6 +15,15 @@
           "nullable": false,
           "mappedType": "text"
         },
+        "order_id": {
+          "name": "order_id",
+          "type": "text",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "text"
+        },
         "order_display_id": {
           "name": "order_display_id",
           "type": "integer",
@@ -158,6 +167,15 @@
           "primary": false,
           "unique": false,
           "expression": "CREATE INDEX IF NOT EXISTS \"IDX_invoice_deleted_at\" ON \"invoice\" (\"deleted_at\") WHERE deleted_at IS NULL"
+        },
+        {
+          "keyName": "IDX_invoice_order_id",
+          "columnNames": [],
+          "composite": false,
+          "constraint": false,
+          "primary": false,
+          "unique": false,
+          "expression": "CREATE INDEX IF NOT EXISTS \"IDX_invoice_order_id\" ON \"invoice\" (\"order_id\") WHERE deleted_at IS NULL"
         },
         {
           "keyName": "invoice_pkey",

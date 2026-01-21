@@ -3,7 +3,6 @@ import {
   ContainerRegistrationKeys,
   MedusaError,
 } from "@medusajs/framework/utils";
-import OrderInvoiceLink from "../../../../../links/order-invoice";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { order_id } = req.params;
@@ -18,16 +17,16 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
   const { data: orderInvoices } = await query.graph({
-    entity: OrderInvoiceLink.entryPoint,
+    entity: "invoice",
     fields: [
-      "invoice.status",
-      "invoice.completed_at",
-      "invoice.pdf_url",
-      "invoice.template_id",
-      "invoice.template_version",
-      "invoice.error_message",
-      "invoice.order_display_id",
-      "invoice.created_by_event",
+      "status",
+      "completed_at",
+      "pdf_url",
+      "template_id",
+      "template_version",
+      "error_message",
+      "order_display_id",
+      "created_by_event",
     ],
     filters: { order_id },
     pagination: {
@@ -38,16 +37,16 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     },
   });
 
-  const firstInvoiceLink = orderInvoices?.[0];
+  const firstInvoice = orderInvoices?.[0];
 
-  if (!firstInvoiceLink?.invoice) {
+  if (!firstInvoice) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
       `Invoice for order with id ${order_id} not found`,
     );
   }
 
-  const { id, ...orderInvoiceResponse } = firstInvoiceLink.invoice;
+  const { id, ...orderInvoiceResponse } = firstInvoice;
 
   res.json(orderInvoiceResponse);
 }

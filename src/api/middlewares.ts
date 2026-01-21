@@ -6,7 +6,10 @@ import {
 } from "@medusajs/framework/http";
 import { createFindParams } from "@medusajs/medusa/api/utils/validators";
 import { createInvoiceSettingsSchema } from "./admin/invoice-settings/validators";
-import { generateInvoiceSchema } from "./admin/invoices/validators";
+import {
+  adminGetInvoicesParams,
+  generateInvoiceSchema,
+} from "./admin/invoices/validators";
 
 export const GetAdminInvoiceSettingsSchema = createFindParams();
 
@@ -28,22 +31,22 @@ export default defineMiddlewares({
       middlewares: [validateGetInvoicesMiddleware],
     },
     {
-      matcher: "/admin/orders/:order_id/invoices",
+      matcher: "/admin/invoices/:order_id",
       methods: ["GET"],
       middlewares: [
-        validateAndTransformQuery(createFindParams(), {
+        validateAndTransformQuery(adminGetInvoicesParams, {
           isList: true,
           defaults: [
-            "invoice.status",
-            "invoice.completed_at",
-            "invoice.pdf_url",
-            "invoice.template_id",
-            "invoice.template_version",
-            "invoice.error_message",
-            "invoice.order_display_id",
+            "status",
+            "completed_at",
+            "pdf_url",
+            "template_id",
+            "template_version",
+            "error_message",
+            "order_display_id",
             "created_by_event",
           ],
-          defaultLimit: 24,
+          defaultLimit: 20,
         }),
       ],
     },
