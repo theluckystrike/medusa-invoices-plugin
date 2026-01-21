@@ -27,6 +27,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       "error_message",
       "order_display_id",
       "created_by_event",
+      "created_at",
     ],
     filters: { order_id },
     pagination: {

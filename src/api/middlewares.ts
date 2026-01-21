@@ -37,6 +37,7 @@ export default defineMiddlewares({
         validateAndTransformQuery(adminGetInvoicesParams, {
           isList: true,
           defaults: [
+            "id",
             "status",
             "completed_at",
             "pdf_url",
@@ -45,8 +46,8 @@ export default defineMiddlewares({
             "error_message",
             "order_display_id",
             "created_by_event",
+            "created_at",
           ],
-          defaultLimit: 20,
         }),
       ],
     },

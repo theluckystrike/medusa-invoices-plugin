@@ -68,6 +68,16 @@ export type GetInvoiceResponse = {
   template_version: string;
   error_message: string | null;
   created_by_event: InvoiceCreatedByEvent; // order.completed | order.fulfillment_created | payment.captured | manual
+  created_at: Date | string;
+};
+
+export type GetInvoicesResponseInvoice = GetInvoiceResponse & { id: string };
+
+export type GetInvoicesResponse = {
+  invoices: GetInvoicesResponseInvoice[];
+  count: number;
+  offset: number;
+  limit: number;
 };
 
 export type GenerateInvoiceRequestBody = {

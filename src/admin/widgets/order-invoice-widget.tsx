@@ -20,20 +20,7 @@ import InvoiceDropdownMenu from "../components/InvoiceDropdownMenu";
 
 const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   const orderId = data?.id;
-  const invoiceQuery = useOrderInvoice(orderId, {
-    refetchInterval: (query) => {
-      const invoice = query.state.data;
-
-      if (
-        invoice?.status === InvoiceStatus.COMPLETED ||
-        invoice?.status === InvoiceStatus.FAILED
-      ) {
-        return false;
-      }
-
-      return 3000;
-    },
-  });
+  const invoiceQuery = useOrderInvoice(orderId);
   const generateInvoice = useGenerateInvoice(orderId!);
 
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
@@ -174,7 +161,11 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
         </Button>
       </div>
 
-      <InvoiceListModal isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
+      <InvoiceListModal
+        orderId={orderId}
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+      />
     </Container>
   );
 };

@@ -34,6 +34,12 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { data: orderInvoices, metadata } = await query.graph({
     entity: "invoice",
     ...req.queryConfig,
+    pagination: {
+      ...(req.queryConfig?.pagination || {}),
+      order: req.queryConfig?.pagination?.order ?? {
+        created_at: "DESC",
+      },
+    },
     filters,
   });
 

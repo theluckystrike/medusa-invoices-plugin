@@ -7,163 +7,16 @@ import {
   DataTablePaginationState,
   FocusModal,
   IconButton,
-  //Heading,
   useDataTable,
 } from "@medusajs/ui";
 import React from "react";
 import { InvoiceCreatedByEvent, InvoiceStatus } from "../../constants/invoice";
 import { Link } from "@medusajs/icons";
+import { useOrderInvoices, UseOrderInvoicesParams } from "../hooks/invoices";
+import { GetInvoicesResponseInvoice } from "../../types/invoice";
 
-const data = [
-  {
-    id: "1",
-    created_by_event: "order.completed",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-13 12:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "2",
-    created_by_event: "order.fulfillment_created",
-    status: "failed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-13 13:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "3",
-    created_by_event: "payment.captured",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-13 10:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "4",
-    created_by_event: "order.completed",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-13 10:15:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "5",
-    created_by_event: "order.fulfillment_created",
-    status: "failed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-14 10:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "6",
-    created_by_event: "payment.captured",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-15 10:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "7",
-    created_by_event: "order.completed",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-11 10:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "8",
-    created_by_event: "order.fulfillment_created",
-    status: "failed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-10 10:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "9",
-    created_by_event: "payment.captured",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-13 10:41:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "10",
-    created_by_event: "order.completed",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-01 10:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "11",
-    created_by_event: "order.fulfillment_created",
-    status: "failed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-12 09:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "12",
-    created_by_event: "payment.captured",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-16 10:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "13",
-    created_by_event: "order.completed",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-17 10:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "14",
-    created_by_event: "order.fulfillment_created",
-    status: "failed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-18 10:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "15",
-    created_by_event: "payment.captured",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-13 08:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "16",
-    created_by_event: "order.completed",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-13 07:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "17",
-    created_by_event: "order.fulfillment_created",
-    status: "failed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-13 06:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  {
-    id: "18",
-    created_by_event: "payment.captured",
-    status: "completed",
-    template_version: "1.0.0",
-    generated_at: "2026-01-13 05:11:12.197+00",
-    pdf_link: "http://example.com",
-  },
-  // other data...
-];
-
-const columnHelper = createDataTableColumnHelper<(typeof data)[0]>();
-const filterHelper = createDataTableFilterHelper<(typeof data)[0]>();
+const columnHelper = createDataTableColumnHelper<GetInvoicesResponseInvoice>();
+const filterHelper = createDataTableFilterHelper<GetInvoicesResponseInvoice>();
 
 const columns = [
   columnHelper.accessor("created_by_event", {
@@ -201,8 +54,8 @@ const columns = [
   columnHelper.accessor("template_version", {
     header: "Template Version",
   }),
-  columnHelper.accessor("generated_at", {
-    header: "Generated At",
+  columnHelper.accessor("created_at", {
+    header: "Created At",
     cell: ({ getValue }) => {
       const raw = getValue();
       const date = new Date(raw);
@@ -210,13 +63,13 @@ const columns = [
       return date.toLocaleString();
     },
   }),
-  columnHelper.accessor("pdf_link", {
+  columnHelper.accessor("pdf_url", {
     header: "PDF Link",
     cell: ({ getValue }) => {
       const pdfUrl = getValue();
 
       return (
-        <a href={pdfUrl}>
+        <a href={pdfUrl ? pdfUrl : undefined}>
           <IconButton size="small" variant="transparent">
             <Link />
           </IconButton>
@@ -269,57 +122,52 @@ const filters = [
 ];
 
 type InvoiceListModalProps = {
+  orderId: string;
   isOpen: boolean;
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const limit = 14;
+const PAGE_SIZE = 14;
 
-const InvoiceListModal = ({ isOpen, setIsOpen }: InvoiceListModalProps) => {
+const InvoiceListModal = ({
+  orderId,
+  isOpen,
+  setIsOpen,
+}: InvoiceListModalProps) => {
   const [pagination, setPagination] = React.useState<DataTablePaginationState>({
-    pageSize: limit,
+    pageSize: PAGE_SIZE,
     pageIndex: 0,
   });
   const [filtering, setFiltering] = React.useState<DataTableFilteringState>({});
 
-  const filteredData = React.useMemo(() => {
-    return data.filter((row) => {
-      return Object.entries(filtering).every(([key, value]) => {
-        if (!value) {
-          return true;
-        }
+  const params: UseOrderInvoicesParams = {
+    limit: pagination.pageSize,
+    offset: pagination.pageIndex * pagination.pageSize,
+    filters: {
+      status: Array.isArray(filtering.status) ? filtering.status : undefined,
+      created_by_event: Array.isArray(filtering.created_by_event)
+        ? filtering.created_by_event
+        : undefined,
+      template_version: Array.isArray(filtering.template_version)
+        ? filtering.template_version
+        : undefined,
+    },
+  };
 
-        if (Array.isArray(value)) {
-          // @ts-ignore
-          return value.includes(row[key]);
-        }
-
-        if (typeof value === "string") {
-          // @ts-ignore
-          return row[key] === value;
-        }
-
-        return true;
-      });
-    });
-  }, [filtering]);
-
-  const shownData = React.useMemo(() => {
-    const start = pagination.pageIndex * pagination.pageSize;
-    const end = (pagination.pageIndex + 1) * pagination.pageSize;
-    return filteredData.slice(start, end);
-  }, [filteredData, pagination]);
+  const { data, isLoading } = useOrderInvoices(orderId, params, {
+    placeholderData: (previousData) => previousData,
+  });
 
   const table = useDataTable({
-    data: shownData,
+    data: data?.invoices || [],
     columns,
-    rowCount: data.length,
-    getRowId: (product) => product.id,
+    rowCount: data?.count || 0,
+    getRowId: (invoice) => invoice.id,
     pagination: {
       state: pagination,
       onPaginationChange: setPagination,
     },
-    isLoading: false,
+    isLoading,
     filtering: {
       state: filtering,
       onFilteringChange: setFiltering,

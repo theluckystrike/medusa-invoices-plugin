@@ -8,8 +8,61 @@ import { sdk } from "../lib/sdk";
 import {
   GenerateInvoiceRequestBody,
   GetInvoiceResponse,
+  GetInvoicesResponse,
   InvoiceDTO,
 } from "../../types/invoice";
+
+export type UseOrderInvoicesParams = {
+  limit?: number;
+  offset?: number;
+  filters?: {
+    created_by_event?: string[];
+    status?: string[];
+    template_version?: string[];
+  };
+};
+
+export const useOrderInvoices = (
+  orderId: string,
+  params: UseOrderInvoicesParams,
+  options?: Omit<
+    UndefinedInitialDataOptions<
+      GetInvoicesResponse,
+      Error,
+      GetInvoicesResponse,
+      readonly unknown[]
+    >,
+    "queryKey" | "queryFn"
+  >,
+) => {
+  return useQuery({
+    queryKey: ["order-invoices", orderId, params],
+    queryFn: async () => {
+      const searchParams = new URLSearchParams();
+
+      if (params.limit !== undefined)
+        searchParams.set("limit", String(params.limit));
+      if (params.offset !== undefined)
+        searchParams.set("offset", String(params.offset));
+
+      if (params.filters) {
+        Object.entries(params.filters).forEach(([key, values]) => {
+          values?.forEach((v) => searchParams.append(`${key}[]`, v));
+        });
+      }
+
+      const queryString = searchParams.toString();
+
+      const invoices = await sdk.client.fetch<GetInvoicesResponse>(
+        `/admin/invoices/${orderId}${queryString ? `?${queryString}` : ""}`,
+      );
+
+      return invoices;
+    },
+    enabled: !!orderId,
+    ...options,
+  });
+};
 
 export const useOrderInvoice = (
   orderId: string,
@@ -24,7 +77,7 @@ export const useOrderInvoice = (
   >,
 ) => {
   return useQuery({
-    queryKey: ["active-invoice", orderId],
+    queryKey: ["latest-invoice", orderId],
     queryFn: async () => {
       const invoice = await sdk.client.fetch<GetInvoiceResponse>(
         `/admin/invoices/${orderId}/latest`,
@@ -55,7 +108,10 @@ export const useGenerateInvoice = (order_id: string) => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["active-invoice", order_id],
+        queryKey: ["latest-invoice", order_id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["order-invoices", order_id],
       });
     },
   });
