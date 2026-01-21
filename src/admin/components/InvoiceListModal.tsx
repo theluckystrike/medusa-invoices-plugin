@@ -73,8 +73,12 @@ const columns = [
     cell: ({ getValue }) => {
       const pdfUrl = getValue();
 
+      if (!pdfUrl) {
+        return "-";
+      }
+
       return (
-        <a href={pdfUrl ? pdfUrl : undefined}>
+        <a href={pdfUrl}>
           <IconButton size="small" variant="transparent">
             <Link />
           </IconButton>
