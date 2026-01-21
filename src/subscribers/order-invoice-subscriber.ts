@@ -1,10 +1,6 @@
 import { SubscriberArgs, type SubscriberConfig } from "@medusajs/framework";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
-import {
-  InvoiceCreatedByEvent,
-  InvoiceSettingsAutoGenerateTrigger,
-} from "../constants/invoice";
-import Invoice from "../modules/invoice/models/invoice";
+import { InvoiceCreatedByEvent } from "../constants/invoice";
 import generateInvoiceWorkflow from "../workflows/generate-invoice";
 
 type orderCompletedPayload = {
@@ -57,22 +53,22 @@ export default async function orderInvoiceHandler({
 
     const paymentCollection = payments[0].payment_collection;
 
-    const { data: orders } = await query.graph({
-      entity: "order",
-      fields: ["*"],
+    const { data: paymentCollections } = await query.graph({
+      entity: "payment_collection",
+      fields: ["order.*"],
       filters: {
-        payment_collection: paymentCollection.id,
+        id: paymentCollection.id,
       },
     });
 
-    if (!orders?.[0]) {
-      logger.info(
-        `invoices: no order found for payment collection with id ${paymentCollection.id}`,
-      );
+    const pc = paymentCollections?.[0];
+
+    if (!pc?.order) {
+      logger.info(`invoices: no order found for payment collection`);
       return;
     }
 
-    orderId = orders[0].id;
+    orderId = pc.order.id;
   } else {
     logger.debug(`invoices: unhandled event type ${name}`);
     return;

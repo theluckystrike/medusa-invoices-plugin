@@ -55,11 +55,16 @@ const columns = [
     header: "Template Version",
   }),
   columnHelper.accessor("created_at", {
-    header: "Created At",
-    cell: ({ getValue }) => {
-      const raw = getValue();
-      const date = new Date(raw);
+    header: "Generated At",
+    cell: ({ row }) => {
+      const { created_at, completed_at } = row.original;
 
+      const raw = completed_at ?? created_at;
+      if (!raw) {
+        return "-";
+      }
+
+      const date = new Date(raw);
       return date.toLocaleString();
     },
   }),
@@ -75,6 +80,13 @@ const columns = [
           </IconButton>
         </a>
       );
+    },
+  }),
+  columnHelper.accessor("error_message", {
+    header: "Error",
+    cell: ({ getValue }) => {
+      const error = getValue();
+      return error ? error : "-";
     },
   }),
 ];
@@ -127,7 +139,7 @@ type InvoiceListModalProps = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const PAGE_SIZE = 14;
+const PAGE_SIZE = 20;
 
 const InvoiceListModal = ({
   orderId,
