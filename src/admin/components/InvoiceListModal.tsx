@@ -231,7 +231,6 @@ const InvoiceListModal = ({
               </Text>
             )}
           </DataTable>
-          :
         </FocusModal.Body>
       </FocusModal.Content>
     </FocusModal>
