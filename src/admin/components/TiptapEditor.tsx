@@ -209,7 +209,6 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
               if (editorState.isLink) {
                 removeLink();
               } else {
-                console.log("Adding link");
                 setShowLinkDialog(!showLinkDialog);
               }
             }}

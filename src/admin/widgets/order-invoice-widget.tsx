@@ -108,6 +108,15 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
         <>
           <div className="grid w-full grid-cols-2 items-center gap-4 px-6 py-4">
             <Text className="text-ui-fg-subtle" weight="plus" size="small">
+              Created By Event
+            </Text>
+            <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
+              {invoice.created_by_event}
+            </Text>
+          </div>
+
+          <div className="grid w-full grid-cols-2 items-center gap-4 px-6 py-4">
+            <Text className="text-ui-fg-subtle" weight="plus" size="small">
               Template Version
             </Text>
             <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
