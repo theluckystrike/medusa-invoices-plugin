@@ -184,7 +184,7 @@ const InvoiceListModal = ({
     },
   };
 
-  const { data, isLoading } = useOrderInvoices(orderId, params, {
+  const { data, isLoading, refetch } = useOrderInvoices(orderId, params, {
     placeholderData: (previousData) => previousData,
   });
 
@@ -204,6 +204,12 @@ const InvoiceListModal = ({
     },
     filters,
   });
+
+  React.useEffect(() => {
+    if (isOpen) {
+      refetch();
+    }
+  }, [isOpen, refetch]);
 
   return (
     <FocusModal open={isOpen} onOpenChange={setIsOpen}>
