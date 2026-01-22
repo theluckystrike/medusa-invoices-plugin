@@ -81,6 +81,12 @@ describe("OrderInvoiceWidget", () => {
     created_at: "2026-01-21T14:03:13.442Z",
   };
 
+  vi.mock("../../components/CollapsiblePanel", () => {
+    return {
+      default: ({ content }: { content: string }) => <div>{content}</div>,
+    };
+  });
+
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -248,6 +254,76 @@ describe("OrderInvoiceWidget", () => {
 
       const button = screen.getByRole("button", { name: /generate invoice/i });
       expect(button).not.toBeDisabled();
+    });
+  });
+
+  describe("Error Messages", () => {
+    it("should show error message when invoice generation fails", () => {
+      const errorMessage = "PDF generation service unavailable";
+
+      vi.mocked(useOrderInvoice).mockReturnValue({
+        data: {
+          ...mockInvoiceData,
+          status: InvoiceStatus.FAILED,
+          error_message: errorMessage,
+        },
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      } as any);
+
+      vi.mocked(useGenerateInvoice).mockReturnValue({
+        mutateAsync: vi.fn(),
+        isPending: false,
+        isError: false,
+      } as any);
+
+      render(<OrderInvoiceWidget data={mockOrderData as AdminOrder} />);
+
+      expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    });
+
+    it("should show default error message when no specific error is provided", () => {
+      vi.mocked(useOrderInvoice).mockReturnValue({
+        data: {
+          ...mockInvoiceData,
+          status: InvoiceStatus.FAILED,
+          error_message: null,
+        },
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      } as any);
+
+      vi.mocked(useGenerateInvoice).mockReturnValue({
+        mutateAsync: vi.fn(),
+        isPending: false,
+        isError: false,
+      } as any);
+
+      render(<OrderInvoiceWidget data={mockOrderData as AdminOrder} />);
+
+      expect(screen.getByText("Invoice generation failed")).toBeInTheDocument();
+    });
+
+    it("should display error panel when mutation error occurs", () => {
+      vi.mocked(useOrderInvoice).mockReturnValue({
+        data: null,
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      } as any);
+
+      vi.mocked(useGenerateInvoice).mockReturnValue({
+        mutateAsync: vi.fn(),
+        isPending: false,
+        isError: true,
+      } as any);
+
+      render(<OrderInvoiceWidget data={mockOrderData as AdminOrder} />);
+
+      const button = screen.getByRole("button");
+      expect(button).toHaveTextContent("Retry");
     });
   });
 });
