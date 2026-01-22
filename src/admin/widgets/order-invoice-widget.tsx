@@ -21,8 +21,6 @@ import React from "react";
 import InvoiceDropdownMenu from "../components/InvoiceDropdownMenu";
 
 const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
-  console.log("Data: ", data);
-
   const orderId = data?.id;
   const invoiceQuery = useOrderInvoice(orderId, {
     refetchInterval: (query) => {
