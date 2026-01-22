@@ -14,14 +14,29 @@ import { Link } from "@medusajs/icons";
 import JsonViewSection from "../components/JsonViewSection";
 import { InvoiceCreatedByEvent, InvoiceStatus } from "../../constants/invoice";
 import CollapsiblePanel from "../components/CollapsiblePanel";
-import InvoiceListModal from "../components/InvoiceListModal";
+import InvoiceListModal, {
+  formatCreatedByEvent,
+} from "../components/InvoiceListModal";
 import React from "react";
 import InvoiceDropdownMenu from "../components/InvoiceDropdownMenu";
 
 const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
+  console.log("Data: ", data);
+
   const orderId = data?.id;
-  const invoiceQuery = useOrderInvoice(orderId);
-  const generateInvoice = useGenerateInvoice(orderId!);
+  const invoiceQuery = useOrderInvoice(orderId, {
+    refetchInterval: (query) => {
+      const invoice = query.state.data;
+
+      if (invoice?.status === InvoiceStatus.GENERATING) {
+        return 2000;
+      }
+
+      return false;
+    },
+    refetchOnWindowFocus: true,
+  });
+  const generateInvoice = useGenerateInvoice(orderId);
 
   const [isModalOpen, setIsModalOpen] = React.useState<boolean>(false);
 
@@ -57,6 +72,10 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   ) {
     invoiceStatusBadge = <StatusBadge color="red">Failed</StatusBadge>;
   }
+
+  React.useEffect(() => {
+    invoiceQuery.refetch();
+  }, [data.fulfillment_status, data.payment_status, data.status]);
 
   if (!invoice) {
     return (
@@ -111,7 +130,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
               Created By Event
             </Text>
             <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
-              {invoice.created_by_event}
+              {formatCreatedByEvent(invoice.created_by_event)}
             </Text>
           </div>
 

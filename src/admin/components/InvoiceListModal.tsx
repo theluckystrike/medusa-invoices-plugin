@@ -20,7 +20,7 @@ const formatStatus = (status: string): string => {
   return status.charAt(0).toUpperCase() + status.slice(1);
 };
 
-const formatCreatedByEvent = (event: string): string => {
+export const formatCreatedByEvent = (event: string): string => {
   const eventMap: Record<string, string> = {
     [InvoiceCreatedByEvent.ORDER_COMPLETED]: "Order completed",
     [InvoiceCreatedByEvent.FULFILLMENT_CREATED]: "Fulfillment created",
