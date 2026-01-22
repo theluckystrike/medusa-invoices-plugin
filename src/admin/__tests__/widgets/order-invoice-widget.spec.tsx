@@ -188,4 +188,66 @@ describe("OrderInvoiceWidget", () => {
       expect(screen.getByText("Failed")).toBeInTheDocument();
     });
   });
+
+  describe("Actions During Generation", () => {
+    it("should disable generate button during generation", () => {
+      vi.mocked(useOrderInvoice).mockReturnValue({
+        data: null,
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      } as any);
+
+      vi.mocked(useGenerateInvoice).mockReturnValue({
+        mutateAsync: vi.fn(),
+        isPending: true,
+        isError: false,
+      } as any);
+
+      render(<OrderInvoiceWidget data={mockOrderData as AdminOrder} />);
+
+      const button = screen.getByRole("button");
+      expect(button).toBeDisabled();
+    });
+
+    it("should show loading state on button during generation", () => {
+      vi.mocked(useOrderInvoice).mockReturnValue({
+        data: null,
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      } as any);
+
+      vi.mocked(useGenerateInvoice).mockReturnValue({
+        mutateAsync: vi.fn(),
+        isPending: true,
+        isError: false,
+      } as any);
+
+      render(<OrderInvoiceWidget data={mockOrderData as AdminOrder} />);
+
+      const button = screen.getByRole("button");
+      expect(button).toBeDisabled();
+    });
+
+    it("should enable button when not generating", () => {
+      vi.mocked(useOrderInvoice).mockReturnValue({
+        data: null,
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      } as any);
+
+      vi.mocked(useGenerateInvoice).mockReturnValue({
+        mutateAsync: vi.fn(),
+        isPending: false,
+        isError: false,
+      } as any);
+
+      render(<OrderInvoiceWidget data={mockOrderData as AdminOrder} />);
+
+      const button = screen.getByRole("button", { name: /generate invoice/i });
+      expect(button).not.toBeDisabled();
+    });
+  });
 });
