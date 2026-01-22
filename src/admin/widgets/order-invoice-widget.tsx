@@ -84,7 +84,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
           level="h2"
           className="w-full flex justify-between items-center px-6 py-4"
         >
-          Latest Invoice
+          Latest invoice
           {invoiceStatusBadge}
         </Heading>
 
@@ -103,7 +103,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
             disabled={generateInvoice.isPending}
             isLoading={generateInvoice.isPending}
           >
-            {generateInvoice.isError ? "Retry" : "Generate Invoice"}
+            {generateInvoice.isError ? "Retry" : "Generate invoice"}
           </Button>
         </div>
       </Container>
@@ -111,12 +111,12 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   }
 
   return (
-    <Container className="divide-y p-0">
+    <Container className="divide-y p-0 overflow-hidden">
       <Heading
         level="h2"
         className="w-full flex justify-between items-center px-6 py-4 gap-4"
       >
-        Latest Invoice
+        Latest invoice
         <div className="flex justify-between items-center gap-4">
           {invoiceStatusBadge}
           <InvoiceDropdownMenu setIsModalOpen={setIsModalOpen} />
@@ -127,7 +127,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
         <>
           <div className="grid w-full grid-cols-2 items-center gap-4 px-6 py-4">
             <Text className="text-ui-fg-subtle" weight="plus" size="small">
-              Created By Event
+              Created by event
             </Text>
             <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
               {formatCreatedByEvent(invoice.created_by_event)}
@@ -136,7 +136,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
 
           <div className="grid w-full grid-cols-2 items-center gap-4 px-6 py-4">
             <Text className="text-ui-fg-subtle" weight="plus" size="small">
-              Template Version
+              Template version
             </Text>
             <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
               {invoice.template_version}
@@ -145,7 +145,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
 
           <div className="grid w-full grid-cols-2 items-center gap-4 px-6 py-4">
             <Text className="text-ui-fg-subtle" weight="plus" size="small">
-              Generated At
+              Generated at
             </Text>
             <Text className="text-ui-fg-muted whitespace-pre-line" size="small">
               {new Date(invoice.completed_at!).toLocaleString()}
@@ -154,7 +154,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
 
           <div className="flex w-full items-center justify-between gap-4 px-6 py-4">
             <Text className="text-ui-fg-subtle" weight="plus" size="small">
-              PDF Link
+              PDF link
             </Text>
             <a href={invoice.pdf_url!}>
               <IconButton size="small" variant="transparent">
@@ -176,7 +176,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
         <JsonViewSection data={invoice} />
       </div>
 
-      <div className="flex justify-center items-center px-6 py-4">
+      <div className="bg-ui-bg-subtle flex justify-end items-center px-6 py-4 lg:justify-center">
         <Button
           onClick={handleGenerateInvoice}
           variant="secondary"
@@ -185,7 +185,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
         >
           {generateInvoice.isError || invoice.status === InvoiceStatus.FAILED
             ? "Retry"
-            : "Generate New Invoice"}
+            : "Generate new invoice"}
         </Button>
       </div>
 

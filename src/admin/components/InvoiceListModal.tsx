@@ -36,7 +36,7 @@ const filterHelper = createDataTableFilterHelper<GetInvoicesResponseInvoice>();
 
 const columns = [
   columnHelper.accessor("created_by_event", {
-    header: "Created By Event",
+    header: "Created by event",
     enableSorting: true,
     cell: ({ getValue }) => formatCreatedByEvent(getValue()),
   }),
@@ -69,10 +69,10 @@ const columns = [
     },
   }),
   columnHelper.accessor("template_version", {
-    header: "Template Version",
+    header: "Template version",
   }),
   columnHelper.accessor("created_at", {
-    header: "Generated At",
+    header: "Generated at",
     cell: ({ row }) => {
       const { created_at, completed_at } = row.original;
 
@@ -86,7 +86,7 @@ const columns = [
     },
   }),
   columnHelper.accessor("pdf_url", {
-    header: "PDF Link",
+    header: "PDF link",
     cell: ({ getValue }) => {
       const pdfUrl = getValue();
 
@@ -115,7 +115,7 @@ const columns = [
 const filters = [
   filterHelper.accessor("created_by_event", {
     type: "select",
-    label: "Event",
+    label: "Created by event",
     options: [
       {
         label: "Order completed",
@@ -146,7 +146,7 @@ const filters = [
   }),
   filterHelper.accessor("template_version", {
     type: "select",
-    label: "Template Version",
+    label: "Template version",
     options: [{ label: "1.0.0", value: "1.0.0" }],
   }),
 ];
