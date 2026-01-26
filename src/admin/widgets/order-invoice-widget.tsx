@@ -71,6 +71,8 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
     invoiceStatusBadge = <StatusBadge color="red">Failed</StatusBadge>;
   }
 
+  console.log("Invoice: ", invoiceQuery.data);
+
   React.useEffect(() => {
     invoiceQuery.refetch();
   }, [data.fulfillment_status, data.payment_status, data.status]);
