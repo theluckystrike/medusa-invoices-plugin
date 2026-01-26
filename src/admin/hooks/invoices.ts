@@ -77,10 +77,10 @@ export const useOrderInvoice = (
   >,
 ) => {
   return useQuery({
-    queryKey: ["latest-invoice", orderId],
+    queryKey: ["recent-invoice", orderId],
     queryFn: async () => {
       const invoice = await sdk.client.fetch<GetInvoiceResponse>(
-        `/admin/invoices/${orderId}/latest`,
+        `/admin/invoices/${orderId}/recent`,
       );
 
       return invoice;
@@ -108,7 +108,7 @@ export const useGenerateInvoice = (order_id: string) => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["latest-invoice", order_id],
+        queryKey: ["recent-invoice", order_id],
       });
       queryClient.invalidateQueries({
         queryKey: ["order-invoices", order_id],
