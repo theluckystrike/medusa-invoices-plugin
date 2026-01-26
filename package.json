@@ -28,9 +28,11 @@
     "medusa-v2"
   ],
   "scripts": {
-    "build": "cp -r ./src/templates ./src/admin && medusa plugin:build",
-    "dev": "medusa plugin:develop",
-    "prepublishOnly": "medusa plugin:build",
+    "build": "rsync -a --delete ./src/templates/ ./src/admin/templates/ && medusa plugin:build",
+    "dev": "concurrently -k -n SYNC,DEV \"yarn dev:sync\" \"yarn dev:medusa\"",
+    "dev:medusa": "medusa plugin:develop",
+    "dev:sync": "watchexec -w ./src/templates -- rsync -a --delete ./src/templates/ ./src/admin/templates/",
+    "prepublishOnly": "rsync -a --delete ./src/templates/ ./src/admin/templates/ && medusa plugin:build",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
     "test:integration:modules": "TEST_TYPE=integration:modules NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",
     "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit",
@@ -56,6 +58,7 @@
     "@types/node": "^20.0.0",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.2.25",
+    "concurrently": "^9.2.1",
     "jest": "^30.2.0",
     "jsdom": "^27.4.0",
     "prop-types": "^15.8.1",
