@@ -85,10 +85,31 @@ export async function GET(
     );
   }
 
-  const invoiceId = orderInvoiceLink.invoice.id;
+  try {
+    const response = await fetch(invoiceURL);
 
-  res.json({
-    invoice_id: invoiceId,
-    invoice_pdf_url: invoiceURL,
-  });
+    if (!response.ok) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_FOUND,
+        `Failed to fetch PDF from storage: ${response.statusText}`,
+      );
+    }
+
+    const pdfBuffer = await response.arrayBuffer();
+
+    const invoiceNumber = `invoice-${display_id}`;
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${invoiceNumber}.pdf"`,
+    );
+    res.setHeader("Content-Length", pdfBuffer.byteLength);
+
+    res.send(Buffer.from(pdfBuffer));
+  } catch (error) {
+    throw new MedusaError(
+      MedusaError.Types.UNEXPECTED_STATE,
+      `Failed to retrieve invoice PDF: ${error.message}`,
+    );
+  }
 }
