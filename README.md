@@ -10,15 +10,21 @@
 <p align="center">
   Professional invoice generation for MedusaJS with customizable templates and automatic PDF creation.
 </p>
+<br />
+<br />
 
 
 ## Compatibility
 
 This starter is compatible with versions >= 2.11.3 and <= 2.13.1 of `@medusajs/medusa`. 
+<br />
+<br />
 
 ## Description
 
 A comprehensive invoice generation plugin for MedusaJS that automatically generates PDF invoices for orders with customizable templates.
+<br />
+<br />
 
 ## Features
 
@@ -29,6 +35,7 @@ A comprehensive invoice generation plugin for MedusaJS that automatically genera
 - 🔧 Admin UI for configuration and manual generation
 - 🔔 Event-based architecture
 - 📊 Invoice status tracking
+<br />
 
 ## Installation
 
@@ -43,6 +50,8 @@ Visit the [Quickstart Guide](https://docs.medusajs.com/learn/installation) to se
 Visit the [Plugins documentation](https://docs.medusajs.com/learn/fundamentals/plugins) to learn more about plugins.
 <br />
 Visit the [Docs](https://docs.medusajs.com/learn/installation#get-started) to learn more about medusa system requirements.
+<br />
+<br />
 
 ### Install the plugin
 
@@ -55,6 +64,7 @@ or with yarn:
 ```bash
 yarn add @agilo/medusa-invoices-plugin
 ```
+<br />
 
 ### Add to medusa-config.ts
 
@@ -73,6 +83,8 @@ module.exports = defineConfig({
   ],
 })
 ```
+<br />
+<br />
 
 ## Configuration
 
@@ -89,18 +101,22 @@ or with yarn:
 ```bash
 yarn medusa db:migrate
 ```
+<br />
 
 This will create tables for:
 - Invoice settings
 - Invoice records
 - Store and invoice settings link
 - Order and invoice link
+<br />
 
 ### Initial Setup
 
 1. **Configure File Module** (if not already configured)
 
-    The plugin requires a configured File Module to store generated PDF invoices.
+   The plugin requires a configured File Module to store generated PDF invoices.
+   <br />
+   <br />
 
     #### Example: Local File Storage
     
@@ -126,7 +142,8 @@ This will create tables for:
       ],
     }
     ```
-    
+    <br />
+
     #### Example: AWS S3 Storage
     
     ```typescript
@@ -160,18 +177,24 @@ This will create tables for:
     ```
     
     Visit the [File Module documentation](https://docs.medusajs.com/resources/infrastructure-modules/file) to learn more about file module.
+   <br />
+   <br />
 
-2. **Initial Plugin Configuration**
+3. **Initial Plugin Configuration**
 
     Access the Admin UI at `/app/settings/invoices` to:
     - Set up default invoice template
     - Set company information
+<br />
+<br />
 
 ## API Documentation
 
 ### Admin Endpoints
 
 All admin endpoints require authentication with admin privileges.
+<br />
+<br />
 
 #### Get Invoice Settings
 
@@ -179,7 +202,7 @@ All admin endpoints require authentication with admin privileges.
 GET /admin/invoice-settings
 ```
 
-**Response:**
+Response:
 ```json
 {
     "settings": {
@@ -225,6 +248,7 @@ GET /admin/invoice-settings
     ]
 }
 ```
+<br />
 
 #### Update Invoice Settings
 
@@ -232,7 +256,7 @@ GET /admin/invoice-settings
 POST /admin/invoice-settings
 ```
 
-**Body:**
+Body:
 ```json
 {
   "template_id": "clean",
@@ -251,7 +275,7 @@ POST /admin/invoice-settings
 }
 ```
 
-**Response:**
+Response:
 ```json
 {
     "id": "invset_01",
@@ -274,14 +298,15 @@ POST /admin/invoice-settings
     "store_id": "store_01"
 }
 ```
+<br />
 
-### Get Invoices by Order ID
+#### Get Invoices by Order ID
 
 ```http
 GET /admin/invoices/{order_id}
 ```
 
-**Response:**
+Response:
 ```json
 {
     "invoices": [
@@ -315,6 +340,7 @@ GET /admin/invoices/{order_id}
     "limit": 20
 }
 ```
+<br />
 
 #### Get Invoice by Order ID
 
@@ -322,7 +348,7 @@ GET /admin/invoices/{order_id}
 GET /admin/invoices/{order_id}/recent
 ```
 
-**Response:**
+Response:
 ```json
 {
     "status": "completed",
@@ -336,6 +362,7 @@ GET /admin/invoices/{order_id}/recent
     "created_at": "2026-01-26T13:43:15.514Z"
 }
 ```
+<br />
 
 #### Generate Invoice
 
@@ -343,7 +370,7 @@ GET /admin/invoices/{order_id}/recent
 POST /admin/invoices/{order_id}/generate
 ```
 
-**Body:**
+Body:
 ```json
 {
     "created_by_event": "manual"
@@ -351,7 +378,7 @@ POST /admin/invoices/{order_id}/generate
 }
 ```
 
-**Response:**
+Response:
 ```json
 {
     "id": "inv_01",
@@ -385,14 +412,14 @@ POST /admin/invoices/{order_id}/generate
     "deleted_at": null
 }
 ```
+<br />
+
 
 ### Store Endpoint
 
 Customers can access their own invoices.
-
-### Store Endpoint
-
-Customers can access their own invoices.
+<br />
+<br />
 
 #### Get Customer Invoice PDF url
 
@@ -400,15 +427,18 @@ Customers can access their own invoices.
 GET /store/invoices/{order_id}.pdf
 ```
 
-**Response:**
+Response:
 ```json
 {
     "invoice_id": "inv_01",
     "invoice_pdf_url": "http://inv_01.pdf"
 }
 ```
+<br />
 
 **Note:** Customers can only access invoices for their own orders. Authentication is required.
+<br />
+<br />
 
 ## Admin UI Guide
 
@@ -453,4 +483,21 @@ Navigate to **Orders → Select one order** in Medusa Admin dashboard.
 
 The widget allows you to:
 
-1.
+1. View latest invoice data
+2. Manually generate invoice
+4. View invoice status
+   - Queued (waiting for invoice generation)
+   - Generating (invoice is being generated)
+   - Completed (invoice was successfully generated)
+   - Failed (invoice generation was unsuccessful)
+     <br />
+     <br />
+     <img width="1680" height="1050" alt="Screenshot 2026-01-27 at 15 48 50" src="https://github.com/user-attachments/assets/783b6c5d-8d5a-47fa-a0ae-1cc169551249" />
+     
+6. View invoice history
+   - List of all invoices generated for that order
+   - Possible to filter by particular attributes
+     <br />
+     <br />
+     <img width="1680" height="1050" alt="Screenshot 2026-01-27 at 15 59 14" src="https://github.com/user-attachments/assets/b46544b0-e0a5-4a85-912f-60ed888876bb" />
+
