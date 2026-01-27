@@ -367,7 +367,7 @@ POST /admin/invoices/{order_id}/generate
 ```json
 {
     "created_by_event": "manual"
-    "template_id": "clean", // optional
+    "template_id": "clean" // optional
 }
 ```
 
@@ -405,3 +405,27 @@ POST /admin/invoices/{order_id}/generate
     "deleted_at": null
 }
 ```
+
+### Store Endpoint
+
+Customers can access their own invoices.
+
+### Store Endpoint
+
+Customers can access their own invoices.
+
+#### Get Customer Invoice PDF url
+
+```http
+GET /store/invoices/{order_id}.pdf
+```
+
+**Response:**
+```json
+{
+    invoice_id: "inv_01",
+    invoice_pdf_url: "http://inv_01.pdf"
+}
+```
+
+**Note:** Customers can only access invoices for their own orders. Authentication is required.
