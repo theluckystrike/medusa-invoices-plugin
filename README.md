@@ -1,36 +1,16 @@
 <p align="center">
   <a href="https://www.medusajs.com">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://user-images.githubusercontent.com/59018053/229103275-b5e482bb-4601-46e6-8142-244f531cebdb.svg">
-    <source media="(prefers-color-scheme: light)" srcset="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
     <img alt="Medusa logo" src="https://user-images.githubusercontent.com/59018053/229103726-e5b529a3-9b3f-4970-8a1f-c6af37f087bf.svg">
-    </picture>
   </a>
 </p>
 <h1 align="center">
   Medusa Invoice Plugin
 </h1>
 
-<h4 align="center">
-  <a href="https://docs.medusajs.com">Documentation</a> |
-  <a href="https://www.medusajs.com">Website</a>
-</h4>
+<p align="center">
+  Professional invoice generation for MedusaJS with customizable templates and automatic PDF creation.
+</p>
 
-<p align="center">
-  Building blocks for digital commerce
-</p>
-<p align="center">
-  <a href="https://github.com/medusajs/medusa/blob/master/CONTRIBUTING.md">
-    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat" alt="PRs welcome!" />
-  </a>
-    <a href="https://www.producthunt.com/posts/medusa"><img src="https://img.shields.io/badge/Product%20Hunt-%231%20Product%20of%20the%20Day-%23DA552E" alt="Product Hunt"></a>
-  <a href="https://discord.gg/xpCwq3Kfn8">
-    <img src="https://img.shields.io/badge/chat-on%20discord-7289DA.svg" alt="Discord Chat" />
-  </a>
-  <a href="https://twitter.com/intent/follow?screen_name=medusajs">
-    <img src="https://img.shields.io/twitter/follow/medusajs.svg?label=Follow%20@medusajs" alt="Follow @medusajs" />
-  </a>
-</p>
 
 ## Compatibility
 
@@ -120,72 +100,72 @@ This will create tables for:
 
 1. **Configure File Module** (if not already configured)
 
-The plugin requires a configured File Module to store generated PDF invoices.
+    The plugin requires a configured File Module to store generated PDF invoices.
 
-#### Example: Local File Storage
-
-```typescript
-// medusa-config.ts
-module.exports = {
-  // ...
-  modules: [
-    {
-      resolve: "@medusajs/medusa/file",
-      options: {
-        providers: [
-          {
-            resolve: "@medusajs/medusa/file-local",
-            id: "local",
-            options: {
-              // provider options...
-            },
+    #### Example: Local File Storage
+    
+    ```typescript
+    // medusa-config.ts
+    module.exports = {
+      // ...
+      modules: [
+        {
+          resolve: "@medusajs/medusa/file",
+          options: {
+            providers: [
+              {
+                resolve: "@medusajs/medusa/file-local",
+                id: "local",
+                options: {
+                  // provider options...
+                },
+              },
+            ],
           },
-        ],
-      },
-    },
-  ],
-}
-```
-
-#### Example: AWS S3 Storage
-
-```typescript
-// medusa-config.ts
-module.exports = {
-  // ...
-  modules: [
-    // ...
-    {
-      resolve: "@medusajs/medusa/file",
-      options: {
-        providers: [
-          {
-            resolve: "@medusajs/medusa/file-s3",
-            id: "s3",
-            options: {
-              file_url: process.env.S3_FILE_URL,
-              access_key_id: process.env.S3_ACCESS_KEY_ID,
-              secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
-              region: process.env.S3_REGION,
-              bucket: process.env.S3_BUCKET,
-              endpoint: process.env.S3_ENDPOINT,
-              // other options...
-            },
+        },
+      ],
+    }
+    ```
+    
+    #### Example: AWS S3 Storage
+    
+    ```typescript
+    // medusa-config.ts
+    module.exports = {
+      // ...
+      modules: [
+        // ...
+        {
+          resolve: "@medusajs/medusa/file",
+          options: {
+            providers: [
+              {
+                resolve: "@medusajs/medusa/file-s3",
+                id: "s3",
+                options: {
+                  file_url: process.env.S3_FILE_URL,
+                  access_key_id: process.env.S3_ACCESS_KEY_ID,
+                  secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
+                  region: process.env.S3_REGION,
+                  bucket: process.env.S3_BUCKET,
+                  endpoint: process.env.S3_ENDPOINT,
+                  // other options...
+                },
+              },
+            ],
           },
-        ],
-      },
-    },
-  ],
-}
-```
-
-Visit the [File Module documentation](https://docs.medusajs.com/resources/infrastructure-modules/file) to learn more about file module.
+        },
+      ],
+    }
+    ```
+    
+    Visit the [File Module documentation](https://docs.medusajs.com/resources/infrastructure-modules/file) to learn more about file module.
 
 2. **Initial Plugin Configuration**
 
-Access the Admin UI at `/app/settings/invoices` to:
-- Set up default invoice template
-- Set company information
+    Access the Admin UI at `/app/settings/invoices` to:
+    - Set up default invoice template
+    - Set company information
 
 ## API Documentation
 
@@ -423,9 +403,54 @@ GET /store/invoices/{order_id}.pdf
 **Response:**
 ```json
 {
-    invoice_id: "inv_01",
-    invoice_pdf_url: "http://inv_01.pdf"
+    "invoice_id": "inv_01",
+    "invoice_pdf_url": "http://inv_01.pdf"
 }
 ```
 
 **Note:** Customers can only access invoices for their own orders. Authentication is required.
+
+## Admin UI Guide
+
+### Invoice Settings
+
+#### Accessing Invoice Settings
+
+Navigate to **Settings → Invoices** in the Medusa Admin dashboard.
+
+#### Settings Page Features
+
+The settings page allows you to:
+
+1. **Select Active Template**
+   - Choose which template to use for invoice generation
+   - Preview templates before activating (with dummy or selected order data)
+     <br />
+     <br />
+     <img width="2560" height="1440" alt="Screenshot 2026-01-27 at 11 25 58" src="https://github.com/user-attachments/assets/1446365a-d623-42d9-a1bd-0e63ab989cca" />
+
+2. **Input Company Information**
+   - Configure store name, address, header, footer...
+   - This information appears on all generated invoices
+     <br />
+     <br />
+     <img width="2560" height="1440" alt="Screenshot 2026-01-27 at 11 14 53" src="https://github.com/user-attachments/assets/a0fcfbb7-8abd-4564-9f79-917ebaeec0f0" />
+  
+3. **Select Active Auto Generation Triggers**
+   - Choose the trigger on which the invoice is generated
+   - Possible triggers: Order completed, Fulfillment created, Payment captured
+     <br />
+     <br />
+     <img width="2560" height="1440" alt="Screenshot 2026-01-27 at 11 41 31" src="https://github.com/user-attachments/assets/e2175d15-c3c2-4751-9121-34e7d63d6064" />
+
+### Invoice Widget
+
+#### Accessing Invoice Widget
+
+Navigate to **Orders → Select one order** in Medusa Admin dashboard.
+
+#### Invoice Widget Features
+
+The widget allows you to:
+
+1.
