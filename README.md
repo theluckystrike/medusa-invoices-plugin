@@ -186,3 +186,222 @@ Visit the [File Module documentation](https://docs.medusajs.com/resources/infras
 Access the Admin UI at `/app/settings/invoices` to:
 - Set up default invoice template
 - Set company information
+
+## API Documentation
+
+### Admin Endpoints
+
+All admin endpoints require authentication with admin privileges.
+
+#### Get Invoice Settings
+
+```http
+GET /admin/invoice-settings
+```
+
+**Response:**
+```json
+{
+    "settings": {
+        "id": "invset_01",
+        "template_id": "clean",
+        "template_version": "1.0.0",
+        "header_logo_type": "text",
+        "header_logo_text": "Agilo",
+        "header_logo_url": null,
+        "header_content": {},
+        "footer_content": {},
+        "store_name": "Store1",
+        "store_address": "Some Street 218",
+        "store_tax_id": "1",
+        "bank_account_iban": "12345678910",
+        "bank_account_swift": "25",
+        "auto_generate_on": [],
+        "created_at": "2025-12-17T12:30:24.315Z",
+        "updated_at": "2026-01-27T08:20:43.756Z",
+        "deleted_at": null
+    },
+    "templates": [
+        {
+            "id": "clean",
+            "label": "Clean",
+            "version": "1.0.0"
+        },
+        {
+            "id": "classic",
+            "label": "Classic",
+            "version": "1.0.0"
+        },
+        {
+            "id": "compact",
+            "label": "Compact",
+            "version": "1.0.0"
+        }
+    ],
+    "availableTriggers": [
+        "order.completed",
+        "order.fulfillment_created",
+        "payment.captured"
+    ]
+}
+```
+
+#### Update Invoice Settings
+
+```http
+POST /admin/invoice-settings
+```
+
+**Body:**
+```json
+{
+  "template_id": "clean",
+  "template_version": "1.0.0",
+  "header_logo_type": "text",
+  "header_logo_url": null,
+  "header_logo_text": "Agilo",
+  "header_content": {},
+  "footer_content": {},
+  "store_name": "Store2",
+  "store_address": "Some Street 118",
+  "store_tax_id": "2",
+  "bank_account_iban": "10987654321",
+  "bank_account_swift": "24",
+  "auto_generate_on": []
+}
+```
+
+**Response:**
+```json
+{
+    "id": "invset_01",
+    "template_id": "clean",
+    "template_version": "1.0.0",
+    "header_logo_type": "text",
+    "header_logo_text": "Agilo",
+    "header_logo_url": null,
+    "header_content": {},
+    "footer_content": {},
+    "store_name": "Store2",
+    "store_address": "Some Street 118",
+    "store_tax_id": "2",
+    "bank_account_iban": "10987654321",
+    "bank_account_swift": "24",
+    "auto_generate_on": [],
+    "created_at": "2025-12-17T12:30:24.315Z",
+    "updated_at": "2026-01-27T08:20:43.756Z",
+    "deleted_at": null,
+    "store_id": "store_01"
+}
+```
+
+### Get Invoices by Order ID
+
+```http
+GET /admin/invoices/{order_id}
+```
+
+**Response:**
+```json
+{
+    "invoices": [
+        {
+            "id": "inv_01",
+            "status": "completed",
+            "completed_at": "2026-01-26T10:27:31.450Z",
+            "pdf_url": "http://inv_01.pdf",
+            "template_id": "compact",
+            "template_version": "1.0.0",
+            "error_message": null,
+            "order_display_id": 1,
+            "created_by_event": "manual",
+            "created_at": "2026-01-26T10:27:30.580Z"
+        },
+        {
+            "id": "inv_02",
+            "status": "completed",
+            "completed_at": "2026-01-26T09:04:05.957Z",
+            "pdf_url": "http://inv_02.pdf",
+            "template_id": "compact",
+            "template_version": "1.0.0",
+            "error_message": null,
+            "order_display_id": 2,
+            "created_by_event": "manual",
+            "created_at": "2026-01-26T09:04:05.620Z"
+        }
+    ],
+    "count": 2,
+    "offset": 0,
+    "limit": 20
+}
+```
+
+#### Get Invoice by Order ID
+
+```http
+GET /admin/invoices/{order_id}/recent
+```
+
+**Response:**
+```json
+{
+    "status": "completed",
+    "completed_at": "2026-01-26T13:43:15.758Z",
+    "pdf_url": "http://inv_01.pdf",
+    "template_id": "compact",
+    "template_version": "1.0.0",
+    "error_message": null,
+    "order_display_id": 1,
+    "created_by_event": "manual",
+    "created_at": "2026-01-26T13:43:15.514Z"
+}
+```
+
+#### Generate Invoice
+
+```http
+POST /admin/invoices/{order_id}/generate
+```
+
+**Body:**
+```json
+{
+    "created_by_event": "manual"
+    "template_id": "clean", // optional
+}
+```
+
+**Response:**
+```json
+{
+    "id": "inv_01",
+    "order_id": "order_01",
+    "order_display_id": 1,
+    "status": "completed",
+    "completed_at": "2026-01-27T09:32:12.233Z",
+    "pdf_url": "http://inv_01.pdf",
+    "template_id": "clean",
+    "template_version": "1.0.0",
+    "settings_snapshot": {
+        "store_name": "Store1",
+        "header_logo": {
+            "url": null,
+            "text": "Agilo",
+            "type": "text"
+        },
+        "template_id": "clean",
+        "store_tax_id": "1",
+        "store_address": "Some Street 218",
+        "footer_content": {},
+        "header_content": {},
+        "template_version": "1.0.0",
+        "bank_account_iban": "12345678910",
+        "bank_account_swift": "25"
+    },
+    "error_message": null,
+    "created_by_event": "manual",
+    "created_at": "2026-01-27T09:32:11.896Z",
+    "updated_at": "2026-01-27T09:32:12.234Z",
+    "deleted_at": null
+}
+```
