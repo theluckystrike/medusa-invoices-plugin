@@ -7,6 +7,8 @@ import {
   MedusaError,
 } from "@medusajs/framework/utils";
 import OrderInvoiceLink from "../../../../links/order-invoice";
+import { InvoiceStatus } from "../../../../constants/invoice";
+import { InvoiceDTO } from "../../../../types/invoice";
 
 export async function GET(
   req: AuthenticatedMedusaRequest,
@@ -76,9 +78,16 @@ export async function GET(
     );
   }
 
-  const invoiceURL = orderInvoiceLink.invoice?.pdf_url;
+  const invoice: InvoiceDTO = orderInvoiceLink.invoice;
 
-  if (!invoiceURL) {
+  if(invoice.status !== InvoiceStatus.COMPLETED){
+    throw new MedusaError(
+      MedusaError.Types.NOT_FOUND,
+      "Invoice not completed",
+    );
+  }
+
+  if (!invoice.pdf_url) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
       "Invoice PDF URL is missing",
@@ -86,7 +95,7 @@ export async function GET(
   }
 
   try {
-    const response = await fetch(invoiceURL);
+    const response = await fetch(invoice.pdf_url);
 
     if (!response.ok) {
       throw new MedusaError(
