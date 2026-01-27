@@ -257,21 +257,21 @@ POST /admin/invoice-settings
 ```
 
 Body:
-```json
+```typescript
 {
-  "template_id": "clean",
-  "template_version": "1.0.0",
-  "header_logo_type": "text",
-  "header_logo_url": null,
-  "header_logo_text": "Agilo",
-  "header_content": {},
-  "footer_content": {},
-  "store_name": "Store2",
-  "store_address": "Some Street 118",
-  "store_tax_id": "2",
-  "bank_account_iban": "10987654321",
-  "bank_account_swift": "24",
-  "auto_generate_on": []
+  template_id: "clean",
+  template_version: "1.0.0",
+  header_logo_type: "text",
+  header_logo_url: null,
+  header_logo_text: "Agilo",
+  header_content: {},
+  footer_content: {},
+  store_name: "Store2",
+  store_address: "Some Street 118",
+  store_tax_id: "2",
+  bank_account_iban: "10987654321",
+  bank_account_swift: "24",
+  auto_generate_on: []
 }
 ```
 
@@ -371,10 +371,10 @@ POST /admin/invoices/{order_id}/generate
 ```
 
 Body:
-```json
+```typescript
 {
-    "created_by_event": "manual"
-    "template_id": "clean" // optional
+    created_by_event: "manual"
+    template_id: "clean" // Optional
 }
 ```
 
@@ -458,21 +458,26 @@ The settings page allows you to:
      <br />
      <br />
      <img width="2560" height="1440" alt="Screenshot 2026-01-27 at 11 25 58" src="https://github.com/user-attachments/assets/1446365a-d623-42d9-a1bd-0e63ab989cca" />
-
+     <br />
+     <br />
 2. **Input Company Information**
    - Configure store name, address, header, footer...
    - This information appears on all generated invoices
      <br />
      <br />
      <img width="2560" height="1440" alt="Screenshot 2026-01-27 at 11 14 53" src="https://github.com/user-attachments/assets/a0fcfbb7-8abd-4564-9f79-917ebaeec0f0" />
-  
+     <br />
+     <br />
+      
 3. **Select Active Auto Generation Triggers**
    - Choose the trigger on which the invoice is generated
    - Possible triggers: Order completed, Fulfillment created, Payment captured
      <br />
      <br />
      <img width="2560" height="1440" alt="Screenshot 2026-01-27 at 11 41 31" src="https://github.com/user-attachments/assets/e2175d15-c3c2-4751-9121-34e7d63d6064" />
-
+     <br />
+     <br />
+     
 ### Invoice Widget
 
 #### Accessing Invoice Widget
@@ -493,11 +498,89 @@ The widget allows you to:
      <br />
      <br />
      <img width="1680" height="1050" alt="Screenshot 2026-01-27 at 15 48 50" src="https://github.com/user-attachments/assets/783b6c5d-8d5a-47fa-a0ae-1cc169551249" />
-     
+     <br />
+     <br />
 6. View invoice history
    - List of all invoices generated for that order
    - Possible to filter by particular attributes
      <br />
      <br />
      <img width="1680" height="1050" alt="Screenshot 2026-01-27 at 15 59 14" src="https://github.com/user-attachments/assets/b46544b0-e0a5-4a85-912f-60ed888876bb" />
+<br />
+<br />
 
+## Events
+
+The plugin emits events that you can subscribe to for custom workflows.
+<br />
+<br />
+
+### invoice.generated
+
+Emitted when an invoice is successfully generated.
+
+**Payload:**
+```typescript
+{
+  eventName: "invoice.generated",
+  data: {
+    invoice_id: "inv_01";
+    order_id: "order_01";
+    order_display_id: 1;
+    pdf_url: "http://inv_01.pdf";
+    template_id: "clean";
+    template_version: "1.0.0";
+    completed_at: "2026-01-27T09:32:11.896Z";
+  }
+}
+```
+<br />
+
+### invoice.failed
+
+Emitted when invoice generation fails.
+
+**Payload:**
+```typescript
+{
+  name: "invoice.failed",
+  data: {
+    order_id: "inv_01",
+    error_message: "Invoice generation unssuccesful",
+  }
+},
+```
+<br />
+
+### How to Subscribe to Events
+
+Create a subscriber in your Medusa project:
+
+```typescript
+// src/subscribers/invoice.ts
+import { SubscriberArgs, type SubscriberConfig } from "@medusajs/framework"
+
+type InvoiceGeneratedPayload = {
+    invoice_id: string;
+    order_id: string;
+    order_display_id: number;
+    pdf_url: string;
+    template_id: string;
+    template_version: string;
+    completed_at: string;
+}
+
+export default async function invoiceHandler({
+  event,
+  container,
+}: SubscriberArgs<InvoiceGeneratedPayload>) {
+  const { name, data } = event;
+  console.log(`invoices: subscriber triggered for event ${name}`)
+  
+  // Your custom logic here
+}
+
+export const config: SubscriberConfig = {
+  event: ["invoice.generated"],
+}
+```
