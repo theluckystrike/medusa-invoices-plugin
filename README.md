@@ -63,3 +63,126 @@ Visit the [Quickstart Guide](https://docs.medusajs.com/learn/installation) to se
 Visit the [Plugins documentation](https://docs.medusajs.com/learn/fundamentals/plugins) to learn more about plugins.
 <br />
 Visit the [Docs](https://docs.medusajs.com/learn/installation#get-started) to learn more about medusa system requirements.
+
+### Install the plugin
+
+```bash
+npm install @@agilo/medusa-invoices-plugin
+```
+
+or with yarn:
+
+```bash
+yarn add @agilo/medusa-invoices-plugin
+```
+
+### Add to medusa-config.ts
+
+```typescript
+module.exports = defineConfig({
+  projectConfig: {
+    // ... other config
+  },
+  plugins: [
+    {
+      resolve: "@agilo/medusa-invoices-plugin",
+      options: {
+        // Additional options can be configured here
+      },
+    },
+  ],
+})
+```
+
+## Configuration
+
+### Database Migrations
+
+After installing the plugin, run migrations to create necessary database tables:
+
+```bash
+npx medusa db:migrate
+```
+
+or with yarn:
+
+```bash
+yarn medusa db:migrate
+```
+
+This will create tables for:
+- Invoice settings
+- Invoice records
+- Store and invoice settings link
+- Order and invoice link
+
+### Initial Setup
+
+1. **Configure File Module** (if not already configured)
+
+The plugin requires a configured File Module to store generated PDF invoices.
+
+#### Example: Local File Storage
+
+```typescript
+// medusa-config.ts
+module.exports = {
+  // ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-local",
+            id: "local",
+            options: {
+              // provider options...
+            },
+          },
+        ],
+      },
+    },
+  ],
+}
+```
+
+#### Example: AWS S3 Storage
+
+```typescript
+// medusa-config.ts
+module.exports = {
+  // ...
+  modules: [
+    // ...
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-s3",
+            id: "s3",
+            options: {
+              file_url: process.env.S3_FILE_URL,
+              access_key_id: process.env.S3_ACCESS_KEY_ID,
+              secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
+              region: process.env.S3_REGION,
+              bucket: process.env.S3_BUCKET,
+              endpoint: process.env.S3_ENDPOINT,
+              // other options...
+            },
+          },
+        ],
+      },
+    },
+  ],
+}
+```
+
+Visit the [File Module documentation](https://docs.medusajs.com/resources/infrastructure-modules/file) to learn more about file module.
+
+2. **Initial Plugin Configuration**
+
+Access the Admin UI at `/app/settings/invoices` to:
+- Set up default invoice template
+- Set company information
