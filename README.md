@@ -588,3 +588,9 @@ export const config: SubscriberConfig = {
   event: ["invoice.generated"],
 }
 ```
+<br />
+
+## Contributing
+
+We welcome contributions and feedback.
+To get involved, [open an issue](https://github.com/Agilo/medusa-invoices-plugin/issues) or [submit a pull request](https://github.com/Agilo/medusa-invoices-plugin/pulls) on [GitHub →](https://github.com/Agilo/medusa-invoices-plugin)
