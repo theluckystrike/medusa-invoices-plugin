@@ -32,7 +32,7 @@ const PdfPreview: React.FC<PdfPreviewProps> = ({
   }
 
   return (
-    <ReactPDFViewer showToolbar={false} height={800} width="100%">
+    <ReactPDFViewer showToolbar={false} height="100%" width="100%">
       {templateQuery.data}
     </ReactPDFViewer>
   );
