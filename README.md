@@ -447,6 +447,8 @@ Response:
 #### Accessing Invoice Settings
 
 Navigate to **Settings → Invoices** in the Medusa Admin dashboard.
+<br />
+<br />
 
 #### Settings Page Features
 
@@ -483,6 +485,8 @@ The settings page allows you to:
 #### Accessing Invoice Widget
 
 Navigate to **Orders → Select one order** in Medusa Admin dashboard.
+<br />
+<br />
 
 #### Invoice Widget Features
 
