@@ -12,6 +12,7 @@ const ClassicTemplate = (async () => {
       backgroundColor: "#fff",
       padding: "32px",
       color: "#52525b",
+      fontSize: "14px",
     },
     header: {
       alignSelf: "flex-start",
@@ -53,7 +54,7 @@ const ClassicTemplate = (async () => {
       marginBottom: "64px",
     },
     grandTotal: {
-      fontSize: "22px",
+      fontSize: "20px",
       marginTop: "6px",
       color: "#18181b",
     },
@@ -249,6 +250,7 @@ const ClassicTemplate = (async () => {
           </View>
 
           <View
+            wrap={false}
             render={() =>
               (settings.store_name ||
                 settings.store_address ||
@@ -285,7 +287,7 @@ const ClassicTemplate = (async () => {
           />
 
           {settings.footer_content && (
-            <View style={styles.footer}>
+            <View wrap={false} style={styles.footer}>
               {renderTipTapNode({
                 node: settings.footer_content,
                 components: { View, Text, Link },

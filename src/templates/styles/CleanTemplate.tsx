@@ -12,6 +12,7 @@ const CleanTemplate = (async () => {
       backgroundColor: "#fff",
       padding: "32px",
       color: "#52525b",
+      fontSize: "14px",
     },
     header: {
       margin: "0 auto 64px auto",
@@ -50,7 +51,7 @@ const CleanTemplate = (async () => {
     },
     grandTotal: {
       fontWeight: "bold",
-      fontSize: "22px",
+      fontSize: "20px",
       marginTop: "6px",
       color: "#18181b",
     },
@@ -247,6 +248,7 @@ const CleanTemplate = (async () => {
           </View>
 
           <View
+            wrap={false}
             render={() =>
               (settings.store_name ||
                 settings.store_address ||
@@ -283,7 +285,7 @@ const CleanTemplate = (async () => {
           />
 
           {settings.footer_content && (
-            <View style={styles.footer}>
+            <View wrap={false} style={styles.footer}>
               {renderTipTapNode({
                 node: settings.footer_content,
                 components: { View, Text, Link },

@@ -246,6 +246,7 @@ const CompactTemplate = (async () => {
           </View>
 
           <View
+            wrap={false}
             style={styles.section}
             render={() =>
               (settings?.store_name ||
@@ -283,7 +284,7 @@ const CompactTemplate = (async () => {
           />
 
           {settings?.footer_content && (
-            <View style={styles.footer}>
+            <View wrap={false} style={styles.footer}>
               {renderTipTapNode({
                 node: settings.footer_content,
                 components: { View, Text, Link },
