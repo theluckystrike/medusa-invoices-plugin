@@ -240,7 +240,7 @@ export default function Invoices() {
           </Drawer.Content>
         </Drawer>
       </div>
-      <div className="px-6 gap-4 py-4 flex">
+      <div className="px-6 gap-4 py-4 flex items-start min-h-[calc(100vh-4rem)]">
         <Container className="md:w-1/3 p-0 divide-y max-xl:hidden">
           {invoiceSettingsQuery.isLoading ? (
             <Text className="p-6 text-ui-fg-subtle">
@@ -259,7 +259,7 @@ export default function Invoices() {
             />
           )}
         </Container>
-        <Container className="xl:w-2/3 p-0 divide-y">
+        <Container className="xl:w-2/3 p-0 divide-y sticky top-4 self-start h-[calc(100vh-5.3rem)] overflow-hidden">
           <div className="px-6 flex items-center justify-between flex-wrap gap-2 py-4">
             <Heading level="h2">Live Preview</Heading>
             <Button

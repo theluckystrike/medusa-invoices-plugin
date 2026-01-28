@@ -4,7 +4,7 @@
   </a>
 </p>
 <h1 align="center">
-  Medusa Invoice Plugin
+  Medusa Invoices Plugin
 </h1>
 
 <p align="center">
@@ -13,10 +13,9 @@
 <br />
 <br />
 
-
 ## Compatibility
 
-This starter is compatible with versions >= 2.11.3 and <= 2.13.1 of `@medusajs/medusa`. 
+This starter is compatible with versions >= 2.11.3 and <= 2.13.1 of `@medusajs/medusa`.
 <br />
 <br />
 
@@ -35,7 +34,7 @@ A comprehensive invoice generation plugin for MedusaJS that automatically genera
 - 🔧 Admin UI for configuration and manual generation
 - 🔔 Event-based architecture
 - 📊 Invoice status tracking
-<br />
+  <br />
 
 ## Installation
 
@@ -64,6 +63,7 @@ or with yarn:
 ```bash
 yarn add @agilo/medusa-invoices-plugin
 ```
+
 <br />
 
 ### Add to medusa-config.ts
@@ -81,8 +81,9 @@ module.exports = defineConfig({
       },
     },
   ],
-})
+});
 ```
+
 <br />
 <br />
 
@@ -101,25 +102,27 @@ or with yarn:
 ```bash
 yarn medusa db:migrate
 ```
+
 <br />
 
 This will create tables for:
+
 - Invoice settings
 - Invoice records
 - Store and invoice settings link
 - Order and invoice link
-<br />
+  <br />
 
 ### Initial Setup
 
-1. **Configure File Module** (if not already configured)
+1.  **Configure File Module** (if not already configured)
 
-   The plugin requires a configured File Module to store generated PDF invoices.
-   <br />
-   <br />
+    The plugin requires a configured File Module to store generated PDF invoices.
+    <br />
+    <br />
 
     #### Example: Local File Storage
-    
+
     ```typescript
     // medusa-config.ts
     module.exports = {
@@ -140,12 +143,13 @@ This will create tables for:
           },
         },
       ],
-    }
+    };
     ```
-    <br />
+
+     <br />
 
     #### Example: AWS S3 Storage
-    
+
     ```typescript
     // medusa-config.ts
     module.exports = {
@@ -173,20 +177,21 @@ This will create tables for:
           },
         },
       ],
-    }
+    };
     ```
-    
+
     Visit the [File Module documentation](https://docs.medusajs.com/resources/infrastructure-modules/file) to learn more about file module.
-   <br />
-   <br />
+    <br />
+    <br />
 
-3. **Initial Plugin Configuration**
+2.  **Initial Plugin Configuration**
 
-    Access the Admin UI at `/app/settings/invoices` to:
-    - Set up default invoice template
-    - Set company information
-<br />
-<br />
+        Access the Admin UI at `/app/settings/invoices` to:
+        - Set up default invoice template
+        - Set company information
+
+    <br />
+    <br />
 
 ## API Documentation
 
@@ -203,51 +208,53 @@ GET /admin/invoice-settings
 ```
 
 Response:
+
 ```json
 {
-    "settings": {
-        "id": "invset_01",
-        "template_id": "clean",
-        "template_version": "1.0.0",
-        "header_logo_type": "text",
-        "header_logo_text": "Agilo",
-        "header_logo_url": null,
-        "header_content": {},
-        "footer_content": {},
-        "store_name": "Store1",
-        "store_address": "Some Street 218",
-        "store_tax_id": "1",
-        "bank_account_iban": "12345678910",
-        "bank_account_swift": "25",
-        "auto_generate_on": [],
-        "created_at": "2025-12-17T12:30:24.315Z",
-        "updated_at": "2026-01-27T08:20:43.756Z",
-        "deleted_at": null
+  "settings": {
+    "id": "invset_01",
+    "template_id": "clean",
+    "template_version": "1.0.0",
+    "header_logo_type": "text",
+    "header_logo_text": "Agilo",
+    "header_logo_url": null,
+    "header_content": {},
+    "footer_content": {},
+    "store_name": "Store1",
+    "store_address": "Some Street 218",
+    "store_tax_id": "1",
+    "bank_account_iban": "12345678910",
+    "bank_account_swift": "25",
+    "auto_generate_on": [],
+    "created_at": "2025-12-17T12:30:24.315Z",
+    "updated_at": "2026-01-27T08:20:43.756Z",
+    "deleted_at": null
+  },
+  "templates": [
+    {
+      "id": "clean",
+      "label": "Clean",
+      "version": "1.0.0"
     },
-    "templates": [
-        {
-            "id": "clean",
-            "label": "Clean",
-            "version": "1.0.0"
-        },
-        {
-            "id": "classic",
-            "label": "Classic",
-            "version": "1.0.0"
-        },
-        {
-            "id": "compact",
-            "label": "Compact",
-            "version": "1.0.0"
-        }
-    ],
-    "availableTriggers": [
-        "order.completed",
-        "order.fulfillment_created",
-        "payment.captured"
-    ]
+    {
+      "id": "classic",
+      "label": "Classic",
+      "version": "1.0.0"
+    },
+    {
+      "id": "compact",
+      "label": "Compact",
+      "version": "1.0.0"
+    }
+  ],
+  "availableTriggers": [
+    "order.completed",
+    "order.fulfillment_created",
+    "payment.captured"
+  ]
 }
 ```
+
 <br />
 
 #### Update Invoice Settings
@@ -257,6 +264,7 @@ POST /admin/invoice-settings
 ```
 
 Body:
+
 ```typescript
 {
   template_id: "clean",
@@ -276,28 +284,30 @@ Body:
 ```
 
 Response:
+
 ```json
 {
-    "id": "invset_01",
-    "template_id": "clean",
-    "template_version": "1.0.0",
-    "header_logo_type": "text",
-    "header_logo_text": "Agilo",
-    "header_logo_url": null,
-    "header_content": {},
-    "footer_content": {},
-    "store_name": "Store2",
-    "store_address": "Some Street 118",
-    "store_tax_id": "2",
-    "bank_account_iban": "10987654321",
-    "bank_account_swift": "24",
-    "auto_generate_on": [],
-    "created_at": "2025-12-17T12:30:24.315Z",
-    "updated_at": "2026-01-27T08:20:43.756Z",
-    "deleted_at": null,
-    "store_id": "store_01"
+  "id": "invset_01",
+  "template_id": "clean",
+  "template_version": "1.0.0",
+  "header_logo_type": "text",
+  "header_logo_text": "Agilo",
+  "header_logo_url": null,
+  "header_content": {},
+  "footer_content": {},
+  "store_name": "Store2",
+  "store_address": "Some Street 118",
+  "store_tax_id": "2",
+  "bank_account_iban": "10987654321",
+  "bank_account_swift": "24",
+  "auto_generate_on": [],
+  "created_at": "2025-12-17T12:30:24.315Z",
+  "updated_at": "2026-01-27T08:20:43.756Z",
+  "deleted_at": null,
+  "store_id": "store_01"
 }
 ```
+
 <br />
 
 #### Get Invoices by Order ID
@@ -307,39 +317,41 @@ GET /admin/invoices/{order_id}
 ```
 
 Response:
+
 ```json
 {
-    "invoices": [
-        {
-            "id": "inv_01",
-            "status": "completed",
-            "completed_at": "2026-01-26T10:27:31.450Z",
-            "pdf_url": "http://inv_01.pdf",
-            "template_id": "compact",
-            "template_version": "1.0.0",
-            "error_message": null,
-            "order_display_id": 1,
-            "created_by_event": "manual",
-            "created_at": "2026-01-26T10:27:30.580Z"
-        },
-        {
-            "id": "inv_02",
-            "status": "completed",
-            "completed_at": "2026-01-26T09:04:05.957Z",
-            "pdf_url": "http://inv_02.pdf",
-            "template_id": "compact",
-            "template_version": "1.0.0",
-            "error_message": null,
-            "order_display_id": 2,
-            "created_by_event": "manual",
-            "created_at": "2026-01-26T09:04:05.620Z"
-        }
-    ],
-    "count": 2,
-    "offset": 0,
-    "limit": 20
+  "invoices": [
+    {
+      "id": "inv_01",
+      "status": "completed",
+      "completed_at": "2026-01-26T10:27:31.450Z",
+      "pdf_url": "http://inv_01.pdf",
+      "template_id": "compact",
+      "template_version": "1.0.0",
+      "error_message": null,
+      "order_display_id": 1,
+      "created_by_event": "manual",
+      "created_at": "2026-01-26T10:27:30.580Z"
+    },
+    {
+      "id": "inv_02",
+      "status": "completed",
+      "completed_at": "2026-01-26T09:04:05.957Z",
+      "pdf_url": "http://inv_02.pdf",
+      "template_id": "compact",
+      "template_version": "1.0.0",
+      "error_message": null,
+      "order_display_id": 2,
+      "created_by_event": "manual",
+      "created_at": "2026-01-26T09:04:05.620Z"
+    }
+  ],
+  "count": 2,
+  "offset": 0,
+  "limit": 20
 }
 ```
+
 <br />
 
 #### Get Invoice by Order ID
@@ -349,19 +361,21 @@ GET /admin/invoices/{order_id}/recent
 ```
 
 Response:
+
 ```json
 {
-    "status": "completed",
-    "completed_at": "2026-01-26T13:43:15.758Z",
-    "pdf_url": "http://inv_01.pdf",
-    "template_id": "compact",
-    "template_version": "1.0.0",
-    "error_message": null,
-    "order_display_id": 1,
-    "created_by_event": "manual",
-    "created_at": "2026-01-26T13:43:15.514Z"
+  "status": "completed",
+  "completed_at": "2026-01-26T13:43:15.758Z",
+  "pdf_url": "http://inv_01.pdf",
+  "template_id": "compact",
+  "template_version": "1.0.0",
+  "error_message": null,
+  "order_display_id": 1,
+  "created_by_event": "manual",
+  "created_at": "2026-01-26T13:43:15.514Z"
 }
 ```
+
 <br />
 
 #### Generate Invoice
@@ -371,49 +385,51 @@ POST /admin/invoices/{order_id}/generate
 ```
 
 Body:
+
 ```typescript
 {
-    created_by_event: "manual"
-    template_id: "clean" // Optional
+  created_by_event: "manual";
+  template_id: "clean"; // Optional
 }
 ```
 
 Response:
+
 ```json
 {
-    "id": "inv_01",
-    "order_id": "order_01",
-    "order_display_id": 1,
-    "status": "completed",
-    "completed_at": "2026-01-27T09:32:12.233Z",
-    "pdf_url": "http://inv_01.pdf",
-    "template_id": "clean",
-    "template_version": "1.0.0",
-    "settings_snapshot": {
-        "store_name": "Store1",
-        "header_logo": {
-            "url": null,
-            "text": "Agilo",
-            "type": "text"
-        },
-        "template_id": "clean",
-        "store_tax_id": "1",
-        "store_address": "Some Street 218",
-        "footer_content": {},
-        "header_content": {},
-        "template_version": "1.0.0",
-        "bank_account_iban": "12345678910",
-        "bank_account_swift": "25"
+  "id": "inv_01",
+  "order_id": "order_01",
+  "order_display_id": 1,
+  "status": "completed",
+  "completed_at": "2026-01-27T09:32:12.233Z",
+  "pdf_url": "http://inv_01.pdf",
+  "template_id": "clean",
+  "template_version": "1.0.0",
+  "settings_snapshot": {
+    "store_name": "Store1",
+    "header_logo": {
+      "url": null,
+      "text": "Agilo",
+      "type": "text"
     },
-    "error_message": null,
-    "created_by_event": "manual",
-    "created_at": "2026-01-27T09:32:11.896Z",
-    "updated_at": "2026-01-27T09:32:12.234Z",
-    "deleted_at": null
+    "template_id": "clean",
+    "store_tax_id": "1",
+    "store_address": "Some Street 218",
+    "footer_content": {},
+    "header_content": {},
+    "template_version": "1.0.0",
+    "bank_account_iban": "12345678910",
+    "bank_account_swift": "25"
+  },
+  "error_message": null,
+  "created_by_event": "manual",
+  "created_at": "2026-01-27T09:32:11.896Z",
+  "updated_at": "2026-01-27T09:32:12.234Z",
+  "deleted_at": null
 }
 ```
-<br />
 
+<br />
 
 ### Store Endpoint
 
@@ -428,12 +444,14 @@ GET /store/invoices/{order_id}.pdf
 ```
 
 Response:
+
 ```json
 {
-    "invoice_id": "inv_01",
-    "invoice_pdf_url": "http://inv_01.pdf"
+  "invoice_id": "inv_01",
+  "invoice_pdf_url": "http://inv_01.pdf"
 }
 ```
+
 <br />
 
 **Note:** Customers can only access invoices for their own orders. Authentication is required.
@@ -470,7 +488,6 @@ The settings page allows you to:
      <img width="2560" height="1440" alt="Screenshot 2026-01-27 at 11 14 53" src="https://github.com/user-attachments/assets/a0fcfbb7-8abd-4564-9f79-917ebaeec0f0" />
      <br />
      <br />
-      
 3. **Select Active Auto Generation Triggers**
    - Choose the trigger on which the invoice is generated
    - Possible triggers: Order completed, Fulfillment created, Payment captured
@@ -479,7 +496,7 @@ The settings page allows you to:
      <img width="2560" height="1440" alt="Screenshot 2026-01-27 at 11 41 31" src="https://github.com/user-attachments/assets/e2175d15-c3c2-4751-9121-34e7d63d6064" />
      <br />
      <br />
-     
+
 ### Invoice Widget
 
 #### Accessing Invoice Widget
@@ -494,7 +511,7 @@ The widget allows you to:
 
 1. View latest invoice data
 2. Manually generate invoice
-4. View invoice status
+3. View invoice status
    - Queued (waiting for invoice generation)
    - Generating (invoice is being generated)
    - Completed (invoice was successfully generated)
@@ -504,14 +521,14 @@ The widget allows you to:
      <img width="1680" height="1050" alt="Screenshot 2026-01-27 at 15 48 50" src="https://github.com/user-attachments/assets/783b6c5d-8d5a-47fa-a0ae-1cc169551249" />
      <br />
      <br />
-6. View invoice history
+4. View invoice history
    - List of all invoices generated for that order
    - Possible to filter by particular attributes
      <br />
      <br />
      <img width="1680" height="1050" alt="Screenshot 2026-01-27 at 15 59 14" src="https://github.com/user-attachments/assets/b46544b0-e0a5-4a85-912f-60ed888876bb" />
-<br />
-<br />
+     <br />
+     <br />
 
 ## Events
 
@@ -524,6 +541,7 @@ The plugin emits events that you can subscribe to for custom workflows.
 Emitted when an invoice is successfully generated.
 
 **Payload:**
+
 ```typescript
 {
   eventName: "invoice.generated",
@@ -538,6 +556,7 @@ Emitted when an invoice is successfully generated.
   }
 }
 ```
+
 <br />
 
 ### invoice.failed
@@ -545,6 +564,7 @@ Emitted when an invoice is successfully generated.
 Emitted when invoice generation fails.
 
 **Payload:**
+
 ```typescript
 {
   name: "invoice.failed",
@@ -554,6 +574,7 @@ Emitted when invoice generation fails.
   }
 },
 ```
+
 <br />
 
 ### How to Subscribe to Events
@@ -562,32 +583,33 @@ Create a subscriber in your Medusa project:
 
 ```typescript
 // src/subscribers/invoice.ts
-import { SubscriberArgs, type SubscriberConfig } from "@medusajs/framework"
+import { SubscriberArgs, type SubscriberConfig } from "@medusajs/framework";
 
 type InvoiceGeneratedPayload = {
-    invoice_id: string;
-    order_id: string;
-    order_display_id: number;
-    pdf_url: string;
-    template_id: string;
-    template_version: string;
-    completed_at: string;
-}
+  invoice_id: string;
+  order_id: string;
+  order_display_id: number;
+  pdf_url: string;
+  template_id: string;
+  template_version: string;
+  completed_at: string;
+};
 
 export default async function invoiceHandler({
   event,
   container,
 }: SubscriberArgs<InvoiceGeneratedPayload>) {
   const { name, data } = event;
-  console.log(`invoices: subscriber triggered for event ${name}`)
-  
+  console.log(`invoices: subscriber triggered for event ${name}`);
+
   // Your custom logic here
 }
 
 export const config: SubscriberConfig = {
   event: ["invoice.generated"],
-}
+};
 ```
+
 <br />
 
 ## Contributing

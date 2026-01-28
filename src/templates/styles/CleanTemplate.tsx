@@ -15,12 +15,14 @@ const CleanTemplate = (async () => {
       fontSize: "14px",
     },
     header: {
-      margin: "0 auto 64px auto",
+      marginBottom: "64px",
+      padding: "0 80px",
     },
     heading: {
       fontSize: "36px",
       fontWeight: "bold",
       color: "#18181b",
+      textAlign: "center",
     },
     tipTapNode: {},
     section: {
@@ -66,35 +68,39 @@ const CleanTemplate = (async () => {
     return (
       <Document>
         <Page size="A4" style={styles.page}>
-          <View style={styles.header}>
-            {settings.header_logo.type === "text" &&
-              settings.header_logo.text && (
-                <Text style={styles.heading}>{settings.header_logo.text}</Text>
-              )}
+          {settings.header_logo.type !== "none" && (
+            <View style={styles.header}>
+              {settings.header_logo.type === "text" &&
+                settings.header_logo.text && (
+                  <Text style={styles.heading}>
+                    {settings.header_logo.text}
+                  </Text>
+                )}
 
-            {settings.header_logo.type === "image" &&
-              settings.header_logo.url && (
-                <Image
-                  src={settings.header_logo.url}
-                  style={{
-                    width: "auto",
-                    height: "40px",
-                    objectFit: "contain",
-                    marginBottom: "20px",
-                  }}
-                />
-              )}
+              {settings.header_logo.type === "image" &&
+                settings.header_logo.url && (
+                  <Image
+                    src={settings.header_logo.url}
+                    style={{
+                      width: "auto",
+                      height: "40px",
+                      objectFit: "contain",
+                      marginBottom: "20px",
+                    }}
+                  />
+                )}
 
-            {settings.header_content && (
-              <View style={{ marginTop: "15px" }}>
-                {renderTipTapNode({
-                  node: settings.header_content,
-                  components: { View, Text, Link },
-                  tipTapStyles: tipTapNodeStyles,
-                })}
-              </View>
-            )}
-          </View>
+              {settings.header_content && (
+                <View style={{ marginTop: "15px" }}>
+                  {renderTipTapNode({
+                    node: settings.header_content,
+                    components: { View, Text, Link },
+                    tipTapStyles: tipTapNodeStyles,
+                  })}
+                </View>
+              )}
+            </View>
+          )}
 
           <View style={{ marginBottom: "64px" }}>
             <Text
