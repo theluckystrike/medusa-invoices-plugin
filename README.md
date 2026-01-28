@@ -524,13 +524,13 @@ Emitted when an invoice is successfully generated.
 {
   eventName: "invoice.generated",
   data: {
-    invoice_id: "inv_01";
-    order_id: "order_01";
-    order_display_id: 1;
-    pdf_url: "http://inv_01.pdf";
-    template_id: "clean";
-    template_version: "1.0.0";
-    completed_at: "2026-01-27T09:32:11.896Z";
+    invoice_id: string,
+    order_id: string,
+    order_display_id: number,
+    pdf_url: string,
+    template_id: clean | classic | compact,
+    template_version: string,
+    completed_at: Date | string
   }
 }
 ```
@@ -545,8 +545,8 @@ Emitted when invoice generation fails.
 {
   name: "invoice.failed",
   data: {
-    order_id: "inv_01",
-    error_message: "Invoice generation unssuccesful",
+    order_id: string,
+    error_message: string
   }
 },
 ```
