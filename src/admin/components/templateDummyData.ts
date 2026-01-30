@@ -23,7 +23,7 @@ export const orderDummyData: TemplateOrderProp = {
     {
       id: "item_1",
       title: "Ergonomic Office Chair",
-      variant_sku: "OC-101",
+      variant_sku: "OC-101-BLACK-WHITE",
       quantity: 2,
       unit_price: 120,
       total: 240,
@@ -31,7 +31,7 @@ export const orderDummyData: TemplateOrderProp = {
     {
       id: "item_2",
       title: "Casual Hoodie",
-      variant_sku: "MH-320",
+      variant_sku: "MH-320 MH-320 MH",
       quantity: 1,
       unit_price: 50,
       total: 50,

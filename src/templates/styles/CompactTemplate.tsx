@@ -2,6 +2,7 @@ import renderTipTapNode from "../renderTipTapNode";
 import defaultTipTapNodeStyles from "./defaultTipTapNodeStyles";
 import { TemplateProps } from "../types";
 import { formatCurrency, formatNumber } from "../helpers/number-format";
+import { breakLongString } from "../helpers/text-wrapping";
 
 const CompactTemplate = (async () => {
   const { Document, Image, Page, StyleSheet, Text, View, Link } =
@@ -205,7 +206,9 @@ const CompactTemplate = (async () => {
                 <View key={i.id} style={styles.itemRow}>
                   <Text style={{ width: "30%" }}>{i.title}</Text>
 
-                  <Text style={{ width: "20%" }}>{i.variant_sku}</Text>
+                  <Text style={{ width: "20%" }}>
+                    {i.variant_sku ? breakLongString(i.variant_sku, 15) : "-"}
+                  </Text>
 
                   <Text style={{ width: "10%" }}>
                     {formatNumber(i.quantity)}
