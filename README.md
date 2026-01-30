@@ -89,7 +89,73 @@ module.exports = defineConfig({
 
 ## Configuration
 
-### Database Migrations
+### 1. Configure File Module
+
+The plugin requires a configured File Module to store generated PDF invoices. If not already configured, add one of the following to your `medusa-config.ts`:
+
+#### Example: Local File Storage
+
+```typescript
+// medusa-config.ts
+module.exports = {
+  // ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-local",
+            id: "local",
+            options: {
+              // provider options...
+            },
+          },
+        ],
+      },
+    },
+  ],
+};
+```
+
+<br />
+
+#### Example: AWS S3 Storage
+
+```typescript
+// medusa-config.ts
+module.exports = {
+  // ...
+  modules: [
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-s3",
+            id: "s3",
+            options: {
+              file_url: process.env.S3_FILE_URL,
+              access_key_id: process.env.S3_ACCESS_KEY_ID,
+              secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
+              region: process.env.S3_REGION,
+              bucket: process.env.S3_BUCKET,
+              endpoint: process.env.S3_ENDPOINT,
+              // other options...
+            },
+          },
+        ],
+      },
+    },
+  ],
+};
+```
+
+Visit the [File Module documentation](https://docs.medusajs.com/resources/infrastructure-modules/file) to learn more about file module.
+<br />
+<br />
+
+### 2. Run Database Migrations
 
 After installing the plugin, run migrations to create necessary database tables:
 
@@ -112,86 +178,82 @@ This will create tables for:
 - Store and invoice settings link
 - Order and invoice link
   <br />
+  <br />
 
-### Initial Setup
+### 3. Seed Invoice Settings
 
-1.  **Configure File Module** (if not already configured)
+Create a seed file to initialize invoice settings for your store:
 
-    The plugin requires a configured File Module to store generated PDF invoices.
-    <br />
-    <br />
+```typescript
+// src/scripts/invoice-settings-seed.ts
+import { ExecArgs } from "@medusajs/framework/types";
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 
-    #### Example: Local File Storage
+const UPSERT_INVOICE_SETTINGS_WORKFLOW_ID = "upsert-invoice-settings-workflow";
 
-    ```typescript
-    // medusa-config.ts
-    module.exports = {
-      // ...
-      modules: [
-        {
-          resolve: "@medusajs/medusa/file",
-          options: {
-            providers: [
-              {
-                resolve: "@medusajs/medusa/file-local",
-                id: "local",
-                options: {
-                  // provider options...
-                },
-              },
-            ],
-          },
-        },
-      ],
-    };
-    ```
+export default async function seedInvoiceSettings({ container }: ExecArgs) {
+  const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
+  const storeModuleService = container.resolve(Modules.STORE);
+  const workflowsModuleService = container.resolve(Modules.WORKFLOW_ENGINE);
 
-     <br />
+  logger.info("Seeding invoice settings data...");
 
-    #### Example: AWS S3 Storage
+  const [store] = await storeModuleService.listStores();
+  if (!store) {
+    throw new Error(
+      "No store found. Create a store before seeding invoice settings.",
+    );
+  }
 
-    ```typescript
-    // medusa-config.ts
-    module.exports = {
-      // ...
-      modules: [
-        // ...
-        {
-          resolve: "@medusajs/medusa/file",
-          options: {
-            providers: [
-              {
-                resolve: "@medusajs/medusa/file-s3",
-                id: "s3",
-                options: {
-                  file_url: process.env.S3_FILE_URL,
-                  access_key_id: process.env.S3_ACCESS_KEY_ID,
-                  secret_access_key: process.env.S3_SECRET_ACCESS_KEY,
-                  region: process.env.S3_REGION,
-                  bucket: process.env.S3_BUCKET,
-                  endpoint: process.env.S3_ENDPOINT,
-                  // other options...
-                },
-              },
-            ],
-          },
-        },
-      ],
-    };
-    ```
+  const invoiceSettings = {
+    store_id: store.id,
+    template_id: "clean",
+    template_version: "1.0.0",
+    header_logo_type: "none",
+    header_logo_url: null,
+    header_logo_text: null,
+    header_content: null,
+    footer_content: null,
+    store_name: null,
+    store_address: null,
+    store_tax_id: null,
+    bank_account_iban: null,
+    bank_account_swift: null,
+    auto_generate_on: [],
+  };
 
-    Visit the [File Module documentation](https://docs.medusajs.com/resources/infrastructure-modules/file) to learn more about file module.
-    <br />
-    <br />
+  await workflowsModuleService.run(UPSERT_INVOICE_SETTINGS_WORKFLOW_ID, {
+    input: invoiceSettings,
+  });
 
-2.  **Initial Plugin Configuration**
+  logger.info("Finished seeding invoice settings.");
+}
+```
 
-        Access the Admin UI at `/app/settings/invoices` to:
-        - Set up default invoice template
-        - Set company information
+Then run the seed script:
 
-    <br />
-    <br />
+```bash
+npx medusa exec ./src/scripts/invoice-settings-seed.ts
+```
+
+or with yarn:
+
+```bash
+yarn medusa exec ./src/scripts/invoice-settings-seed.ts
+```
+<br />
+
+### 4. Configure Invoice Settings
+
+Access the Admin UI at `/app/settings/invoices` to:
+
+- Set up default invoice template
+- Configure company information
+- Select auto-generation triggers
+
+<br />
+<br />
+
 
 ## API Documentation
 
