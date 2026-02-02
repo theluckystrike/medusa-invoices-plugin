@@ -495,24 +495,18 @@ Response:
 
 ### Store Endpoint
 
-Customers can access their own invoices.
+Customers can access and download their own invoice PDFs.
 <br />
 <br />
 
-#### Get Customer Invoice PDF url
+#### Get Customer Invoice PDF
 
 ```http
 GET /store/invoices/{order_id}.pdf
 ```
 
-Response:
-
-```json
-{
-  "invoice_id": "inv_01",
-  "invoice_pdf_url": "http://inv_01.pdf"
-}
-```
+Response: 
+  - returns a PDF file stream
 
 <br />
 
