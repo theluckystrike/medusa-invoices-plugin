@@ -30,7 +30,7 @@ import { pdf } from "@react-pdf/renderer";
 import DummyPdfViewer from "../../../components/DummyPdfViewer";
 import { orderDummyData } from "../../../components/templateDummyData";
 import { getTemplate } from "../../../templates/registry";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 export type TemplateSettings = {
   template_id: InvoiceTemplateId;
@@ -52,6 +52,7 @@ export type TemplateSettings = {
 
 export default function Invoices() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const orderIdFromUrl = searchParams.get("order_id");
 
   const invoiceSettingsQuery = useInvoiceSettings();
@@ -100,8 +101,12 @@ export default function Invoices() {
 
   const handlePreviewChange = React.useCallback(
     (value: string) => {
-      if (value === "dummy-data") setSelectedOrderId("");
       setPreviewType(value as "dummy-data" | "select-order");
+
+      if (value === "dummy-data") {
+        setSelectedOrderId("");
+        navigate("/settings/invoices");
+      }
     },
     [setSelectedOrderId, setPreviewType],
   );
@@ -171,6 +176,10 @@ export default function Invoices() {
       setIsDownloading(false);
     }
   }, [templateSettings, orderQuery.data, previewType, selectedOrderId]);
+
+  const handleOrderSelection = React.useCallback((orderId: string) => {
+    navigate(`/settings/invoices?order_id=${orderId}`);
+  }, []);
 
   React.useEffect(() => {
     if (!invoiceSettingsQuery.data) {
@@ -358,7 +367,7 @@ export default function Invoices() {
                 <div className="w-[256px] mt-1 mb-4">
                   <Select
                     value={selectedOrderId}
-                    onValueChange={(value) => setSelectedOrderId(value)}
+                    onValueChange={(value) => handleOrderSelection(value)}
                   >
                     <Select.Trigger>
                       <Select.Value placeholder="Select an order" />
