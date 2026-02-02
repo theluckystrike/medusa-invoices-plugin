@@ -11,6 +11,7 @@ import {
   GetInvoicesResponse,
   InvoiceDTO,
 } from "../../types/invoice";
+import { FetchError } from "@medusajs/js-sdk"
 
 export type UseOrderInvoicesParams = {
   limit?: number;
@@ -69,7 +70,7 @@ export const useOrderInvoice = (
   options?: Omit<
     UndefinedInitialDataOptions<
       GetInvoiceResponse,
-      Error,
+      FetchError,
       GetInvoiceResponse,
       (string | undefined)[]
     >,
@@ -93,7 +94,7 @@ export const useOrderInvoice = (
 export const useGenerateInvoice = (order_id: string) => {
   const queryClient = useQueryClient();
 
-  return useMutation({
+  return useMutation<InvoiceDTO, FetchError, GenerateInvoiceRequestBody>({
     mutationFn: async (payload: GenerateInvoiceRequestBody) => {
       const invoice = await sdk.client.fetch<InvoiceDTO>(
         `/admin/invoices/${order_id}/generate`,

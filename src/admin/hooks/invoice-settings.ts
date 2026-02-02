@@ -10,6 +10,7 @@ import {
   InvoiceSettingsDTO,
   InvoiceSettingsRequestBody,
 } from "../../types/invoice-settings";
+import { FetchError } from "@medusajs/js-sdk"
 
 export const useUpsertInvoiceSettings = () => {
   const queryClient = useQueryClient();
@@ -39,7 +40,7 @@ export const useInvoiceSettings = (
   options?: Omit<
     UndefinedInitialDataOptions<
       GetInvoiceSettingsResponse,
-      Error,
+      FetchError,
       GetInvoiceSettingsResponse,
       (string | undefined)[]
     >,

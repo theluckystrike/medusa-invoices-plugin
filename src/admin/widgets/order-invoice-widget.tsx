@@ -10,7 +10,7 @@ import {
 } from "@medusajs/ui";
 import { AdminOrder, DetailWidgetProps } from "@medusajs/framework/types";
 import { useGenerateInvoice, useOrderInvoice } from "../hooks/invoices";
-import { Link } from "@medusajs/icons";
+import { Link as LinkIcon } from "@medusajs/icons";
 import JsonViewSection from "../components/JsonViewSection";
 import { InvoiceCreatedByEvent, InvoiceStatus } from "../../constants/invoice";
 import CollapsiblePanel from "../components/CollapsiblePanel";
@@ -19,6 +19,7 @@ import InvoiceListModal, {
 } from "../components/InvoiceListModal";
 import React from "react";
 import InvoiceDropdownMenu from "../components/InvoiceDropdownMenu";
+import { Link } from "react-router-dom";
 
 const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   const orderId = data?.id;
@@ -71,11 +72,46 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
     invoiceStatusBadge = <StatusBadge color="red">Failed</StatusBadge>;
   }
 
-  console.log("Invoice: ", invoiceQuery.data);
-
   React.useEffect(() => {
     invoiceQuery.refetch();
   }, [data.fulfillment_status, data.payment_status, data.status]);
+
+  if (
+    generateInvoice.isError &&
+    generateInvoice.error.message === "Invoice settings does not exist"
+  ) {
+    return (
+      <Container className="p-0 divide-y">
+        <Heading
+          level="h2"
+          className="w-full flex justify-between items-center px-6 py-4"
+        >
+          Latest invoice
+          {invoiceStatusBadge}
+        </Heading>
+
+        <div className="flex flex-col items-center justify-center gap-y-4 p-6">
+          <Text
+            className="text-center text-ui-fg-subtle"
+            size="small"
+            weight="plus"
+          >
+            Invoice settings have not been configured yet
+          </Text>
+
+          <Link to={`/settings/invoices?order_id=${orderId}`}>
+            <Text
+              className="text-center text-ui-fg-accent underline cursor-pointer"
+              size="small"
+              weight="plus"
+            >
+              Go to Invoice Settings
+            </Text>
+          </Link>
+        </div>
+      </Container>
+    );
+  }
 
   if (!invoice) {
     return (
@@ -158,7 +194,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
             </Text>
             <a href={invoice.pdf_url!}>
               <IconButton size="small" variant="transparent">
-                <Link />
+                <LinkIcon />
               </IconButton>
             </a>
           </div>

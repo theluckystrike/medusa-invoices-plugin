@@ -38,7 +38,9 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
   if (selectedOrderId && orderQuery.isError) {
     return (
       <Text className="text-ui-fg-subtle" size="small">
-        Failed to load order data
+        {orderQuery.error
+          ? orderQuery.error.message
+          : "Failed to load order data"}
       </Text>
     );
   }
@@ -46,7 +48,9 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
   if (!order) {
     return (
       <Text className="text-ui-fg-subtle" size="small">
-        Failed to load order data
+        {orderQuery.error
+          ? orderQuery.error.message
+          : "Failed to load order data"}
       </Text>
     );
   }

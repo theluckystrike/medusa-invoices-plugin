@@ -257,42 +257,37 @@ const ClassicTemplate = (async () => {
             </View>
           </View>
 
-          <View
-            wrap={false}
-            render={() =>
-              (settings.store_name ||
-                settings.store_address ||
-                settings.store_tax_id ||
-                settings.bank_account_iban ||
-                settings.bank_account_swift) && (
-                <>
-                  {settings.store_name && (
-                    <Text style={{ marginBottom: "4px" }}>
-                      {settings.store_name}
-                    </Text>
-                  )}
-                  {settings.store_address && (
-                    <Text style={{ marginBottom: "4px" }}>
-                      {settings.store_address}
-                    </Text>
-                  )}
-                  {settings.store_tax_id && (
-                    <Text style={{ marginBottom: "4px" }}>
-                      Tax ID: {settings.store_tax_id}
-                    </Text>
-                  )}
-                  {settings.bank_account_iban && (
-                    <Text style={{ marginBottom: "4px" }}>
-                      IBAN: {settings.bank_account_iban}
-                    </Text>
-                  )}
-                  {settings.bank_account_swift && (
-                    <Text>SWIFT: {settings.bank_account_swift}</Text>
-                  )}
-                </>
-              )
-            }
-          />
+          {(settings.store_name ||
+            settings.store_address ||
+            settings.store_tax_id ||
+            settings.bank_account_iban ||
+            settings.bank_account_swift) && (
+            <View wrap={false}>
+              {settings.store_name && (
+                <Text style={{ marginBottom: "4px" }}>
+                  {settings.store_name}
+                </Text>
+              )}
+              {settings.store_address && (
+                <Text style={{ marginBottom: "4px" }}>
+                  {settings.store_address}
+                </Text>
+              )}
+              {settings.store_tax_id && (
+                <Text style={{ marginBottom: "4px" }}>
+                  Tax ID: {settings.store_tax_id}
+                </Text>
+              )}
+              {settings.bank_account_iban && (
+                <Text style={{ marginBottom: "4px" }}>
+                  IBAN: {settings.bank_account_iban}
+                </Text>
+              )}
+              {settings.bank_account_swift && (
+                <Text>SWIFT: {settings.bank_account_swift}</Text>
+              )}
+            </View>
+          )}
 
           {settings.footer_content && (
             <View wrap={false} style={styles.footer}>

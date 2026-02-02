@@ -30,6 +30,7 @@ import { pdf } from "@react-pdf/renderer";
 import DummyPdfViewer from "../../../components/DummyPdfViewer";
 import { orderDummyData } from "../../../components/templateDummyData";
 import { getTemplate } from "../../../templates/registry";
+import { useSearchParams } from "react-router-dom";
 
 export type TemplateSettings = {
   template_id: InvoiceTemplateId;
@@ -50,16 +51,21 @@ export type TemplateSettings = {
 };
 
 export default function Invoices() {
+  const [searchParams] = useSearchParams();
+  const orderIdFromUrl = searchParams.get("order_id");
+
   const invoiceSettingsQuery = useInvoiceSettings();
   const ordersQuery = useOrders({
     fields: "id,display_id,created_at",
     limit: 100,
   });
 
-  const [selectedOrderId, setSelectedOrderId] = React.useState<string>("");
+  const [selectedOrderId, setSelectedOrderId] = React.useState<string>(
+    orderIdFromUrl || "",
+  );
   const [previewType, setPreviewType] = React.useState<
     "dummy-data" | "select-order"
-  >("dummy-data");
+  >(orderIdFromUrl ? "select-order" : "dummy-data");
   const [isDownloading, setIsDownloading] = React.useState<boolean>(false);
 
   const orderQuery = useOrder(
@@ -196,17 +202,36 @@ export default function Invoices() {
     });
   }, [invoiceSettingsQuery.data]);
 
+  React.useEffect(() => {
+    if (orderIdFromUrl && ordersQuery.data?.orders) {
+      const orderExists = ordersQuery.data.orders.find(
+        (order) => order.id === orderIdFromUrl,
+      );
+
+      if (orderExists) {
+        setSelectedOrderId(orderIdFromUrl);
+        setPreviewType("select-order");
+      }
+    }
+  }, [orderIdFromUrl, ordersQuery.data]);
+
   const { auto_generate_on, ...previewTemplateSettings } = templateSettings;
 
   return (
     <Container className="divide-y p-0">
-      <div className="px-6 flex justify-between max-sm:flex-col sm:items-center gap-4 py-4">
+      <div className="px-6 flex items-start justify-between max-sm:flex-col gap-x-4 gap-y-6 py-4">
         <div>
           <Heading>Invoices Plugin Configuration</Heading>
           <Text className="text-ui-fg-subtle">
             Configure your invoice settings and click "Save Settings" to save
             settings
           </Text>
+          {invoiceSettingsQuery.isError &&
+            invoiceSettingsQuery.error?.status === 404 && (
+              <Text className="pt-4 text-ui-fg-error">
+                Invoice settings not found. Please set up your invoice settings.
+              </Text>
+            )}
         </div>
         <Drawer>
           <Drawer.Trigger asChild className="xl:hidden shrink-0">
@@ -223,9 +248,19 @@ export default function Invoices() {
                 <Text className="p-6 text-ui-fg-subtle">
                   Loading invoice settings…
                 </Text>
+              ) : invoiceSettingsQuery.isError &&
+                invoiceSettingsQuery.error?.status === 404 ? (
+                <RenderTemplateSettings
+                  previewType={previewType}
+                  selectedOrderId={selectedOrderId}
+                  renderHeading={false}
+                  templateSettings={templateSettings}
+                  setTemplateSettings={setTemplateSettings}
+                />
               ) : invoiceSettingsQuery.isError ? (
                 <Text className="p-6 text-ui-fg-error">
-                  Failed to load invoice settings.
+                  {invoiceSettingsQuery.error.message ||
+                    "Failed to load invoice settings."}
                 </Text>
               ) : (
                 <RenderTemplateSettings
@@ -246,9 +281,19 @@ export default function Invoices() {
             <Text className="p-6 text-ui-fg-subtle">
               Loading invoice settings…
             </Text>
+          ) : invoiceSettingsQuery.isError &&
+            invoiceSettingsQuery.error?.status === 404 ? (
+            <RenderTemplateSettings
+              previewType={previewType}
+              selectedOrderId={selectedOrderId}
+              renderHeading={true}
+              templateSettings={templateSettings}
+              setTemplateSettings={setTemplateSettings}
+            />
           ) : invoiceSettingsQuery.isError ? (
             <Text className="p-6 text-ui-fg-error">
-              Failed to load invoice settings.
+              {invoiceSettingsQuery.error.message ||
+                "Failed to load invoice settings."}
             </Text>
           ) : (
             <RenderTemplateSettings
@@ -279,7 +324,7 @@ export default function Invoices() {
           </div>
           <div className="px-6 py-4 h-[calc(100%-64px)]">
             <Tabs
-              defaultValue="dummy-data"
+              value={previewType}
               className="h-full"
               onValueChange={(value) => handlePreviewChange(value)}
             >
@@ -311,7 +356,10 @@ export default function Invoices() {
               >
                 <Label>Select Order</Label>
                 <div className="w-[256px] mt-1 mb-4">
-                  <Select onValueChange={(value) => setSelectedOrderId(value)}>
+                  <Select
+                    value={selectedOrderId}
+                    onValueChange={(value) => setSelectedOrderId(value)}
+                  >
                     <Select.Trigger>
                       <Select.Value placeholder="Select an order" />
                     </Select.Trigger>
