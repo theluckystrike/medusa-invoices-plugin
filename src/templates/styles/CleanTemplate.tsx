@@ -50,7 +50,6 @@ const CleanTemplate = (async () => {
       flexDirection: "row" as const,
       gap: "40px",
       justifyContent: "flex-end" as const,
-      marginBottom: "64px",
     },
     grandTotal: {
       fontWeight: "bold",
@@ -261,7 +260,7 @@ const CleanTemplate = (async () => {
             settings.store_tax_id ||
             settings.bank_account_iban ||
             settings.bank_account_swift) && (
-            <View wrap={false}>
+            <View style={{ marginTop: "64px" }} wrap={false}>
               {settings.store_name && (
                 <Text style={{ marginBottom: "4px" }}>
                   {settings.store_name}
@@ -288,15 +287,19 @@ const CleanTemplate = (async () => {
             </View>
           )}
 
-          {settings.footer_content && (
-            <View wrap={false} style={styles.footer}>
-              {renderTipTapNode({
-                node: settings.footer_content,
-                components: { View, Text, Link },
-                tipTapStyles: tipTapNodeStyles,
-              })}
-            </View>
-          )}
+          {settings.footer_content &&
+            settings.footer_content.content &&
+            ((settings.footer_content.content.length === 1 &&
+              settings.footer_content.content[0].content) ||
+              settings.footer_content.content.length > 1) && (
+              <View wrap={false} style={styles.footer}>
+                {renderTipTapNode({
+                  node: settings.footer_content,
+                  components: { View, Text, Link },
+                  tipTapStyles: tipTapNodeStyles,
+                })}
+              </View>
+            )}
         </Page>
       </Document>
     );

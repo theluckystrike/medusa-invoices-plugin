@@ -53,7 +53,6 @@ const ClassicTemplate = (async () => {
       padding: "8px",
       border: "1px solid #eee",
       backgroundColor: "#f9f9f9",
-      marginBottom: "64px",
     },
     grandTotal: {
       fontSize: "20px",
@@ -231,6 +230,7 @@ const ClassicTemplate = (async () => {
                 </View>
               ))}
           </View>
+
           <View style={styles.totals} wrap={false}>
             <View style={{ gap: "6px" }}>
               <Text>Subtotal:</Text>
@@ -262,7 +262,7 @@ const ClassicTemplate = (async () => {
             settings.store_tax_id ||
             settings.bank_account_iban ||
             settings.bank_account_swift) && (
-            <View wrap={false}>
+            <View style={{ marginTop: "64px" }} wrap={false}>
               {settings.store_name && (
                 <Text style={{ marginBottom: "4px" }}>
                   {settings.store_name}
@@ -289,15 +289,19 @@ const ClassicTemplate = (async () => {
             </View>
           )}
 
-          {settings.footer_content && (
-            <View wrap={false} style={styles.footer}>
-              {renderTipTapNode({
-                node: settings.footer_content,
-                components: { View, Text, Link },
-                tipTapStyles: tipTapNodeStyles,
-              })}
-            </View>
-          )}
+          {settings.footer_content &&
+            settings.footer_content.content &&
+            ((settings.footer_content.content.length === 1 &&
+              settings.footer_content.content[0].content) ||
+              settings.footer_content.content.length > 1) && (
+              <View wrap={false} style={styles.footer}>
+                {renderTipTapNode({
+                  node: settings.footer_content,
+                  components: { View, Text, Link },
+                  tipTapStyles: tipTapNodeStyles,
+                })}
+              </View>
+            )}
         </Page>
       </Document>
     );

@@ -283,15 +283,19 @@ const CompactTemplate = (async () => {
             </View>
           )}
 
-          {settings?.footer_content && (
-            <View wrap={false} style={styles.footer}>
-              {renderTipTapNode({
-                node: settings.footer_content,
-                components: { View, Text, Link },
-                tipTapStyles: tipTapNodeStyles,
-              })}
-            </View>
-          )}
+          {settings.footer_content &&
+            settings.footer_content.content &&
+            ((settings.footer_content.content.length === 1 &&
+              settings.footer_content.content[0].content) ||
+              settings.footer_content.content.length > 1) && (
+              <View wrap={false} style={styles.footer}>
+                {renderTipTapNode({
+                  node: settings.footer_content,
+                  components: { View, Text, Link },
+                  tipTapStyles: tipTapNodeStyles,
+                })}
+              </View>
+            )}
         </Page>
       </Document>
     );
