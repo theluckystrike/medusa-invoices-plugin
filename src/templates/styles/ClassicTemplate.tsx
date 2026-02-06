@@ -261,26 +261,33 @@ const ClassicTemplate = (async () => {
             <View style={{ marginTop: "24px" }} wrap={false}>
               {settings.store_name && (
                 <Text style={{ marginBottom: "3px" }}>
-                  BUSINESS NAME: {settings.store_name}
+                  BUSINESS NAME:{"  "}
+                  {settings.store_name}
                 </Text>
               )}
               {settings.store_address && (
                 <Text style={{ marginBottom: "3px" }}>
-                  ADDRESS: {settings.store_address}
+                  ADDRESS:{"  "}
+                  {settings.store_address}
                 </Text>
               )}
               {settings.store_tax_id && (
                 <Text style={{ marginBottom: "3px" }}>
-                  TAX ID: {settings.store_tax_id}
+                  TAX ID:{"  "}
+                  {settings.store_tax_id}
                 </Text>
               )}
               {settings.bank_account_iban && (
                 <Text style={{ marginBottom: "3px" }}>
-                  IBAN: {settings.bank_account_iban}
+                  IBAN:{"  "}
+                  {settings.bank_account_iban}
                 </Text>
               )}
               {settings.bank_account_swift && (
-                <Text>SWIFT: {settings.bank_account_swift}</Text>
+                <Text>
+                  SWIFT:{"  "}
+                  {settings.bank_account_swift}
+                </Text>
               )}
             </View>
           )}
