@@ -226,8 +226,6 @@ export default function Invoices() {
 
   const { auto_generate_on, ...previewTemplateSettings } = templateSettings;
 
-  console.log("Template settings:", templateSettings);
-
   return (
     <Container className="divide-y p-0">
       <div className="px-6 flex items-start justify-between max-sm:flex-col gap-x-4 gap-y-6 py-4">
