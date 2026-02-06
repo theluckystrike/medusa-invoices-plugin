@@ -11,20 +11,16 @@ const ClassicTemplate = (async () => {
   const styles = StyleSheet.create({
     page: {
       backgroundColor: "#fff",
-      padding: "32px",
+      padding: "24px",
       color: "#52525b",
-      fontSize: "14px",
+      fontSize: "12px",
     },
     header: {
       padding: "12px",
       border: "1px solid #eee",
-      marginBottom: "32px",
+      marginBottom: "24px",
       maxWidth: "200px",
       gap: "10px",
-    },
-    section: {
-      marginBottom: "32px",
-      paddingBottom: "32px",
     },
     heading: {
       fontSize: "36px",
@@ -35,7 +31,7 @@ const ClassicTemplate = (async () => {
     label: {
       fontWeight: "bold",
       textTransform: "uppercase" as const,
-      fontSize: "14px",
+      fontSize: "12px",
       letterSpacing: "1px",
       color: "#18181b",
     },
@@ -43,8 +39,8 @@ const ClassicTemplate = (async () => {
       display: "flex" as const,
       flexDirection: "row" as const,
       gap: "10px",
-      paddingBottom: "8px",
-      marginBottom: "8px",
+      paddingBottom: "6px",
+      marginBottom: "6px",
       borderBottom: "1px solid #eee",
     },
     totals: {
@@ -56,12 +52,12 @@ const ClassicTemplate = (async () => {
       backgroundColor: "#f9f9f9",
     },
     grandTotal: {
-      fontSize: "20px",
-      marginTop: "6px",
+      fontSize: "18px",
+      marginTop: "3px",
       color: "#18181b",
     },
     footer: {
-      marginTop: "64px",
+      marginTop: "24px",
     },
   });
 
@@ -104,10 +100,10 @@ const ClassicTemplate = (async () => {
             </View>
           )}
 
-          <View style={{ marginBottom: "64px" }}>
+          <View style={{ marginBottom: "36px" }}>
             <Text
               style={{
-                marginBottom: "32px",
+                marginBottom: "24px",
                 fontSize: "36px",
                 fontWeight: "bold",
                 color: "#18181b",
@@ -139,7 +135,7 @@ const ClassicTemplate = (async () => {
               flexDirection: "row",
               justifyContent: "space-between",
               gap: "10px",
-              marginBottom: "64px",
+              marginBottom: "36px",
             }}
           >
             <View
@@ -192,7 +188,7 @@ const ClassicTemplate = (async () => {
 
           <View
             style={{
-              marginBottom: "64px",
+              marginBottom: "18px",
             }}
           >
             <View style={[styles.itemRow]}>
@@ -232,7 +228,7 @@ const ClassicTemplate = (async () => {
           </View>
 
           <View style={styles.totals} wrap={false}>
-            <View style={{ gap: "6px" }}>
+            <View style={{ gap: "5px" }}>
               <Text>Subtotal:</Text>
               <Text>Discount:</Text>
               <Text>Shipping:</Text>
@@ -240,7 +236,7 @@ const ClassicTemplate = (async () => {
               <Text style={styles.grandTotal}>Grand Total:</Text>
             </View>
 
-            <View style={{ gap: "6px" }}>
+            <View style={{ gap: "5px" }}>
               <Text>{formatCurrency(order.subtotal, order.currency_code)}</Text>
               <Text>
                 {formatCurrency(order.discount_total, order.currency_code)}
@@ -262,24 +258,24 @@ const ClassicTemplate = (async () => {
             settings.store_tax_id ||
             settings.bank_account_iban ||
             settings.bank_account_swift) && (
-            <View style={{ marginTop: "64px" }} wrap={false}>
+            <View style={{ marginTop: "24px" }} wrap={false}>
               {settings.store_name && (
-                <Text style={{ marginBottom: "4px" }}>
-                  {settings.store_name}
+                <Text style={{ marginBottom: "3px" }}>
+                  BUSINESS NAME: {settings.store_name}
                 </Text>
               )}
               {settings.store_address && (
-                <Text style={{ marginBottom: "4px" }}>
-                  {settings.store_address}
+                <Text style={{ marginBottom: "3px" }}>
+                  ADDRESS: {settings.store_address}
                 </Text>
               )}
               {settings.store_tax_id && (
-                <Text style={{ marginBottom: "4px" }}>
-                  Tax ID: {settings.store_tax_id}
+                <Text style={{ marginBottom: "3px" }}>
+                  TAX ID: {settings.store_tax_id}
                 </Text>
               )}
               {settings.bank_account_iban && (
-                <Text style={{ marginBottom: "4px" }}>
+                <Text style={{ marginBottom: "3px" }}>
                   IBAN: {settings.bank_account_iban}
                 </Text>
               )}

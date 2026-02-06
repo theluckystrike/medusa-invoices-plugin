@@ -16,12 +16,8 @@ const CompactTemplate = (async () => {
       color: "#52525b",
     },
     header: {
-      marginBottom: "12px",
+      marginBottom: "24px",
       gap: "6px",
-    },
-    section: {
-      marginBottom: "12px",
-      paddingBottom: "12px",
     },
     heading: {
       fontSize: "20px",
@@ -54,7 +50,7 @@ const CompactTemplate = (async () => {
       color: "#18181b",
     },
     footer: {
-      marginTop: "64px",
+      marginTop: "24px",
     },
   });
 
@@ -256,20 +252,20 @@ const CompactTemplate = (async () => {
             settings?.store_tax_id ||
             settings?.bank_account_iban ||
             settings?.bank_account_swift) && (
-            <View wrap={false} style={styles.section}>
+            <View wrap={false}>
               {settings.store_name && (
                 <Text style={{ marginBottom: "2px" }}>
-                  {settings.store_name}
+                  BUSINESS NAME: {settings.store_name}
                 </Text>
               )}
               {settings.store_address && (
                 <Text style={{ marginBottom: "2px" }}>
-                  {settings.store_address}
+                  ADDRESS: {settings.store_address}
                 </Text>
               )}
               {settings.store_tax_id && (
                 <Text style={{ marginBottom: "2px" }}>
-                  Tax ID: {settings.store_tax_id}
+                  TAX ID: {settings.store_tax_id}
                 </Text>
               )}
               {settings.bank_account_iban && (
