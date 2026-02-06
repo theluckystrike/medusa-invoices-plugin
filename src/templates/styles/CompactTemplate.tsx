@@ -17,6 +17,7 @@ const CompactTemplate = (async () => {
     },
     header: {
       marginBottom: "12px",
+      gap: "6px",
     },
     section: {
       marginBottom: "12px",
@@ -80,13 +81,12 @@ const CompactTemplate = (async () => {
                       width: "auto",
                       height: "40px",
                       objectFit: "contain",
-                      marginBottom: "20px",
                     }}
                   />
                 )}
 
-              {settings.header_content && (
-                <View style={{ marginTop: "15px" }}>
+              {settings.header_content && settings.header_content.content && (
+                <View>
                   {renderTipTapNode({
                     node: settings.header_content,
                     components: { View, Text, Link },
@@ -283,19 +283,15 @@ const CompactTemplate = (async () => {
             </View>
           )}
 
-          {settings.footer_content &&
-            settings.footer_content.content &&
-            ((settings.footer_content.content.length === 1 &&
-              settings.footer_content.content[0].content) ||
-              settings.footer_content.content.length > 1) && (
-              <View wrap={false} style={styles.footer}>
-                {renderTipTapNode({
-                  node: settings.footer_content,
-                  components: { View, Text, Link },
-                  tipTapStyles: tipTapNodeStyles,
-                })}
-              </View>
-            )}
+          {settings.footer_content && settings.footer_content.content && (
+            <View wrap={false} style={styles.footer}>
+              {renderTipTapNode({
+                node: settings.footer_content,
+                components: { View, Text, Link },
+                tipTapStyles: tipTapNodeStyles,
+              })}
+            </View>
+          )}
         </Page>
       </Document>
     );

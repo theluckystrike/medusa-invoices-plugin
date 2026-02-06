@@ -18,8 +18,9 @@ const ClassicTemplate = (async () => {
     header: {
       padding: "12px",
       border: "1px solid #eee",
-      marginBottom: "64px",
+      marginBottom: "32px",
       maxWidth: "200px",
+      gap: "10px",
     },
     section: {
       marginBottom: "32px",
@@ -87,13 +88,12 @@ const ClassicTemplate = (async () => {
                       width: "auto",
                       height: "40px",
                       objectFit: "contain",
-                      marginBottom: "20px",
                     }}
                   />
                 )}
 
-              {settings.header_content && (
-                <View style={{ marginTop: "15px" }}>
+              {settings.header_content && settings.header_content.content && (
+                <View>
                   {renderTipTapNode({
                     node: settings.header_content,
                     components: { View, Text, Link },
@@ -289,19 +289,15 @@ const ClassicTemplate = (async () => {
             </View>
           )}
 
-          {settings.footer_content &&
-            settings.footer_content.content &&
-            ((settings.footer_content.content.length === 1 &&
-              settings.footer_content.content[0].content) ||
-              settings.footer_content.content.length > 1) && (
-              <View wrap={false} style={styles.footer}>
-                {renderTipTapNode({
-                  node: settings.footer_content,
-                  components: { View, Text, Link },
-                  tipTapStyles: tipTapNodeStyles,
-                })}
-              </View>
-            )}
+          {settings.footer_content && settings.footer_content.content && (
+            <View wrap={false} style={styles.footer}>
+              {renderTipTapNode({
+                node: settings.footer_content,
+                components: { View, Text, Link },
+                tipTapStyles: tipTapNodeStyles,
+              })}
+            </View>
+          )}
         </Page>
       </Document>
     );

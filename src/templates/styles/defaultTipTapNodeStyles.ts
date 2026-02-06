@@ -1,7 +1,5 @@
 const defaultTipTapNodeStyles = {
   paragraph: {
-    marginBottom: 8,
-    lineHeight: 1.5,
   },
   heading1: {
     fontSize: 24,

@@ -16,8 +16,9 @@ const CleanTemplate = (async () => {
       fontSize: "14px",
     },
     header: {
-      marginBottom: "64px",
+      marginBottom: "32px",
       padding: "0 80px",
+      gap: "10px",
     },
     heading: {
       fontSize: "36px",
@@ -85,13 +86,12 @@ const CleanTemplate = (async () => {
                       width: "auto",
                       height: "40px",
                       objectFit: "contain",
-                      marginBottom: "20px",
                     }}
                   />
                 )}
 
-              {settings.header_content && (
-                <View style={{ marginTop: "15px" }}>
+              {settings.header_content && settings.header_content.content && (
+                <View>
                   {renderTipTapNode({
                     node: settings.header_content,
                     components: { View, Text, Link },
@@ -287,19 +287,15 @@ const CleanTemplate = (async () => {
             </View>
           )}
 
-          {settings.footer_content &&
-            settings.footer_content.content &&
-            ((settings.footer_content.content.length === 1 &&
-              settings.footer_content.content[0].content) ||
-              settings.footer_content.content.length > 1) && (
-              <View wrap={false} style={styles.footer}>
-                {renderTipTapNode({
-                  node: settings.footer_content,
-                  components: { View, Text, Link },
-                  tipTapStyles: tipTapNodeStyles,
-                })}
-              </View>
-            )}
+          {settings.footer_content && settings.footer_content.content && (
+            <View wrap={false} style={styles.footer}>
+              {renderTipTapNode({
+                node: settings.footer_content,
+                components: { View, Text, Link },
+                tipTapStyles: tipTapNodeStyles,
+              })}
+            </View>
+          )}
         </Page>
       </Document>
     );

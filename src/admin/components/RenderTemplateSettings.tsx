@@ -177,6 +177,15 @@ const RenderTemplateSettings: React.FC<{
 
     const handleAdditionalContentChange = React.useCallback(
       (field: keyof TemplateSettings, value: JSONContent) => {
+        if (value.content?.length === 1 && !value.content[0].content) {
+          setTemplateSettings((prev) => ({
+            ...prev,
+            [field]: {},
+          }));
+
+          return;
+        }
+
         setTemplateSettings((prev) => ({
           ...prev,
           [field]: value,
@@ -321,7 +330,7 @@ const RenderTemplateSettings: React.FC<{
               handleAdditionalContentChange("footer_content", value)
             }
             placeholder="Additional footer content"
-            className="mt-1 max-h-40"
+            className="mt-1"
           />
         </div>
         <div className="px-6 py-4">

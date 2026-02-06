@@ -11,6 +11,7 @@ type RenderTipTapNode = {
   index?: number;
   tipTapStyles: Record<string, any>;
   components: TipTapNodeComponents;
+  isLast?: boolean;
 };
 
 type RenderTextWithMarks = {
@@ -84,6 +85,7 @@ export const renderTipTapNode = ({
   index = 0,
   tipTapStyles,
   components,
+  isLast = false,
 }: RenderTipTapNode): any => {
   if (!node) return null;
 
@@ -93,13 +95,19 @@ export const renderTipTapNode = ({
   switch (type) {
     case "doc":
       return content.map((child, i) =>
-        renderTipTapNode({ node: child, index: i, tipTapStyles, components }),
+        renderTipTapNode({
+          node: child,
+          index: i,
+          tipTapStyles,
+          components,
+          isLast: i === content.length - 1,
+        }),
       );
 
     case "paragraph":
       if (!content || content.length === 0) {
         return (
-          <View key={index} style={{ marginBottom: 8 }}>
+          <View key={index} style={tipTapStyles.paragraph}>
             <Text> </Text>
           </View>
         );
@@ -107,7 +115,15 @@ export const renderTipTapNode = ({
 
       const textAlign = attrs.textAlign || "left";
       return (
-        <View key={index} style={[tipTapStyles.paragraph, { textAlign }]}>
+        <View
+          key={index}
+          style={[
+            tipTapStyles.paragraph,
+            {
+              textAlign,
+            },
+          ]}
+        >
           <Text>
             {content.map((child, i) =>
               child.type === "text"
@@ -153,7 +169,16 @@ export const renderTipTapNode = ({
       const headingAlign = attrs.textAlign || "left";
 
       return (
-        <View key={index} style={[headingStyle, { textAlign: headingAlign }]}>
+        <View
+          key={index}
+          style={[
+            headingStyle,
+            {
+              textAlign: headingAlign,
+              marginBottom: isLast ? 0 : headingStyle.marginBottom,
+            },
+          ]}
+        >
           <Text>
             {content.map((child, i) =>
               child.type === "text"
@@ -171,13 +196,17 @@ export const renderTipTapNode = ({
 
     case "bulletList":
       return (
-        <View key={index} style={{ marginBottom: 8, marginLeft: 10 }}>
+        <View
+          key={index}
+          style={{ marginBottom: isLast ? 0 : 8, marginLeft: 10 }}
+        >
           {content.map((child, i) =>
             renderTipTapNode({
               node: child,
               index: i,
               tipTapStyles,
               components,
+              isLast: i === content.length - 1,
             }),
           )}
         </View>
@@ -186,7 +215,10 @@ export const renderTipTapNode = ({
     case "orderedList":
       const start = attrs.start || 1;
       return (
-        <View key={index} style={{ marginBottom: 8, marginLeft: 10 }}>
+        <View
+          key={index}
+          style={{ marginBottom: isLast ? 0 : 8, marginLeft: 10 }}
+        >
           {content.map((child, i) => {
             const itemNumber = start + i;
             return renderTipTapNode({
@@ -194,6 +226,7 @@ export const renderTipTapNode = ({
               index: i,
               tipTapStyles,
               components,
+              isLast: i === content.length - 1,
             });
           })}
         </View>
@@ -204,7 +237,13 @@ export const renderTipTapNode = ({
       const itemNumber = node._orderNumber || 1;
 
       return (
-        <View key={index} style={tipTapStyles.listItem}>
+        <View
+          key={index}
+          style={[
+            tipTapStyles.listItem,
+            { marginBottom: isLast ? 0 : tipTapStyles.listItem.marginBottom },
+          ]}
+        >
           <Text
             style={isOrdered ? tipTapStyles.orderedNumber : tipTapStyles.bullet}
           >
@@ -217,6 +256,7 @@ export const renderTipTapNode = ({
                 index: i,
                 tipTapStyles,
                 components,
+                isLast: i === content.length - 1,
               }),
             )}
           </View>
@@ -229,7 +269,13 @@ export const renderTipTapNode = ({
     default:
       if (content && content.length > 0) {
         return content.map((child, i) =>
-          renderTipTapNode({ node: child, index: i, tipTapStyles, components }),
+          renderTipTapNode({
+            node: child,
+            index: i,
+            tipTapStyles,
+            components,
+            isLast: i === content.length - 1,
+          }),
         );
       }
       return null;
