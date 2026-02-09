@@ -21,7 +21,7 @@ const CleanTemplate = (async () => {
       gap: "10px",
     },
     heading: {
-      fontSize: "24px",
+      fontSize: "36px",
       fontWeight: "bold",
       color: "#18181b",
       textAlign: "center",
@@ -256,25 +256,23 @@ const CleanTemplate = (async () => {
             settings.bank_account_swift) && (
             <View style={{ marginTop: "24px" }} wrap={false}>
               {settings.store_name && (
-                <Text style={{ marginBottom: "3px" }}>
-                  BUSINESS NAME:{"  "}
+                <Text style={{ marginBottom: "5px" }}>
                   {settings.store_name}
                 </Text>
               )}
               {settings.store_address && (
-                <Text style={{ marginBottom: "3px" }}>
-                  ADDRESS:{"  "}
+                <Text style={{ marginBottom: "5px" }}>
                   {settings.store_address}
                 </Text>
               )}
               {settings.store_tax_id && (
-                <Text style={{ marginBottom: "3px" }}>
+                <Text style={{ marginBottom: "5px" }}>
                   TAX ID:{"  "}
                   {settings.store_tax_id}
                 </Text>
               )}
               {settings.bank_account_iban && (
-                <Text style={{ marginBottom: "3px" }}>
+                <Text style={{ marginBottom: "5px" }}>
                   IBAN:{"  "}
                   {settings.bank_account_iban}
                 </Text>

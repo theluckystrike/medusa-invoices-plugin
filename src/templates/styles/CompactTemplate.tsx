@@ -77,6 +77,7 @@ const CompactTemplate = (async () => {
                       width: "auto",
                       height: "40px",
                       objectFit: "contain",
+                      marginRight: "auto",
                     }}
                   />
                 )}
@@ -254,25 +255,23 @@ const CompactTemplate = (async () => {
             settings?.bank_account_swift) && (
             <View wrap={false}>
               {settings.store_name && (
-                <Text style={{ marginBottom: "2px" }}>
-                  BUSINESS NAME:{"  "}
+                <Text style={{ marginBottom: "5px" }}>
                   {settings.store_name}
                 </Text>
               )}
               {settings.store_address && (
-                <Text style={{ marginBottom: "2px" }}>
-                  ADDRESS:{"  "}
+                <Text style={{ marginBottom: "5px" }}>
                   {settings.store_address}
                 </Text>
               )}
               {settings.store_tax_id && (
-                <Text style={{ marginBottom: "2px" }}>
+                <Text style={{ marginBottom: "5px" }}>
                   TAX ID:{"  "}
                   {settings.store_tax_id}
                 </Text>
               )}
               {settings.bank_account_iban && (
-                <Text style={{ marginBottom: "2px" }}>
+                <Text style={{ marginBottom: "5px" }}>
                   IBAN:{"  "}
                   {settings.bank_account_iban}
                 </Text>
