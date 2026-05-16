@@ -10,6 +10,7 @@ import {
   InvoiceSettingsHeaderLogoType,
   InvoiceStatus,
   InvoiceTemplateId,
+  InvoiceCreatedByEvent,
 } from "../../../constants/invoice";
 
 moduleIntegrationTestRunner<InvoiceModuleService>({
@@ -22,9 +23,11 @@ moduleIntegrationTestRunner<InvoiceModuleService>({
         const invoice = await service.createInvoices({
           template_id: InvoiceTemplateId.CLEAN,
           template_version: "1.0.0",
+          order_id: "order_123",
           order_display_id: 52,
           status: InvoiceStatus.GENERATING,
           pdf_url: "http://example.png",
+          created_by_event: InvoiceCreatedByEvent.MANUAL,
           settings_snapshot: {
             template_id: InvoiceTemplateId.CLEAN,
             template_version: "1.0.0",

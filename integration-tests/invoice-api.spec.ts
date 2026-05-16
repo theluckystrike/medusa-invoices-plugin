@@ -5,6 +5,7 @@ import { medusaIntegrationTestRunner } from "@medusajs/test-utils";
 import InvoiceModuleService from "../src/modules/invoice/service";
 import { INVOICE_MODULE } from "../src/modules/invoice";
 import {
+  InvoiceCreatedByEvent,
   InvoiceSettingsHeaderLogoType,
   InvoiceStatus,
   InvoiceTemplateId,
@@ -182,12 +183,14 @@ medusaIntegrationTestRunner({
             const link = container.resolve("link");
 
             const invoice = await invoiceModuleService.createInvoices({
+              order_id,
               order_display_id,
               status: InvoiceStatus.COMPLETED,
               completed_at: new Date(),
               pdf_url: "https://example.com/invoice.pdf",
               template_id: InvoiceTemplateId.CLEAN,
               template_version: "1.0.0",
+              created_by_event: InvoiceCreatedByEvent.MANUAL,
               settings_snapshot: {
                 store_name: null,
                 header_logo: {
