@@ -15,7 +15,7 @@
 
 ## Compatibility
 
-This starter is compatible with versions >= 2.11.3 and <= 2.13.1 of `@medusajs/medusa`.
+This plugin is compatible with versions >= 2.11.3 of `@medusajs/medusa`.
 <br />
 <br />
 
@@ -42,7 +42,7 @@ A comprehensive invoice generation plugin for MedusaJS that automatically genera
 
 - MedusaJS server
 - Configured File Module (S3, local, or other provider)
-- Node.js 18+
+- Node.js 20+
 
 Visit the [Quickstart Guide](https://docs.medusajs.com/learn/installation) to set up a server.
 <br />
@@ -55,7 +55,7 @@ Visit the [Docs](https://docs.medusajs.com/learn/installation#get-started) to le
 ### Install the plugin
 
 ```bash
-npm install @@agilo/medusa-invoices-plugin
+npm install @agilo/medusa-invoices-plugin
 ```
 
 or with yarn:
@@ -69,7 +69,9 @@ yarn add @agilo/medusa-invoices-plugin
 ### Add to medusa-config.ts
 
 ```typescript
-module.exports = defineConfig({
+import { defineConfig } from "@medusajs/framework";
+
+export default defineConfig({
   projectConfig: {
     // ... other config
   },
@@ -97,7 +99,9 @@ The plugin requires a configured File Module to store generated PDF invoices. If
 
 ```typescript
 // medusa-config.ts
-module.exports = {
+import { defineConfig } from "@medusajs/framework";
+
+export default defineConfig({
   // ...
   modules: [
     {
@@ -115,7 +119,7 @@ module.exports = {
       },
     },
   ],
-};
+});
 ```
 
 <br />
@@ -124,7 +128,9 @@ module.exports = {
 
 ```typescript
 // medusa-config.ts
-module.exports = {
+import { defineConfig } from "@medusajs/framework";
+
+export default defineConfig({
   // ...
   modules: [
     {
@@ -148,7 +154,7 @@ module.exports = {
       },
     },
   ],
-};
+});
 ```
 
 Visit the [File Module documentation](https://docs.medusajs.com/resources/infrastructure-modules/file) to learn more about file module.
@@ -468,27 +474,20 @@ The settings page allows you to:
 1. **Select Active Template**
    - Choose which template to use for invoice generation
    - Preview templates before activating (with dummy or selected order data)
-     <br />
-     <br />
-     <img width="2560" height="1440" alt="Screenshot 2026-01-27 at 11 25 58" src="https://github.com/user-attachments/assets/1446365a-d623-42d9-a1bd-0e63ab989cca" />
-     <br />
-     <br />
+
+   ![Invoice Settings - Select Active Template](https://github.com/user-attachments/assets/1446365a-d623-42d9-a1bd-0e63ab989cca)
+
 2. **Input Company Information**
    - Configure store name, address, header, footer...
    - This information appears on all generated invoices
-     <br />
-     <br />
-     <img width="2560" height="1440" alt="Screenshot 2026-01-27 at 11 14 53" src="https://github.com/user-attachments/assets/a0fcfbb7-8abd-4564-9f79-917ebaeec0f0" />
-     <br />
-     <br />
+
+   ![Invoice Settings - Company Information](https://github.com/user-attachments/assets/a0fcfbb7-8abd-4564-9f79-917ebaeec0f0)
+
 3. **Select Active Auto Generation Triggers**
    - Choose the trigger on which the invoice is generated
    - Possible triggers: Order completed, Fulfillment created, Payment captured
-     <br />
-     <br />
-     <img width="2560" height="1440" alt="Screenshot 2026-01-27 at 11 41 31" src="https://github.com/user-attachments/assets/e2175d15-c3c2-4751-9121-34e7d63d6064" />
-     <br />
-     <br />
+
+   ![Invoice Settings - Auto Generation Triggers](https://github.com/user-attachments/assets/e2175d15-c3c2-4751-9121-34e7d63d6064)
 
 ### Invoice Widget
 
@@ -509,19 +508,14 @@ The widget allows you to:
    - Generating (invoice is being generated)
    - Completed (invoice was successfully generated)
    - Failed (invoice generation was unsuccessful)
-     <br />
-     <br />
-     <img width="1680" height="1050" alt="Screenshot 2026-01-27 at 15 48 50" src="https://github.com/user-attachments/assets/783b6c5d-8d5a-47fa-a0ae-1cc169551249" />
-     <br />
-     <br />
+
+   ![Invoice Widget - Invoice Status](https://github.com/user-attachments/assets/783b6c5d-8d5a-47fa-a0ae-1cc169551249)
+
 4. View invoice history
    - List of all invoices generated for that order
    - Possible to filter by particular attributes
-     <br />
-     <br />
-     <img width="1680" height="1050" alt="Screenshot 2026-01-27 at 15 59 14" src="https://github.com/user-attachments/assets/b46544b0-e0a5-4a85-912f-60ed888876bb" />
-     <br />
-     <br />
+
+   ![Invoice Widget - Invoice History](https://github.com/user-attachments/assets/b46544b0-e0a5-4a85-912f-60ed888876bb)
 
 ## Events
 
@@ -533,20 +527,17 @@ The plugin emits events that you can subscribe to for custom workflows.
 
 Emitted when an invoice is successfully generated.
 
-**Payload:**
+**Payload (`event.data`):**
 
 ```typescript
 {
-  eventName: "invoice.generated",
-  data: {
-    invoice_id: string,
-    order_id: string,
-    order_display_id: number,
-    pdf_url: string,
-    template_id: clean | classic | compact,
-    template_version: string,
-    completed_at: Date | string
-  }
+  invoice_id: string,
+  order_id: string,
+  order_display_id: number,
+  pdf_url: string,
+  template_id: "clean" | "classic" | "compact",
+  template_version: string,
+  completed_at: Date | string
 }
 ```
 
@@ -556,16 +547,13 @@ Emitted when an invoice is successfully generated.
 
 Emitted when invoice generation fails.
 
-**Payload:**
+**Payload (`event.data`):**
 
 ```typescript
 {
-  name: "invoice.failed",
-  data: {
-    order_id: string,
-    error_message: string
-  }
-},
+  order_id: string,
+  error_message: string
+}
 ```
 
 <br />
