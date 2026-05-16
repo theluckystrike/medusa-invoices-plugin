@@ -3,7 +3,18 @@
   "version": "0.0.2",
   "description": "Professional invoice generation plugin for MedusaJS with customizable templates and automatic PDF creation.",
   "author": "Agilo",
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Agilo/medusa-invoices-plugin.git"
+  },
+  "homepage": "https://github.com/Agilo/medusa-invoices-plugin#readme",
+  "bugs": {
+    "url": "https://github.com/Agilo/medusa-invoices-plugin/issues"
+  },
   "files": [
     ".medusa/server"
   ],
@@ -71,13 +82,11 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
-    "@medusajs/admin-sdk": "^2.13.1",
-    "@medusajs/cli": "^2.13.1",
-    "@medusajs/framework": "^2.13.1",
-    "@medusajs/icons": "^2.13.1",
-    "@medusajs/medusa": "^2.13.1",
-    "@medusajs/test-utils": "^2.13.1",
-    "@medusajs/ui": "^4.0.25"
+    "@medusajs/admin-sdk": ">=2.11.3 <3.0.0",
+    "@medusajs/framework": ">=2.11.3 <3.0.0",
+    "@medusajs/icons": ">=2.11.3 <3.0.0",
+    "@medusajs/medusa": ">=2.11.3 <3.0.0",
+    "@medusajs/ui": ">=4.0.0 <5.0.0"
   },
   "engines": {
     "node": ">=20"
