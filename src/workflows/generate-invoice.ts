@@ -370,7 +370,8 @@ const generateInvoiceWorkflow = createWorkflow(
         order_id: input.order_id,
         order_display_id: validateOrderResult.order_display_id,
         template_id: input.template_id,
-        created_by_event: input.created_by_event,
+        created_by_event:
+          input.created_by_event ?? InvoiceCreatedByEvent.MANUAL,
       }),
     );
 

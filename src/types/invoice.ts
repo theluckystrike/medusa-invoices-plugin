@@ -41,7 +41,7 @@ export type InvoiceDTO = {
 export type GenerateInvoiceWorkflowInput = {
   order_id: string;
   template_id?: InvoiceTemplateId; // clean | classic | compact
-  created_by_event: InvoiceCreatedByEvent; // order.completed | order.fulfillment_created | payment.captured | manual
+  created_by_event?: InvoiceCreatedByEvent; // defaults to "manual"
 };
 
 export type InvoiceGeneratedPayload = {
@@ -82,5 +82,5 @@ export type GetInvoicesResponse = {
 
 export type GenerateInvoiceRequestBody = {
   template_id?: InvoiceTemplateId; // clean | classic | compact
-  created_by_event: InvoiceCreatedByEvent; // order.completed | order.fulfillment_created | payment.captured | manual
+  created_by_event?: InvoiceCreatedByEvent; // defaults to "manual"
 };

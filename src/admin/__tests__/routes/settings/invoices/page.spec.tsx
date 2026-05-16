@@ -12,6 +12,11 @@ import {
   InvoiceTemplateId,
 } from "../../../../../constants/invoice";
 
+vi.mock("react-router-dom", () => ({
+  useSearchParams: () => [new URLSearchParams(), vi.fn()],
+  useNavigate: () => vi.fn(),
+}));
+
 vi.mock("../../../../hooks/invoice-settings", () => ({
   useInvoiceSettings: vi.fn(),
   useUpsertInvoiceSettings: vi.fn(),

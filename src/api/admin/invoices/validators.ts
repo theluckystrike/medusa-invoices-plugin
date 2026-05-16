@@ -10,7 +10,7 @@ const InvoiceCreatedByEventSchema = z.nativeEnum(InvoiceCreatedByEvent);
 
 export const generateInvoiceSchema = z.object({
   template_id: invoiceTemplateIdSchema.optional(),
-  created_by_event: InvoiceCreatedByEventSchema,
+  created_by_event: InvoiceCreatedByEventSchema.optional(),
 });
 
 export type GenerateInvoiceRequestBody = z.infer<typeof generateInvoiceSchema>;

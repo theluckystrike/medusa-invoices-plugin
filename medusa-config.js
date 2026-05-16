@@ -8,12 +8,16 @@ const DB_URL = `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`
 
 process.env.POSTGRES_URL = DB_URL
 
+// The integration tests generate JWT tokens with this secret, so both the
+// http config and the user module must use the same value.
+const JWT_SECRET = "supersecret"
+
 module.exports = {
   projectConfig: {
     databaseUrl: DB_URL,
     http: {
-      jwtSecret: process.env.JWT_SECRET || "test",
-      cookieSecret: "test",
+      jwtSecret: JWT_SECRET,
+      cookieSecret: JWT_SECRET,
     },
     redisUrl: "redis://localhost:6379",
   },
@@ -25,7 +29,7 @@ module.exports = {
     [Modules.USER]: {
       resolve: "@medusajs/user",
       options: {
-        jwt_secret: "test",
+        jwt_secret: JWT_SECRET,
       },
     },
     [Modules.CACHE]: {
