@@ -116,6 +116,9 @@ export async function GET(
 
     res.send(Buffer.from(pdfBuffer));
   } catch (error) {
+    if (error instanceof MedusaError) {
+      throw error;
+    }
     throw new MedusaError(
       MedusaError.Types.UNEXPECTED_STATE,
       `Failed to retrieve invoice PDF: ${error.message}`,

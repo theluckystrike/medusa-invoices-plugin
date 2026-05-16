@@ -389,13 +389,13 @@ const generateInvoiceWorkflow = createWorkflow(
       },
     ]);
 
-    const rederPdfStepResult = renderPdfStep({
+    const renderPdfStepResult = renderPdfStep({
       order_id: input.order_id,
       invoice,
     });
 
     const completeInvoiceStepResult = completeInvoiceStep({
-      invoice: rederPdfStepResult,
+      invoice: renderPdfStepResult,
       order_id: input.order_id,
     });
 
