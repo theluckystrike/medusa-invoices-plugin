@@ -47,6 +47,7 @@ module.exports = {
         ],
       },
     },
+    [Modules.PRICING]: true,
     [Modules.WORKFLOW_ENGINE]: true,
     [Modules.STORE]: true,
     [Modules.ORDER]: true,
