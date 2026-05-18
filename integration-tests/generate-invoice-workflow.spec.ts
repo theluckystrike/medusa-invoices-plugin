@@ -1,28 +1,25 @@
 import { Modules } from "@medusajs/framework/utils";
+import { StoreDTO } from "@medusajs/framework/types";
 import { medusaIntegrationTestRunner } from "@medusajs/test-utils";
 import InvoiceModuleService from "../src/modules/invoice/service";
 import { INVOICE_MODULE } from "../src/modules/invoice";
-import {
-  InvoiceSettingsHeaderLogoType,
-  InvoiceTemplateId,
-} from "../src/constants/invoice";
+import { InvoiceSettingsHeaderLogoType, InvoiceTemplateId } from "../src/constants/invoice";
 import generateInvoiceWorkflow from "../src/workflows/generate-invoice";
 
 medusaIntegrationTestRunner({
   testSuite: ({ getContainer }) => {
     describe("Test generate-invoice-workflow", () => {
-      let orderId;
-      let orderDisplayId;
+      let orderId: string;
+      let orderDisplayId: number;
 
       beforeEach(async () => {
         const container = getContainer();
         const storeModuleService = container.resolve("store");
-        const invoiceModuleService: InvoiceModuleService =
-          container.resolve(INVOICE_MODULE);
+        const invoiceModuleService: InvoiceModuleService = container.resolve(INVOICE_MODULE);
         const orderModuleService = container.resolve("order");
         const link = container.resolve("link");
 
-        let store;
+        let store: StoreDTO;
 
         const [retrievedStore] = await storeModuleService.listStores();
         store = retrievedStore;
@@ -31,31 +28,28 @@ medusaIntegrationTestRunner({
           const [createdStore] = await storeModuleService.createStores([
             {
               name: "Test Store",
-              supported_currencies: [
-                { currency_code: "eur", is_default: true },
-              ],
+              supported_currencies: [{ currency_code: "eur", is_default: true }],
             },
           ]);
 
           store = createdStore;
         }
 
-        const invoiceSettings =
-          await invoiceModuleService.createInvoiceSettings({
-            template_id: InvoiceTemplateId.CLEAN,
-            template_version: "1.0.0",
-            header_logo_type: InvoiceSettingsHeaderLogoType.NONE,
-            header_logo_text: null,
-            header_logo_url: null,
-            header_content: null,
-            footer_content: null,
-            store_name: null,
-            store_address: null,
-            store_tax_id: null,
-            bank_account_iban: null,
-            bank_account_swift: null,
-            auto_generate_on: [],
-          });
+        const invoiceSettings = await invoiceModuleService.createInvoiceSettings({
+          template_id: InvoiceTemplateId.CLEAN,
+          template_version: "1.0.0",
+          header_logo_type: InvoiceSettingsHeaderLogoType.NONE,
+          header_logo_text: null,
+          header_logo_url: null,
+          header_content: null,
+          footer_content: null,
+          store_name: null,
+          store_address: null,
+          store_tax_id: null,
+          bank_account_iban: null,
+          bank_account_swift: null,
+          auto_generate_on: [],
+        });
 
         await link.create({
           [Modules.STORE]: {

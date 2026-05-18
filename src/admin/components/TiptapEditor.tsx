@@ -12,13 +12,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { Color, TextStyle } from "@tiptap/extension-text-style";
 import Underline from "@tiptap/extension-underline";
 import { Placeholder } from "@tiptap/extensions";
-import {
-  Editor,
-  EditorContent,
-  JSONContent,
-  useEditor,
-  useEditorState,
-} from "@tiptap/react";
+import { Editor, EditorContent, JSONContent, useEditor, useEditorState } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 
 import {
@@ -75,27 +69,6 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
   const [showLinkDialog, setShowLinkDialog] = React.useState(false);
   const [linkUrl, setLinkUrl] = React.useState("");
 
-  if (!editor) {
-    return null;
-  }
-
-  const addLink = () => {
-    if (linkUrl) {
-      editor.chain().focus().setLink({ href: linkUrl }).run();
-      setLinkUrl("");
-      setShowLinkDialog(false);
-    }
-  };
-
-  const removeLink = () => {
-    editor.chain().focus().unsetLink().run();
-  };
-
-  const setColor = (color: string) => {
-    editor.chain().focus().setColor(color).run();
-    setShowColorPicker(false);
-  };
-
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
@@ -124,6 +97,27 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
     },
   });
 
+  if (!editor) {
+    return null;
+  }
+
+  const addLink = () => {
+    if (linkUrl) {
+      editor.chain().focus().setLink({ href: linkUrl }).run();
+      setLinkUrl("");
+      setShowLinkDialog(false);
+    }
+  };
+
+  const removeLink = () => {
+    editor.chain().focus().unsetLink().run();
+  };
+
+  const setColor = (color: string) => {
+    editor.chain().focus().setColor(color).run();
+    setShowColorPicker(false);
+  };
+
   return (
     <div className="p-2 flex flex-wrap gap-1">
       {/* Undo */}
@@ -150,8 +144,7 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
       <IconButton
         className={clx(
           "size-7",
-          editorState.isBold &&
-            "bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base",
+          editorState.isBold && "bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base",
         )}
         onClick={() => editor.chain().focus().toggleBold().run()}
       >
@@ -162,8 +155,7 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
       <IconButton
         className={clx(
           "size-7",
-          editorState.isItalic &&
-            "bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base",
+          editorState.isItalic && "bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base",
         )}
         onClick={() => editor.chain().focus().toggleItalic().run()}
       >
@@ -186,8 +178,7 @@ const MenuBar: React.FC<{ editor: Editor }> = ({ editor }) => {
       <IconButton
         className={clx(
           "size-7",
-          editorState.isStrike &&
-            "bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base",
+          editorState.isStrike && "bg-ui-bg-interactive hover:bg-ui-bg-interactive text-ui-bg-base",
         )}
         onClick={() => editor.chain().focus().toggleStrike().run()}
       >
@@ -519,9 +510,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
           const baseStyle = getHeadingStyle(level);
 
           const existingStyle = HTMLAttributes.style || "";
-          const combinedStyle = existingStyle
-            ? `${baseStyle} ${existingStyle}`
-            : baseStyle;
+          const combinedStyle = existingStyle ? `${baseStyle} ${existingStyle}` : baseStyle;
 
           return [`h${level}`, { ...HTMLAttributes, style: combinedStyle }, 0];
         },

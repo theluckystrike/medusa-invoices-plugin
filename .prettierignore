@@ -1,0 +1,11 @@
+.cache
+.medusa
+.yarn
+build
+coverage
+dist
+node_modules
+src/admin/templates
+src/modules/**/migrations
+**/.snapshot-*.json
+yarn.lock

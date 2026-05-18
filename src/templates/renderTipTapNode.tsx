@@ -20,11 +20,7 @@ type RenderTextWithMarks = {
   components: TipTapNodeComponents;
 };
 
-const renderTextWithMarks = ({
-  node,
-  key,
-  components,
-}: RenderTextWithMarks) => {
+const renderTextWithMarks = ({ node, key, components }: RenderTextWithMarks) => {
   const { Text, Link } = components;
   const { text = "", marks = [] } = node;
 
@@ -113,14 +109,13 @@ export const renderTipTapNode = ({
         );
       }
 
-      const textAlign = attrs.textAlign || "left";
       return (
         <View
           key={index}
           style={[
             tipTapStyles.paragraph,
             {
-              textAlign,
+              textAlign: attrs.textAlign || "left",
             },
           ]}
         >
@@ -140,66 +135,60 @@ export const renderTipTapNode = ({
       );
 
     case "heading":
-      const level = attrs.level || 1;
-      let headingStyle;
+      return (() => {
+        let headingStyle = tipTapStyles.heading3;
 
-      switch (level) {
-        case 1:
-          headingStyle = tipTapStyles.heading1;
-          break;
-        case 2:
-          headingStyle = tipTapStyles.heading2;
-          break;
-        case 3:
-          headingStyle = tipTapStyles.heading3;
-          break;
-        case 4:
-          headingStyle = tipTapStyles.heading4;
-          break;
-        case 5:
-          headingStyle = tipTapStyles.heading5;
-          break;
-        case 6:
-          headingStyle = tipTapStyles.heading6;
-          break;
-        default:
-          headingStyle = tipTapStyles.heading3;
-      }
+        switch (attrs.level || 1) {
+          case 1:
+            headingStyle = tipTapStyles.heading1;
+            break;
+          case 2:
+            headingStyle = tipTapStyles.heading2;
+            break;
+          case 3:
+            headingStyle = tipTapStyles.heading3;
+            break;
+          case 4:
+            headingStyle = tipTapStyles.heading4;
+            break;
+          case 5:
+            headingStyle = tipTapStyles.heading5;
+            break;
+          case 6:
+            headingStyle = tipTapStyles.heading6;
+            break;
+        }
 
-      const headingAlign = attrs.textAlign || "left";
-
-      return (
-        <View
-          key={index}
-          style={[
-            headingStyle,
-            {
-              textAlign: headingAlign,
-              marginBottom: isLast ? 0 : headingStyle.marginBottom,
-            },
-          ]}
-        >
-          <Text>
-            {content.map((child, i) =>
-              child.type === "text"
-                ? renderTextWithMarks({ node: child, key: i, components })
-                : renderTipTapNode({
-                    node: child,
-                    index: i,
-                    tipTapStyles,
-                    components,
-                  }),
-            )}
-          </Text>
-        </View>
-      );
+        return (
+          <View
+            key={index}
+            style={[
+              headingStyle,
+              {
+                textAlign: attrs.textAlign || "left",
+                marginBottom: isLast ? 0 : headingStyle.marginBottom,
+              },
+            ]}
+          >
+            <Text>
+              {content.map((child, i) =>
+                child.type === "text"
+                  ? renderTextWithMarks({ node: child, key: i, components })
+                  : renderTipTapNode({
+                      node: child,
+                      index: i,
+                      tipTapStyles,
+                      components,
+                    }),
+              )}
+            </Text>
+          </View>
+        );
+      })();
 
     case "bulletList":
       return (
-        <View
-          key={index}
-          style={{ marginBottom: isLast ? 0 : 8, marginLeft: 10 }}
-        >
+        <View key={index} style={{ marginBottom: isLast ? 0 : 8, marginLeft: 10 }}>
           {content.map((child, i) =>
             renderTipTapNode({
               node: child,
@@ -213,46 +202,14 @@ export const renderTipTapNode = ({
       );
 
     case "orderedList":
-      const start = attrs.start || 1;
-      return (
-        <View
-          key={index}
-          style={{ marginBottom: isLast ? 0 : 8, marginLeft: 10 }}
-        >
-          {content.map((child, i) => {
-            const itemNumber = start + i;
-            return renderTipTapNode({
-              node: { ...child, _orderNumber: itemNumber },
-              index: i,
-              tipTapStyles,
-              components,
-              isLast: i === content.length - 1,
-            });
-          })}
-        </View>
-      );
+      return (() => {
+        const start = attrs.start || 1;
 
-    case "listItem":
-      const isOrdered = node._orderNumber !== undefined;
-      const itemNumber = node._orderNumber || 1;
-
-      return (
-        <View
-          key={index}
-          style={[
-            tipTapStyles.listItem,
-            { marginBottom: isLast ? 0 : tipTapStyles.listItem.marginBottom },
-          ]}
-        >
-          <Text
-            style={isOrdered ? tipTapStyles.orderedNumber : tipTapStyles.bullet}
-          >
-            {isOrdered ? `${itemNumber}. ` : "• "}
-          </Text>
-          <View style={{ flex: 1 }}>
+        return (
+          <View key={index} style={{ marginBottom: isLast ? 0 : 8, marginLeft: 10 }}>
             {content.map((child, i) =>
               renderTipTapNode({
-                node: child,
+                node: { ...child, _orderNumber: start + i },
                 index: i,
                 tipTapStyles,
                 components,
@@ -260,8 +217,39 @@ export const renderTipTapNode = ({
               }),
             )}
           </View>
-        </View>
-      );
+        );
+      })();
+
+    case "listItem":
+      return (() => {
+        const isOrdered = node._orderNumber !== undefined;
+        const itemNumber = node._orderNumber || 1;
+
+        return (
+          <View
+            key={index}
+            style={[
+              tipTapStyles.listItem,
+              { marginBottom: isLast ? 0 : tipTapStyles.listItem.marginBottom },
+            ]}
+          >
+            <Text style={isOrdered ? tipTapStyles.orderedNumber : tipTapStyles.bullet}>
+              {isOrdered ? `${itemNumber}. ` : "• "}
+            </Text>
+            <View style={{ flex: 1 }}>
+              {content.map((child, i) =>
+                renderTipTapNode({
+                  node: child,
+                  index: i,
+                  tipTapStyles,
+                  components,
+                  isLast: i === content.length - 1,
+                }),
+              )}
+            </View>
+          </View>
+        );
+      })();
 
     case "text":
       return renderTextWithMarks({ node, key: index, components });
@@ -278,6 +266,7 @@ export const renderTipTapNode = ({
           }),
         );
       }
+
       return null;
   }
 };

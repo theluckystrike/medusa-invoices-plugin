@@ -78,7 +78,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
 
   if (
     generateInvoice.isError &&
-    generateInvoice.error.message === "Invoice settings does not exist"
+    generateInvoice.error?.message === "Invoice settings does not exist"
   ) {
     return (
       <Container className="p-0 divide-y">
