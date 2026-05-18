@@ -17,8 +17,7 @@ medusaIntegrationTestRunner({
       beforeEach(async () => {
         const container = getContainer();
         const storeModuleService = container.resolve("store");
-        const invoiceModuleService: InvoiceModuleService =
-          container.resolve(INVOICE_MODULE);
+        const invoiceModuleService: InvoiceModuleService = container.resolve(INVOICE_MODULE);
         const link = container.resolve("link");
 
         let store;
@@ -30,31 +29,28 @@ medusaIntegrationTestRunner({
           const [createdStore] = await storeModuleService.createStores([
             {
               name: "Test Store",
-              supported_currencies: [
-                { currency_code: "eur", is_default: true },
-              ],
+              supported_currencies: [{ currency_code: "eur", is_default: true }],
             },
           ]);
 
           store = createdStore;
         }
 
-        const invoiceSettings =
-          await invoiceModuleService.createInvoiceSettings({
-            template_id: InvoiceTemplateId.CLEAN,
-            template_version: "1.0.0",
-            header_logo_type: InvoiceSettingsHeaderLogoType.NONE,
-            header_logo_text: null,
-            header_logo_url: null,
-            header_content: null,
-            footer_content: null,
-            store_name: null,
-            store_address: null,
-            store_tax_id: null,
-            bank_account_iban: null,
-            bank_account_swift: null,
-            auto_generate_on: [],
-          });
+        const invoiceSettings = await invoiceModuleService.createInvoiceSettings({
+          template_id: InvoiceTemplateId.CLEAN,
+          template_version: "1.0.0",
+          header_logo_type: InvoiceSettingsHeaderLogoType.NONE,
+          header_logo_text: null,
+          header_logo_url: null,
+          header_content: null,
+          footer_content: null,
+          store_name: null,
+          store_address: null,
+          store_tax_id: null,
+          bank_account_iban: null,
+          bank_account_swift: null,
+          auto_generate_on: [],
+        });
 
         await link.create({
           [Modules.STORE]: {
@@ -67,8 +63,8 @@ medusaIntegrationTestRunner({
       });
       describe("Admin API", () => {
         const headers: Record<string, string> = {};
-        let order_id;
-        let order_display_id;
+        let order_id: string;
+        let order_display_id: number;
 
         beforeEach(async () => {
           const container = getContainer();
@@ -95,7 +91,7 @@ medusaIntegrationTestRunner({
             },
           });
 
-          const token = generateJwtTokenForAuthIdentity(
+          const token = await generateJwtTokenForAuthIdentity(
             {
               authIdentity,
               actorType: "user",
@@ -129,16 +125,12 @@ medusaIntegrationTestRunner({
               template_id: "compact",
             };
 
-            const response = await api.post(
-              `/admin/invoices/${order_id}/generate`,
-              payload,
-              {
-                headers: {
-                  Authorization: headers["authorization"],
-                  "Content-Type": "application/json",
-                },
+            const response = await api.post(`/admin/invoices/${order_id}/generate`, payload, {
+              headers: {
+                Authorization: headers["authorization"],
+                "Content-Type": "application/json",
               },
-            );
+            });
 
             expect(response.status).toEqual(200);
             expect(response.data).toEqual(
@@ -178,8 +170,7 @@ medusaIntegrationTestRunner({
         describe("GET /admin/invoices/:order_id", () => {
           it("returns order invoice", async () => {
             const container = getContainer();
-            const invoiceModuleService: InvoiceModuleService =
-              container.resolve(INVOICE_MODULE);
+            const invoiceModuleService: InvoiceModuleService = container.resolve(INVOICE_MODULE);
             const link = container.resolve("link");
 
             const invoice = await invoiceModuleService.createInvoices({
@@ -245,8 +236,7 @@ medusaIntegrationTestRunner({
 
       describe("Store API", () => {
         const headers: Record<string, string> = {};
-        let order_id;
-        let order_display_id;
+        let order_id: string;
 
         beforeEach(async () => {
           const container = getContainer();
@@ -272,7 +262,7 @@ medusaIntegrationTestRunner({
             },
           });
 
-          const token = generateJwtTokenForAuthIdentity(
+          const token = await generateJwtTokenForAuthIdentity(
             {
               authIdentity,
               actorType: "customer",
@@ -315,14 +305,11 @@ medusaIntegrationTestRunner({
           });
 
           order_id = order.id;
-          order_display_id = order.display_id;
         });
         describe("GET /store/invoices/:order_id.pdf", () => {
           it("returns order invoice pdf", async () => {
             const container = getContainer();
-            const workflowsModuleService = container.resolve(
-              Modules.WORKFLOW_ENGINE,
-            );
+            const workflowsModuleService = container.resolve(Modules.WORKFLOW_ENGINE);
 
             await workflowsModuleService.run("generate-invoice-workflow", {
               input: {

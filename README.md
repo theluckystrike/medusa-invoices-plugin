@@ -448,7 +448,7 @@ Customers can access and download their own invoice PDFs.
 GET /store/invoices/{order_id}.pdf
 ```
 
-Response: 
+Response:
   - returns a PDF file stream
 
 <br />

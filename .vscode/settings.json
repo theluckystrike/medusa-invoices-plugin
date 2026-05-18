@@ -1,4 +1,25 @@
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "jest.useJest30": true,
+  "jest.nodeEnv": {
+    "DB_TEMP_NAME": "medusa_test",
+    "NODE_OPTIONS": "--experimental-vm-modules"
+  },
+  "jest.runMode": {
+    "type": "on-demand",
+    "deferred": true
+  },
+  "jest.outputConfig": "neutral",
+  "testing.automaticallyOpenTestResults": "neverOpen",
+  "jest.virtualFolders": [
+    {
+      "name": "integration:http",
+      "jestCommandLine": "yarn test:integration:http"
+    },
+    {
+      "name": "integration:modules",
+      "jestCommandLine": "yarn test:integration:modules"
+    }
+  ]
 }

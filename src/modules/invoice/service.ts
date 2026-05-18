@@ -13,9 +13,9 @@ class InvoiceModuleService extends MedusaService({
 }) {
   protected eventBusService_: AbstractEventBusModuleService;
 
-  constructor({ event_bus }) {
-    super(...arguments);
-    this.eventBusService_ = event_bus;
+  constructor(container: { event_bus: AbstractEventBusModuleService }, ...args: any) {
+    super(container, ...args);
+    this.eventBusService_ = container.event_bus;
   }
 
   async generationFailed(id: string, error_message: string, order_id: string) {
