@@ -227,7 +227,8 @@ medusaIntegrationTestRunner({
             });
 
             expect(response.status).toEqual(200);
-            expect(response.data).toEqual(
+            expect(response.data.invoices).toHaveLength(1);
+            expect(response.data.invoices[0]).toEqual(
               expect.objectContaining({
                 status: "completed",
                 completed_at: expect.any(String),

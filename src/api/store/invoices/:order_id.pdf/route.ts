@@ -20,16 +20,7 @@ export async function GET(
   if (!order_id) {
     throw new MedusaError(
       MedusaError.Types.INVALID_DATA,
-      "Order display ID is required.",
-    );
-  }
-
-  const display_id = Number(order_id);
-
-  if (Number.isNaN(display_id)) {
-    throw new MedusaError(
-      MedusaError.Types.INVALID_DATA,
-      "Order display ID must be a number.",
+      "Order ID is required.",
     );
   }
 
@@ -37,8 +28,8 @@ export async function GET(
 
   const { data: orders } = await query.graph({
     entity: "order",
-    fields: ["id", "customer_id"],
-    filters: { display_id },
+    fields: ["id", "display_id", "customer_id"],
+    filters: { id: order_id },
   });
 
   const order = orders[0];
@@ -46,7 +37,7 @@ export async function GET(
   if (!order) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
-      `Order with display_id ${display_id} not found`,
+      `Order with id ${order_id} not found`,
     );
   }
 
@@ -67,7 +58,7 @@ export async function GET(
   if (!orderInvoiceLink) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
-      `Invoice for order with display_id ${display_id} not found`,
+      `Invoice for order with id ${order_id} not found`,
     );
   }
 
@@ -106,7 +97,7 @@ export async function GET(
 
     const pdfBuffer = await response.arrayBuffer();
 
-    const invoiceNumber = `invoice-${display_id}`;
+    const invoiceNumber = `invoice-${order.display_id}`;
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
