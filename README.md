@@ -475,19 +475,17 @@ The settings page allows you to:
    - Choose which template to use for invoice generation
    - Preview templates before activating (with dummy or selected order data)
 
-   ![Invoice Settings - Select Active Template](https://github.com/user-attachments/assets/1446365a-d623-42d9-a1bd-0e63ab989cca)
+    ![Invoice Settings - Select Active Template](https://github.com/user-attachments/assets/1cc308c4-f904-444b-b118-1fba83f568ff)
 
 2. **Input Company Information**
    - Configure store name, address, header, footer...
    - This information appears on all generated invoices
 
-   ![Invoice Settings - Company Information](https://github.com/user-attachments/assets/a0fcfbb7-8abd-4564-9f79-917ebaeec0f0)
+  ![Invoice Settings - Company Information](https://github.com/user-attachments/assets/239e5283-9086-44df-a0f4-af8be7270139)
 
 3. **Select Active Auto Generation Triggers**
    - Choose the trigger on which the invoice is generated
    - Possible triggers: Order completed, Fulfillment created, Payment captured
-
-   ![Invoice Settings - Auto Generation Triggers](https://github.com/user-attachments/assets/e2175d15-c3c2-4751-9121-34e7d63d6064)
 
 ### Invoice Widget
 
@@ -509,13 +507,13 @@ The widget allows you to:
    - Completed (invoice was successfully generated)
    - Failed (invoice generation was unsuccessful)
 
-   ![Invoice Widget - Invoice Status](https://github.com/user-attachments/assets/783b6c5d-8d5a-47fa-a0ae-1cc169551249)
+  ![Invoice Widget - Invoice Status](https://github.com/user-attachments/assets/4066e873-62f0-4ed3-af64-279252fe0013)
 
 4. View invoice history
    - List of all invoices generated for that order
    - Possible to filter by particular attributes
 
-   ![Invoice Widget - Invoice History](https://github.com/user-attachments/assets/b46544b0-e0a5-4a85-912f-60ed888876bb)
+  ![Invoice Widget - Invoice History](https://github.com/user-attachments/assets/5c6f87e4-ed8b-4fdc-a9f6-763131c7aa33)
 
 ## Events
 
