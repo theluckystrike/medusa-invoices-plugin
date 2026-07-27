@@ -24,7 +24,7 @@ module.exports = {
   // CJS environment. Without this every test that (transitively) loads the
   // invoice templates fails with "Must use import to load ES Module".
   moduleNameMapper: {
-    "^@react-pdf/renderer$": "<rootDir>/__mocks__/@react-pdf/renderer.js",
+    "^@react-pdf/renderer$": "<rootDir>/integration-tests/__mocks__/@react-pdf/renderer.js",
   },
 }
 
