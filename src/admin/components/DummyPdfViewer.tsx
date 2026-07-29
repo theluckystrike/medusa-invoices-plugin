@@ -8,21 +8,14 @@ type DummyPdfViewerProps = {
   templateSettings: Omit<TemplateSettings, "auto_generate_on">;
 };
 
-const DummyPdfViewer: React.FC<DummyPdfViewerProps> = ({
-  templateSettings,
-}) => {
+const DummyPdfViewer: React.FC<DummyPdfViewerProps> = ({ templateSettings }) => {
   const templateProps: TemplateProps = {
     order: orderDummyData,
     settings: templateSettings,
     invoice: invoiceDummyData,
   };
 
-  return (
-    <PdfPreview
-      templateId={templateSettings.template_id}
-      templateProps={templateProps}
-    />
-  );
+  return <PdfPreview templateId={templateSettings.template_id} templateProps={templateProps} />;
 };
 
 export default DummyPdfViewer;

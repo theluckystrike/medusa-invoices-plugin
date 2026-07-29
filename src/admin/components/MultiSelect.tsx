@@ -24,10 +24,7 @@ const triggers = [
   },
 ];
 
-const MultiSelect = ({
-  templateSettings,
-  setTemplateSettings,
-}: MultiSelectProps) => {
+const MultiSelect = ({ templateSettings, setTemplateSettings }: MultiSelectProps) => {
   const [selectedValue, setSelectedValue] = React.useState("");
 
   const handleAddTrigger = (trigger: InvoiceSettingsAutoGenerateTrigger) => {
@@ -66,9 +63,7 @@ const MultiSelect = ({
     <div className="flex flex-col gap-2">
       <Select
         value={selectedValue}
-        onValueChange={(value) =>
-          handleAddTrigger(value as InvoiceSettingsAutoGenerateTrigger)
-        }
+        onValueChange={(value) => handleAddTrigger(value as InvoiceSettingsAutoGenerateTrigger)}
       >
         <Select.Trigger>
           <Select.Value placeholder="Select Auto Generation Triggers" />
@@ -92,11 +87,7 @@ const MultiSelect = ({
           if (!triggerLabel) return null;
 
           return (
-            <Badge
-              key={t}
-              size="xsmall"
-              className="flex justify-between items-center gap-2"
-            >
+            <Badge key={t} size="xsmall" className="flex justify-between items-center gap-2">
               {triggerLabel}
               <IconButton
                 variant="transparent"

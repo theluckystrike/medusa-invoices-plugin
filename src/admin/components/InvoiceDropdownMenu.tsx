@@ -14,10 +14,7 @@ const InvoiceDropdownMenu = ({ setIsModalOpen }: InvoiceDropdownMenuProps) => {
         </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
-        <DropdownMenu.Item
-          className="gap-x-2"
-          onClick={() => setIsModalOpen(true)}
-        >
+        <DropdownMenu.Item className="gap-x-2" onClick={() => setIsModalOpen(true)}>
           <DocumentText className="text-ui-fg-subtle" />
           View invoice history
         </DropdownMenu.Item>

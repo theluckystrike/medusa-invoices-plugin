@@ -9,10 +9,7 @@ type FileUploaderProps = {
   setTemplateSettings: React.Dispatch<React.SetStateAction<TemplateSettings>>;
 };
 
-const FileUploader = ({
-  setTemplateSettings,
-  setHeaderLogoFile,
-}: FileUploaderProps) => {
+const FileUploader = ({ setTemplateSettings, setHeaderLogoFile }: FileUploaderProps) => {
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,13 +33,7 @@ const FileUploader = ({
 
   return (
     <div className="mt-3">
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileSelect}
-        accept="image/*"
-        hidden
-      />
+      <input type="file" ref={fileInputRef} onChange={handleFileSelect} accept="image/*" hidden />
 
       <Button variant="secondary" onClick={() => fileInputRef.current?.click()}>
         Choose Image

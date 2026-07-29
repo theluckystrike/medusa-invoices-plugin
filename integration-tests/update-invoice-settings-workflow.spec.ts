@@ -1,12 +1,8 @@
-import { Modules } from "@medusajs/framework/utils";
 import { medusaIntegrationTestRunner } from "@medusajs/test-utils";
 import InvoiceModuleService from "../src/modules/invoice/service";
 import { INVOICE_MODULE } from "../src/modules/invoice";
 import updateInvoiceSettingsWorkflow from "../src/workflows/update-invoice-settings";
-import {
-  InvoiceSettingsHeaderLogoType,
-  InvoiceTemplateId,
-} from "../src/constants/invoice";
+import { InvoiceSettingsHeaderLogoType, InvoiceTemplateId } from "../src/constants/invoice";
 
 medusaIntegrationTestRunner({
   testSuite: ({ getContainer }) => {
@@ -47,14 +43,12 @@ medusaIntegrationTestRunner({
         it("should create new invoice settings and link to store", async () => {
           const container = getContainer();
 
-          const { result } = await updateInvoiceSettingsWorkflow(container).run(
-            {
-              input: {
-                store_id: storeId,
-                ...inputBase,
-              },
+          const { result } = await updateInvoiceSettingsWorkflow(container).run({
+            input: {
+              store_id: storeId,
+              ...inputBase,
             },
-          );
+          });
 
           expect(result).toEqual(
             expect.objectContaining({
@@ -83,15 +77,12 @@ medusaIntegrationTestRunner({
       describe("Failure and compensation scenario", () => {
         it("should roll back created settings if a later step fails", async () => {
           const container = getContainer();
-          const invoiceModuleService: InvoiceModuleService =
-            container.resolve(INVOICE_MODULE);
+          const invoiceModuleService: InvoiceModuleService = container.resolve(INVOICE_MODULE);
 
-          const { errors } = await updateInvoiceSettingsWorkflow(container).run(
-            {
-              input: { ...inputBase, store_id: "non-existent-id" },
-              throwOnError: false,
-            },
-          );
+          const { errors } = await updateInvoiceSettingsWorkflow(container).run({
+            input: { ...inputBase, store_id: "non-existent-id" },
+            throwOnError: false,
+          });
 
           expect(errors.length).toBeGreaterThan(0);
 

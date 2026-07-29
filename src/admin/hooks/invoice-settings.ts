@@ -10,7 +10,7 @@ import {
   InvoiceSettingsDTO,
   InvoiceSettingsRequestBody,
 } from "../../types/invoice-settings";
-import { FetchError } from "@medusajs/js-sdk"
+import { FetchError } from "@medusajs/js-sdk";
 
 export const useUpsertInvoiceSettings = () => {
   const queryClient = useQueryClient();
@@ -51,9 +51,7 @@ export const useInvoiceSettings = (
     queryKey: ["invoice-settings"],
     queryFn: async () => {
       const invoiceSettings =
-        await sdk.client.fetch<GetInvoiceSettingsResponse>(
-          `/admin/invoice-settings`,
-        );
+        await sdk.client.fetch<GetInvoiceSettingsResponse>(`/admin/invoice-settings`);
 
       return invoiceSettings;
     },

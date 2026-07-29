@@ -4,17 +4,7 @@ import {
   DocumentText as DocumentTextIcon,
   SidebarRight as SidebarRightIcon,
 } from "@medusajs/icons";
-import {
-  Button,
-  Container,
-  Drawer,
-  Heading,
-  Label,
-  Select,
-  Tabs,
-  Text,
-  toast,
-} from "@medusajs/ui";
+import { Button, Container, Drawer, Heading, Label, Select, Tabs, Text, toast } from "@medusajs/ui";
 import React from "react";
 import { useOrder, useOrders } from "../../../hooks/orders";
 import { JSONContent } from "@tiptap/react";
@@ -61,12 +51,10 @@ export default function Invoices() {
     limit: 100,
   });
 
-  const [selectedOrderId, setSelectedOrderId] = React.useState<string>(
-    orderIdFromUrl || "",
+  const [selectedOrderId, setSelectedOrderId] = React.useState<string>(orderIdFromUrl || "");
+  const [previewType, setPreviewType] = React.useState<"dummy-data" | "select-order">(
+    orderIdFromUrl ? "select-order" : "dummy-data",
   );
-  const [previewType, setPreviewType] = React.useState<
-    "dummy-data" | "select-order"
-  >(orderIdFromUrl ? "select-order" : "dummy-data");
   const [isDownloading, setIsDownloading] = React.useState<boolean>(false);
 
   const orderQuery = useOrder(
@@ -80,24 +68,23 @@ export default function Invoices() {
     },
   );
 
-  const [templateSettings, setTemplateSettings] =
-    React.useState<TemplateSettings>({
-      template_id: InvoiceTemplateId.CLEAN,
-      template_version: "1.0.0",
-      header_logo: {
-        type: InvoiceSettingsHeaderLogoType.NONE,
-        text: "",
-        url: "",
-      },
-      header_content: {},
-      footer_content: {},
-      store_name: "",
-      store_address: "",
-      store_tax_id: "",
-      bank_account_iban: "",
-      bank_account_swift: "",
-      auto_generate_on: [],
-    });
+  const [templateSettings, setTemplateSettings] = React.useState<TemplateSettings>({
+    template_id: InvoiceTemplateId.CLEAN,
+    template_version: "1.0.0",
+    header_logo: {
+      type: InvoiceSettingsHeaderLogoType.NONE,
+      text: "",
+      url: "",
+    },
+    header_content: {},
+    footer_content: {},
+    store_name: "",
+    store_address: "",
+    store_tax_id: "",
+    bank_account_iban: "",
+    bank_account_swift: "",
+    auto_generate_on: [],
+  });
 
   const handlePreviewChange = React.useCallback(
     (value: string) => {
@@ -196,12 +183,8 @@ export default function Invoices() {
         text: settings.header_logo_text ?? "",
         url: settings.header_logo_url ?? "",
       },
-      header_content: settings.header_content
-        ? JSON.parse(settings.header_content)
-        : {},
-      footer_content: settings.footer_content
-        ? JSON.parse(settings.footer_content)
-        : {},
+      header_content: settings.header_content ? JSON.parse(settings.header_content) : {},
+      footer_content: settings.footer_content ? JSON.parse(settings.footer_content) : {},
       store_name: settings.store_name ?? "",
       store_address: settings.store_address ?? "",
       store_tax_id: settings.store_tax_id ?? "",
@@ -213,9 +196,7 @@ export default function Invoices() {
 
   React.useEffect(() => {
     if (orderIdFromUrl && ordersQuery.data?.orders) {
-      const orderExists = ordersQuery.data.orders.find(
-        (order) => order.id === orderIdFromUrl,
-      );
+      const orderExists = ordersQuery.data.orders.find((order) => order.id === orderIdFromUrl);
 
       if (orderExists) {
         setSelectedOrderId(orderIdFromUrl);
@@ -232,15 +213,13 @@ export default function Invoices() {
         <div>
           <Heading>Invoices Plugin Configuration</Heading>
           <Text className="text-ui-fg-subtle">
-            Configure your invoice settings and click "Save Settings" to save
-            settings
+            Configure your invoice settings and click "Save Settings" to save settings
           </Text>
-          {invoiceSettingsQuery.isError &&
-            invoiceSettingsQuery.error?.status === 404 && (
-              <Text className="pt-4 text-ui-fg-error">
-                Invoice settings not found. Please set up your invoice settings.
-              </Text>
-            )}
+          {invoiceSettingsQuery.isError && invoiceSettingsQuery.error?.status === 404 && (
+            <Text className="pt-4 text-ui-fg-error">
+              Invoice settings not found. Please set up your invoice settings.
+            </Text>
+          )}
         </div>
         <Drawer>
           <Drawer.Trigger asChild className="xl:hidden shrink-0">
@@ -254,11 +233,8 @@ export default function Invoices() {
             </Drawer.Header>
             <div className="divide-y">
               {invoiceSettingsQuery.isLoading ? (
-                <Text className="p-6 text-ui-fg-subtle">
-                  Loading invoice settings…
-                </Text>
-              ) : invoiceSettingsQuery.isError &&
-                invoiceSettingsQuery.error?.status === 404 ? (
+                <Text className="p-6 text-ui-fg-subtle">Loading invoice settings…</Text>
+              ) : invoiceSettingsQuery.isError && invoiceSettingsQuery.error?.status === 404 ? (
                 <RenderTemplateSettings
                   previewType={previewType}
                   selectedOrderId={selectedOrderId}
@@ -268,8 +244,7 @@ export default function Invoices() {
                 />
               ) : invoiceSettingsQuery.isError ? (
                 <Text className="p-6 text-ui-fg-error">
-                  {invoiceSettingsQuery.error.message ||
-                    "Failed to load invoice settings."}
+                  {invoiceSettingsQuery.error.message || "Failed to load invoice settings."}
                 </Text>
               ) : (
                 <RenderTemplateSettings
@@ -287,11 +262,8 @@ export default function Invoices() {
       <div className="px-6 gap-4 py-4 flex items-start min-h-[calc(100vh-4rem)]">
         <Container className="md:w-1/3 p-0 divide-y max-xl:hidden">
           {invoiceSettingsQuery.isLoading ? (
-            <Text className="p-6 text-ui-fg-subtle">
-              Loading invoice settings…
-            </Text>
-          ) : invoiceSettingsQuery.isError &&
-            invoiceSettingsQuery.error?.status === 404 ? (
+            <Text className="p-6 text-ui-fg-subtle">Loading invoice settings…</Text>
+          ) : invoiceSettingsQuery.isError && invoiceSettingsQuery.error?.status === 404 ? (
             <RenderTemplateSettings
               previewType={previewType}
               selectedOrderId={selectedOrderId}
@@ -301,8 +273,7 @@ export default function Invoices() {
             />
           ) : invoiceSettingsQuery.isError ? (
             <Text className="p-6 text-ui-fg-error">
-              {invoiceSettingsQuery.error.message ||
-                "Failed to load invoice settings."}
+              {invoiceSettingsQuery.error.message || "Failed to load invoice settings."}
             </Text>
           ) : (
             <RenderTemplateSettings
@@ -322,8 +293,7 @@ export default function Invoices() {
               onClick={handleDownloadPreview}
               disabled={
                 isDownloading ||
-                (previewType === "select-order" &&
-                  (!selectedOrderId || orderQuery.isError))
+                (previewType === "select-order" && (!selectedOrderId || orderQuery.isError))
               }
               isLoading={isDownloading}
             >
@@ -359,10 +329,7 @@ export default function Invoices() {
                   />
                 )}
               </Tabs.Content>
-              <Tabs.Content
-                value="select-order"
-                className="h-[calc(100%-127px)]"
-              >
+              <Tabs.Content value="select-order" className="h-[calc(100%-127px)]">
                 <Label>Select Order</Label>
                 <div className="w-[256px] mt-1 mb-4">
                   <Select
@@ -376,8 +343,7 @@ export default function Invoices() {
                       {(ordersQuery.data?.orders ?? []).length > 0 ? (
                         ordersQuery.data!.orders.map((item) => (
                           <Select.Item key={item.id} value={item.id}>
-                            {item.display_id} (
-                            {new Date(item.created_at).toLocaleDateString()})
+                            {item.display_id} ({new Date(item.created_at).toLocaleDateString()})
                           </Select.Item>
                         ))
                       ) : (

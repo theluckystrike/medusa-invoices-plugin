@@ -8,10 +8,7 @@ import {
 } from "@medusajs/framework/workflows-sdk";
 import { INVOICE_MODULE } from "../modules/invoice/index";
 import InvoiceModuleService from "../modules/invoice/service";
-import {
-  createRemoteLinkStep,
-  useQueryGraphStep,
-} from "@medusajs/medusa/core-flows";
+import { createRemoteLinkStep, useQueryGraphStep } from "@medusajs/medusa/core-flows";
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils";
 import {
   InvoiceSettingsAutoGenerateTrigger,
@@ -49,24 +46,16 @@ type RollbackContext = {
 
 const upsertInvoiceSettingsStep = createStep(
   "upsert-invoice-settings-step",
-  async (
-    { input, existing }: UpsertInvoiceSettingsStepInput,
-    { container },
-  ) => {
-    const invoiceModuleService: InvoiceModuleService =
-      container.resolve(INVOICE_MODULE);
+  async ({ input, existing }: UpsertInvoiceSettingsStepInput, { container }) => {
+    const invoiceModuleService: InvoiceModuleService = container.resolve(INVOICE_MODULE);
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
 
     logger.info(`invoices: Starting upsert invoice settings step`);
 
     const serializedInput = {
       ...input,
-      header_content: input.header_content
-        ? JSON.stringify(input.header_content)
-        : null,
-      footer_content: input.footer_content
-        ? JSON.stringify(input.footer_content)
-        : null,
+      header_content: input.header_content ? JSON.stringify(input.header_content) : null,
+      footer_content: input.footer_content ? JSON.stringify(input.footer_content) : null,
     };
 
     if (existing) {
@@ -86,8 +75,7 @@ const upsertInvoiceSettingsStep = createStep(
     }
 
     logger.info(`invoices: Creating new settings`);
-    const created =
-      await invoiceModuleService.createInvoiceSettings(serializedInput);
+    const created = await invoiceModuleService.createInvoiceSettings(serializedInput);
 
     const rollbackContext: RollbackContext = {
       action: "created",
@@ -98,8 +86,7 @@ const upsertInvoiceSettingsStep = createStep(
     return new StepResponse(created, rollbackContext);
   },
   async (context, { container }) => {
-    const invoiceModuleService: InvoiceModuleService =
-      container.resolve(INVOICE_MODULE);
+    const invoiceModuleService: InvoiceModuleService = container.resolve(INVOICE_MODULE);
     const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
 
     if (context?.action === "created" && context?.createdId) {

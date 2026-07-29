@@ -9,10 +9,7 @@ type PdfPreviewProps = {
   templateProps: TemplateProps;
 };
 
-const PdfPreview: React.FC<PdfPreviewProps> = ({
-  templateId,
-  templateProps,
-}) => {
+const PdfPreview: React.FC<PdfPreviewProps> = ({ templateId, templateProps }) => {
   const templateQuery = useTemplateComponent(templateId, templateProps);
 
   if (templateQuery.isLoading) {

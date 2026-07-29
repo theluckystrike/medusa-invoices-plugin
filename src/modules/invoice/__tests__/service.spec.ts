@@ -1,7 +1,4 @@
-import {
-  MockEventBusService,
-  moduleIntegrationTestRunner,
-} from "@medusajs/test-utils";
+import { MockEventBusService, moduleIntegrationTestRunner } from "@medusajs/test-utils";
 import { INVOICE_MODULE } from "..";
 import InvoiceModuleService from "../service";
 import InvoiceSettings from "../models/invoice_settings";

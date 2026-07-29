@@ -6,12 +6,8 @@ import {
 } from "../../../constants/invoice";
 
 const invoiceTemplateIdSchema = z.nativeEnum(InvoiceTemplateId);
-const invoiceSettingsHeaderLogoTypeSchema = z.nativeEnum(
-  InvoiceSettingsHeaderLogoType,
-);
-const invoiceAutoGenerateTriggerSchema = z.nativeEnum(
-  InvoiceSettingsAutoGenerateTrigger,
-);
+const invoiceSettingsHeaderLogoTypeSchema = z.nativeEnum(InvoiceSettingsHeaderLogoType);
+const invoiceAutoGenerateTriggerSchema = z.nativeEnum(InvoiceSettingsAutoGenerateTrigger);
 
 export const createInvoiceSettingsSchema = z.object({
   template_id: invoiceTemplateIdSchema,
@@ -29,6 +25,4 @@ export const createInvoiceSettingsSchema = z.object({
   auto_generate_on: z.array(invoiceAutoGenerateTriggerSchema).default([]),
 });
 
-export type CreateInvoiceInvoiceSettingsRequestBody = z.infer<
-  typeof createInvoiceSettingsSchema
->;
+export type CreateInvoiceInvoiceSettingsRequestBody = z.infer<typeof createInvoiceSettingsSchema>;

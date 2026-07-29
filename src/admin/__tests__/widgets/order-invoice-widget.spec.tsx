@@ -5,11 +5,7 @@ import {
   InvoiceStatus,
   InvoiceTemplateId,
 } from "../../../constants/invoice";
-import {
-  useGenerateInvoice,
-  useOrderInvoice,
-  useOrderInvoices,
-} from "../../hooks/invoices";
+import { useGenerateInvoice, useOrderInvoice, useOrderInvoices } from "../../hooks/invoices";
 
 import { AdminOrder } from "@medusajs/framework/types";
 import OrderInvoiceWidget from "../../widgets/order-invoice-widget";

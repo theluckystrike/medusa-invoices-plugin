@@ -21,9 +21,7 @@ export default async function orderInvoiceHandler({
   event,
   container,
 }: SubscriberArgs<
-  | orderCompletedPayload
-  | orderFulfillmentCreatedPayload
-  | paymentCapturedPayload
+  orderCompletedPayload | orderFulfillmentCreatedPayload | paymentCapturedPayload
 >) {
   const logger = container.resolve(ContainerRegistrationKeys.LOGGER);
   const { name, data } = event;
@@ -98,18 +96,14 @@ export default async function orderInvoiceHandler({
   });
 
   if (!storeInvoiceSettingsList?.[0]?.invoice_settings) {
-    logger.info(
-      `invoices: no invoice settings found for store with id ${store.id}`,
-    );
+    logger.info(`invoices: no invoice settings found for store with id ${store.id}`);
     return;
   }
 
   const storeInvoiceSettings = storeInvoiceSettingsList[0].invoice_settings;
   const { auto_generate_on } = storeInvoiceSettings;
 
-  logger.debug(
-    `invoices: auto_generate_on triggers: ${auto_generate_on.join(",")}, event ${name}`,
-  );
+  logger.debug(`invoices: auto_generate_on triggers: ${auto_generate_on.join(",")}, event ${name}`);
 
   if (
     (auto_generate_on.includes(InvoiceCreatedByEvent.ORDER_COMPLETED) &&

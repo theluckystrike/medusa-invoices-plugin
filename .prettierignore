@@ -9,3 +9,5 @@ src/admin/templates
 src/modules/**/migrations
 **/.snapshot-*.json
 yarn.lock
+.github/ISSUE_TEMPLATE/*.md
+src/**/README.md

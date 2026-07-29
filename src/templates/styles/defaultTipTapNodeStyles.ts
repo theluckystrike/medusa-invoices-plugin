@@ -1,6 +1,5 @@
 const defaultTipTapNodeStyles = {
-  paragraph: {
-  },
+  paragraph: {},
   heading1: {
     fontSize: 24,
     fontWeight: "bold" as const,

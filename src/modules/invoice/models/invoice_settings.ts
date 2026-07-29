@@ -1,8 +1,5 @@
 import { model } from "@medusajs/framework/utils";
-import {
-  InvoiceSettingsHeaderLogoType,
-  InvoiceTemplateId,
-} from "../../../constants/invoice";
+import { InvoiceSettingsHeaderLogoType, InvoiceTemplateId } from "../../../constants/invoice";
 
 const InvoiceSettings = model.define("invoice_settings", {
   id: model.id({ prefix: "invset" }).primaryKey(),

@@ -44,14 +44,7 @@ const columns = [
     header: "Status",
     cell: ({ getValue }) => {
       const status = getValue();
-      let badgeColor:
-        | "grey"
-        | "green"
-        | "red"
-        | "blue"
-        | "orange"
-        | "purple"
-        | undefined;
+      let badgeColor: "grey" | "green" | "red" | "blue" | "orange" | "purple" | undefined;
 
       if (status === InvoiceStatus.COMPLETED) {
         badgeColor = "green";
@@ -159,11 +152,7 @@ type InvoiceListModalProps = {
 
 const PAGE_SIZE = 20;
 
-const InvoiceListModal = ({
-  orderId,
-  isOpen,
-  setIsOpen,
-}: InvoiceListModalProps) => {
+const InvoiceListModal = ({ orderId, isOpen, setIsOpen }: InvoiceListModalProps) => {
   const [pagination, setPagination] = React.useState<DataTablePaginationState>({
     pageSize: PAGE_SIZE,
     pageIndex: 0,

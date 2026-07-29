@@ -65,24 +65,20 @@ const CleanTemplate = (async () => {
         <Page size="A4" style={styles.page}>
           {settings.header_logo.type !== "none" && (
             <View style={styles.header}>
-              {settings.header_logo.type === "text" &&
-                settings.header_logo.text && (
-                  <Text style={styles.heading}>
-                    {settings.header_logo.text}
-                  </Text>
-                )}
+              {settings.header_logo.type === "text" && settings.header_logo.text && (
+                <Text style={styles.heading}>{settings.header_logo.text}</Text>
+              )}
 
-              {settings.header_logo.type === "image" &&
-                settings.header_logo.url && (
-                  <Image
-                    src={settings.header_logo.url}
-                    style={{
-                      width: "auto",
-                      height: "40px",
-                      objectFit: "contain",
-                    }}
-                  />
-                )}
+              {settings.header_logo.type === "image" && settings.header_logo.url && (
+                <Image
+                  src={settings.header_logo.url}
+                  style={{
+                    width: "auto",
+                    height: "40px",
+                    objectFit: "contain",
+                  }}
+                />
+              )}
 
               {settings.header_content && settings.header_content.content && (
                 <View>
@@ -110,8 +106,7 @@ const CleanTemplate = (async () => {
 
             <View>
               <Text style={{ marginBottom: "5px" }}>
-                <Text style={styles.label}>Invoice number:</Text>{" "}
-                {order.display_id}
+                <Text style={styles.label}>Invoice number:</Text> {order.display_id}
               </Text>
 
               <Text style={{ marginBottom: "5px" }}>
@@ -139,9 +134,7 @@ const CleanTemplate = (async () => {
                 flex: 1,
               }}
             >
-              <Text style={[styles.label, { marginBottom: "7px" }]}>
-                Bill to:
-              </Text>
+              <Text style={[styles.label, { marginBottom: "7px" }]}>Bill to:</Text>
               {order.billing_address && (
                 <View>
                   <Text style={{ marginBottom: "5px" }}>
@@ -162,9 +155,7 @@ const CleanTemplate = (async () => {
                 flex: 1,
               }}
             >
-              <Text style={[styles.label, { marginBottom: "7px" }]}>
-                Ship to:
-              </Text>
+              <Text style={[styles.label, { marginBottom: "7px" }]}>Ship to:</Text>
 
               {order.shipping_address && (
                 <View>
@@ -208,9 +199,7 @@ const CleanTemplate = (async () => {
                     {i.variant_sku ? breakLongString(i.variant_sku, 12) : "-"}
                   </Text>
 
-                  <Text style={{ width: "10%" }}>
-                    {formatNumber(i.quantity)}
-                  </Text>
+                  <Text style={{ width: "10%" }}>{formatNumber(i.quantity)}</Text>
 
                   <Text style={{ width: "20%" }}>
                     {formatCurrency(i.unit_price, order.currency_code)}
@@ -234,15 +223,9 @@ const CleanTemplate = (async () => {
 
             <View style={{ gap: "5px" }}>
               <Text>{formatCurrency(order.subtotal, order.currency_code)}</Text>
-              <Text>
-                {formatCurrency(order.discount_total, order.currency_code)}
-              </Text>
-              <Text>
-                {formatCurrency(order.shipping_total, order.currency_code)}
-              </Text>
-              <Text>
-                {formatCurrency(order.tax_total, order.currency_code)}
-              </Text>
+              <Text>{formatCurrency(order.discount_total, order.currency_code)}</Text>
+              <Text>{formatCurrency(order.shipping_total, order.currency_code)}</Text>
+              <Text>{formatCurrency(order.tax_total, order.currency_code)}</Text>
               <Text style={styles.grandTotal}>
                 {formatCurrency(order.total, order.currency_code)}
               </Text>
@@ -256,14 +239,10 @@ const CleanTemplate = (async () => {
             settings.bank_account_swift) && (
             <View style={{ marginTop: "24px" }} wrap={false}>
               {settings.store_name && (
-                <Text style={{ marginBottom: "5px" }}>
-                  {settings.store_name}
-                </Text>
+                <Text style={{ marginBottom: "5px" }}>{settings.store_name}</Text>
               )}
               {settings.store_address && (
-                <Text style={{ marginBottom: "5px" }}>
-                  {settings.store_address}
-                </Text>
+                <Text style={{ marginBottom: "5px" }}>{settings.store_address}</Text>
               )}
               {settings.store_tax_id && (
                 <Text style={{ marginBottom: "5px" }}>

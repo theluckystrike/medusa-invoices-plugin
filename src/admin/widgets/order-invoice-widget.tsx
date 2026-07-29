@@ -1,22 +1,12 @@
 import { defineWidgetConfig } from "@medusajs/admin-sdk";
-import {
-  Button,
-  Container,
-  Heading,
-  IconButton,
-  StatusBadge,
-  Text,
-  toast,
-} from "@medusajs/ui";
+import { Button, Container, Heading, IconButton, StatusBadge, Text, toast } from "@medusajs/ui";
 import { AdminOrder, DetailWidgetProps } from "@medusajs/framework/types";
 import { useGenerateInvoice, useOrderInvoice } from "../hooks/invoices";
 import { Link as LinkIcon } from "@medusajs/icons";
 import JsonViewSection from "../components/JsonViewSection";
 import { InvoiceCreatedByEvent, InvoiceStatus } from "../../constants/invoice";
 import CollapsiblePanel from "../components/CollapsiblePanel";
-import InvoiceListModal, {
-  formatCreatedByEvent,
-} from "../components/InvoiceListModal";
+import InvoiceListModal, { formatCreatedByEvent } from "../components/InvoiceListModal";
 import React from "react";
 import InvoiceDropdownMenu from "../components/InvoiceDropdownMenu";
 import { Link } from "react-router-dom";
@@ -58,17 +48,11 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   const invoice = invoiceQuery.data;
   let invoiceStatusBadge = <StatusBadge color="grey">Queued</StatusBadge>;
 
-  if (
-    generateInvoice.isPending ||
-    invoice?.status == InvoiceStatus.GENERATING
-  ) {
+  if (generateInvoice.isPending || invoice?.status == InvoiceStatus.GENERATING) {
     invoiceStatusBadge = <StatusBadge color="blue">Generating</StatusBadge>;
   } else if (invoice?.status === InvoiceStatus.COMPLETED) {
     invoiceStatusBadge = <StatusBadge color="green">Completed</StatusBadge>;
-  } else if (
-    generateInvoice.isError ||
-    invoice?.status === InvoiceStatus.FAILED
-  ) {
+  } else if (generateInvoice.isError || invoice?.status === InvoiceStatus.FAILED) {
     invoiceStatusBadge = <StatusBadge color="red">Failed</StatusBadge>;
   }
 
@@ -82,20 +66,13 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   ) {
     return (
       <Container className="p-0 divide-y">
-        <Heading
-          level="h2"
-          className="w-full flex justify-between items-center px-6 py-4"
-        >
+        <Heading level="h2" className="w-full flex justify-between items-center px-6 py-4">
           Latest invoice
           {invoiceStatusBadge}
         </Heading>
 
         <div className="flex flex-col items-center justify-center gap-y-4 p-6">
-          <Text
-            className="text-center text-ui-fg-subtle"
-            size="small"
-            weight="plus"
-          >
+          <Text className="text-center text-ui-fg-subtle" size="small" weight="plus">
             Invoice settings have not been configured yet
           </Text>
 
@@ -116,20 +93,13 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
   if (!invoice) {
     return (
       <Container className="p-0 divide-y">
-        <Heading
-          level="h2"
-          className="w-full flex justify-between items-center px-6 py-4"
-        >
+        <Heading level="h2" className="w-full flex justify-between items-center px-6 py-4">
           Latest invoice
           {invoiceStatusBadge}
         </Heading>
 
         <div className="flex flex-col items-center justify-center gap-y-4 p-6">
-          <Text
-            className="text-center text-ui-fg-subtle"
-            size="small"
-            weight="plus"
-          >
+          <Text className="text-center text-ui-fg-subtle" size="small" weight="plus">
             No invoice has been generated for this order
           </Text>
 
@@ -148,10 +118,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
 
   return (
     <Container className="divide-y p-0 overflow-hidden">
-      <Heading
-        level="h2"
-        className="w-full flex justify-between items-center px-6 py-4 gap-4"
-      >
+      <Heading level="h2" className="w-full flex justify-between items-center px-6 py-4 gap-4">
         Latest invoice
         <div className="flex justify-between items-center gap-4">
           {invoiceStatusBadge}
@@ -225,11 +192,7 @@ const OrderInvoiceWidget = ({ data }: DetailWidgetProps<AdminOrder>) => {
         </Button>
       </div>
 
-      <InvoiceListModal
-        orderId={orderId}
-        isOpen={isModalOpen}
-        setIsOpen={setIsModalOpen}
-      />
+      <InvoiceListModal orderId={orderId} isOpen={isModalOpen} setIsOpen={setIsModalOpen} />
     </Container>
   );
 };
