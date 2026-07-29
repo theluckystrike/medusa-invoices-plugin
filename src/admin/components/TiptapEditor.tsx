@@ -52,13 +52,22 @@ const getHeadingStyle = (level: number): string => {
 };
 
 interface TiptapEditorProps {
-  initialContent?: JSONContent;
+  initialContent?: JSONContent | null;
   onChange?: (content: JSONContent) => void;
   placeholder?: string;
   className?: string;
   isInvalid?: boolean;
   disabled?: boolean;
 }
+
+const EMPTY_TIPTAP_DOCUMENT: JSONContent = {
+  type: "doc",
+  content: [{ type: "paragraph" }],
+};
+
+const normalizeTiptapContent = (content?: JSONContent | null): JSONContent => {
+  return content?.type === "doc" ? content : EMPTY_TIPTAP_DOCUMENT;
+};
 
 export type TiptapEditorFieldProps = {
   editorProps?: Omit<TiptapEditorProps, "content" | "onChange">;
@@ -476,6 +485,8 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
   isInvalid = false,
   disabled = false,
 }) => {
+  const editorContent = normalizeTiptapContent(initialContent);
+
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -532,7 +543,7 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
         placeholder: placeholder,
       }),
     ],
-    content: initialContent,
+    content: editorContent,
     editable: !disabled,
     onUpdate: ({ editor }) => {
       onChange?.(editor.getJSON());
@@ -554,13 +565,13 @@ export const TiptapEditor: React.FC<TiptapEditorProps> = ({
   );
 
   React.useEffect(() => {
-    if (editor && initialContent && !editor.isDestroyed) {
+    if (editor && !editor.isDestroyed) {
       const currentContent = editor.getJSON();
-      if (JSON.stringify(currentContent) !== JSON.stringify(initialContent)) {
-        editor.commands.setContent(initialContent);
+      if (JSON.stringify(currentContent) !== JSON.stringify(editorContent)) {
+        editor.commands.setContent(editorContent);
       }
     }
-  }, [editor, initialContent]);
+  }, [editor, editorContent]);
 
   return (
     <div className={editorClasses}>
