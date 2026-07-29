@@ -1,6 +1,6 @@
 {
   "name": "@agilo/medusa-invoices-plugin",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Professional invoice generation plugin for MedusaJS with customizable templates and automatic PDF creation.",
   "author": "Agilo",
   "publishConfig": {
