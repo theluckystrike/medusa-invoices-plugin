@@ -6,17 +6,14 @@ import {
 } from "@medusajs/framework/http";
 import { createFindParams } from "@medusajs/medusa/api/utils/validators";
 import { createInvoiceSettingsSchema } from "./admin/invoice-settings/validators";
-import {
-  adminGetInvoicesParams,
-  generateInvoiceSchema,
-} from "./admin/invoices/validators";
+import { adminGetInvoicesParams, generateInvoiceSchema } from "./admin/invoices/validators";
 
 export const GetAdminInvoiceSettingsSchema = createFindParams();
 
-const validateGetInvoicesMiddleware = validateAndTransformQuery(
-  GetAdminInvoiceSettingsSchema,
-  { defaults: ["*"], isList: true },
-);
+const validateGetInvoicesMiddleware = validateAndTransformQuery(GetAdminInvoiceSettingsSchema, {
+  defaults: ["*"],
+  isList: true,
+});
 
 export default defineMiddlewares({
   routes: [

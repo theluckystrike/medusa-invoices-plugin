@@ -2,15 +2,9 @@ import { render, screen } from "@testing-library/react";
 import Invoices from "../../../../routes/settings/invoices/page";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import {
-  useInvoiceSettings,
-  useUpsertInvoiceSettings,
-} from "../../../../hooks/invoice-settings";
+import { useInvoiceSettings, useUpsertInvoiceSettings } from "../../../../hooks/invoice-settings";
 import { useOrder, useOrders } from "../../../../hooks/orders";
-import {
-  InvoiceSettingsHeaderLogoType,
-  InvoiceTemplateId,
-} from "../../../../../constants/invoice";
+import { InvoiceSettingsHeaderLogoType, InvoiceTemplateId } from "../../../../../constants/invoice";
 
 vi.mock("react-router-dom", () => ({
   useSearchParams: () => [new URLSearchParams(), vi.fn()],
@@ -29,9 +23,7 @@ vi.mock("../../../../hooks/orders", () => ({
 
 vi.mock("../../../../components/PdfViewer", () => ({
   default: ({ selectedOrderId }: any) => (
-    <div data-testid="pdf-viewer">
-      PDF Viewer - Order: {selectedOrderId || "none"}
-    </div>
+    <div data-testid="pdf-viewer">PDF Viewer - Order: {selectedOrderId || "none"}</div>
   ),
 }));
 

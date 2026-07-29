@@ -1,8 +1,5 @@
 import { z } from "zod";
-import {
-  InvoiceCreatedByEvent,
-  InvoiceTemplateId,
-} from "../../../constants/invoice";
+import { InvoiceCreatedByEvent, InvoiceTemplateId } from "../../../constants/invoice";
 import { createFindParams } from "@medusajs/medusa/api/utils/validators";
 
 const invoiceTemplateIdSchema = z.nativeEnum(InvoiceTemplateId);

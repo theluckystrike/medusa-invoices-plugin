@@ -8,11 +8,7 @@ export const useTemplateComponent = (
   props: TemplateProps,
 ): UseQueryResult<React.ReactElement, Error> => {
   return useQuery<React.ReactElement, Error>({
-    queryKey: [
-      "invoices-plugin-template-component",
-      templateId,
-      JSON.stringify(props),
-    ],
+    queryKey: ["invoices-plugin-template-component", templateId, JSON.stringify(props)],
     queryFn: async () => {
       const template = getTemplate(templateId);
 

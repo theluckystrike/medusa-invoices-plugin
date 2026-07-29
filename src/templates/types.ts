@@ -60,9 +60,7 @@ export type TemplateProps = {
   };
 };
 
-export type TemplateRenderer = (
-  props: TemplateProps,
-) => Promise<React.ReactElement>;
+export type TemplateRenderer = (props: TemplateProps) => Promise<React.ReactElement>;
 
 export type InvoiceTemplate = {
   id: "clean" | "classic" | "compact";

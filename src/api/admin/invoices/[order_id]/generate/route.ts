@@ -2,10 +2,7 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import createInvoiceWorkflow from "../../../../../workflows/generate-invoice";
 import { GenerateInvoiceRequestBody } from "../../validators";
 
-export async function POST(
-  req: MedusaRequest<GenerateInvoiceRequestBody>,
-  res: MedusaResponse,
-) {
+export async function POST(req: MedusaRequest<GenerateInvoiceRequestBody>, res: MedusaResponse) {
   const { order_id } = req.params;
   const { template_id, created_by_event } = req.validatedBody ?? {};
 

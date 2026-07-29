@@ -12,11 +12,7 @@ type PdfViewerProps = {
   orderQuery: UseQueryResult<AdminOrderResponse>;
 };
 
-const PdfViewer: React.FC<PdfViewerProps> = ({
-  templateSettings,
-  selectedOrderId,
-  orderQuery,
-}) => {
+const PdfViewer: React.FC<PdfViewerProps> = ({ templateSettings, selectedOrderId, orderQuery }) => {
   const order = orderQuery.data?.order;
 
   if (!selectedOrderId) {
@@ -38,9 +34,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
   if (selectedOrderId && orderQuery.isError) {
     return (
       <Text className="text-ui-fg-subtle" size="small">
-        {orderQuery.error
-          ? orderQuery.error.message
-          : "Failed to load order data"}
+        {orderQuery.error ? orderQuery.error.message : "Failed to load order data"}
       </Text>
     );
   }
@@ -48,9 +42,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
   if (!order) {
     return (
       <Text className="text-ui-fg-subtle" size="small">
-        {orderQuery.error
-          ? orderQuery.error.message
-          : "Failed to load order data"}
+        {orderQuery.error ? orderQuery.error.message : "Failed to load order data"}
       </Text>
     );
   }
@@ -65,12 +57,7 @@ const PdfViewer: React.FC<PdfViewerProps> = ({
     },
   };
 
-  return (
-    <PdfPreview
-      templateId={templateSettings.template_id}
-      templateProps={templateProps}
-    />
-  );
+  return <PdfPreview templateId={templateSettings.template_id} templateProps={templateProps} />;
 };
 
 export default PdfViewer;

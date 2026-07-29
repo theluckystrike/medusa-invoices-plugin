@@ -4,10 +4,7 @@ import ClassicTemplate from "./styles/ClassicTemplate";
 import CompactTemplate from "./styles/CompactTemplate";
 import { InvoiceTemplate } from "./types";
 
-export const templates: Record<
-  "clean" | "classic" | "compact",
-  InvoiceTemplate
-> = {
+export const templates: Record<"clean" | "classic" | "compact", InvoiceTemplate> = {
   clean: {
     id: "clean",
     version: "1.0.0",
@@ -25,9 +22,7 @@ export const templates: Record<
   },
 };
 
-export function getTemplate(
-  id: "clean" | "classic" | "compact",
-): InvoiceTemplate {
+export function getTemplate(id: "clean" | "classic" | "compact"): InvoiceTemplate {
   const template = templates[id];
 
   if (!template) {

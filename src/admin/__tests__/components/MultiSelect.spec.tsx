@@ -96,9 +96,7 @@ describe("Multi-Select Triggers", () => {
     const badge = screen.getByText(/order completed/i);
     expect(badge).toBeInTheDocument();
 
-    const removeButton = within(
-      badge.closest(".bg-ui-tag-neutral-bg")!,
-    ).getByRole("button");
+    const removeButton = within(badge.closest(".bg-ui-tag-neutral-bg")!).getByRole("button");
     await user.click(removeButton);
 
     expect(setTemplateSettings).toHaveBeenCalledWith(expect.any(Function));
@@ -136,16 +134,10 @@ describe("Multi-Select Triggers", () => {
     const select = screen.getByRole("combobox");
     await user.click(select);
 
-    expect(
-      screen.queryByRole("option", { name: /order completed/i }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("option", { name: /order completed/i })).not.toBeInTheDocument();
 
-    expect(
-      screen.getByRole("option", { name: /fulfillment created/i }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("option", { name: /payment captured/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /fulfillment created/i })).toBeInTheDocument();
+    expect(screen.getByRole("option", { name: /payment captured/i })).toBeInTheDocument();
   });
 
   it("should display all selected triggers as badges", () => {
@@ -209,10 +201,7 @@ describe("Multi-Select Triggers", () => {
     });
 
     render(
-      <MultiSelect
-        templateSettings={currentSettings}
-        setTemplateSettings={setTemplateSettings}
-      />,
+      <MultiSelect templateSettings={currentSettings} setTemplateSettings={setTemplateSettings} />,
     );
 
     const updateFn = setTemplateSettings.mock.calls[0]?.[0];

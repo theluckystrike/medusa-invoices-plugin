@@ -1,13 +1,7 @@
 import { vi } from "vitest";
 import userEvent from "@testing-library/user-event";
-import {
-  InvoiceSettingsHeaderLogoType,
-  InvoiceTemplateId,
-} from "../../../constants/invoice";
-import {
-  useInvoiceSettings,
-  useUpsertInvoiceSettings,
-} from "../../hooks/invoice-settings";
+import { InvoiceSettingsHeaderLogoType, InvoiceTemplateId } from "../../../constants/invoice";
+import { useInvoiceSettings, useUpsertInvoiceSettings } from "../../hooks/invoice-settings";
 import { useOrder, useOrders } from "../../hooks/orders";
 import { render, screen } from "@testing-library/react";
 import RenderTemplateSettings from "../../components/RenderTemplateSettings";
@@ -24,9 +18,7 @@ vi.mock("../../hooks/orders", () => ({
 
 vi.mock("../../components/PdfViewer", () => ({
   default: ({ selectedOrderId }: any) => (
-    <div data-testid="pdf-viewer">
-      PDF Viewer - Order: {selectedOrderId || "none"}
-    </div>
+    <div data-testid="pdf-viewer">PDF Viewer - Order: {selectedOrderId || "none"}</div>
   ),
 }));
 
@@ -201,9 +193,7 @@ describe("Settings Page Tests", () => {
       const saveButton = screen.getByRole("button", { name: /save settings/i });
       await user.click(saveButton);
 
-      expect(
-        screen.getByText(/string must contain at least 1 character/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/string must contain at least 1 character/i)).toBeInTheDocument();
 
       expect(mutateAsync).not.toHaveBeenCalled();
     });
@@ -249,9 +239,7 @@ describe("Settings Page Tests", () => {
       const saveButton = screen.getByRole("button", { name: /save settings/i });
       await user.click(saveButton);
 
-      expect(
-        screen.getByText(/provide an image url or upload a file/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/provide an image url or upload a file/i)).toBeInTheDocument();
 
       expect(mutateAsync).not.toHaveBeenCalled();
     });
@@ -326,9 +314,7 @@ describe("Settings Page Tests", () => {
         />,
       );
 
-      const headerEditor = screen.getByPlaceholderText(
-        /additional header content/i,
-      );
+      const headerEditor = screen.getByPlaceholderText(/additional header content/i);
       await user.type(headerEditor, "Header text");
 
       expect(setTemplateSettings).toHaveBeenCalled();
@@ -477,12 +463,8 @@ describe("Settings Page Tests", () => {
         />,
       );
 
-      expect(
-        screen.getByText(/current version: v1\.0\.0/i),
-      ).toBeInTheDocument();
-      expect(
-        screen.getByText(/version that will be saved: v1\.0\.0/i),
-      ).toBeInTheDocument();
+      expect(screen.getByText(/current version: v1\.0\.0/i)).toBeInTheDocument();
+      expect(screen.getByText(/version that will be saved: v1\.0\.0/i)).toBeInTheDocument();
     });
   });
 });

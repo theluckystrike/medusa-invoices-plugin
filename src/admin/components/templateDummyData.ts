@@ -53,11 +53,11 @@ export const orderDummyData: TemplateOrderProp = {
       total: 90,
     },
   ],
-  subtotal: 225,       
-  discount_total: 20,    
-  shipping_total: 15,   
-  tax_total: 18.5,        
-  total: 238.5,      
+  subtotal: 225,
+  discount_total: 20,
+  shipping_total: 15,
+  tax_total: 18.5,
+  total: 238.5,
 };
 
 export const invoiceDummyData = {

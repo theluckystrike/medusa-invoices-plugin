@@ -1,9 +1,6 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 
-import {
-  ContainerRegistrationKeys,
-  MedusaError,
-} from "@medusajs/framework/utils";
+import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils";
 import updateInvoiceSettingsWorkflow, {
   UpsertInvoiceSettingsWorkflowInput,
 } from "../../../workflows/update-invoice-settings";
@@ -33,14 +30,10 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     filters: { id: store.id },
   });
 
-  const invoiceSettings: InvoiceSettingsDTO | null =
-    storeWithSettings?.invoice_settings;
+  const invoiceSettings: InvoiceSettingsDTO | null = storeWithSettings?.invoice_settings;
 
   if (!invoiceSettings) {
-    throw new MedusaError(
-      MedusaError.Types.NOT_FOUND,
-      "Invoice settings not found.",
-    );
+    throw new MedusaError(MedusaError.Types.NOT_FOUND, "Invoice settings not found.");
   }
 
   const invoiceSettingsResponse = {

@@ -63,9 +63,7 @@ const JsonViewSection = ({ data }: JsonViewSectionProps) => {
           </div>
           <Drawer.Body className="flex flex-1 flex-col overflow-hidden px-[5px] py-0 pb-[5px]">
             <div className="bg-ui-contrast-bg-subtle flex-1 overflow-auto rounded-b-[4px] rounded-t-lg p-3">
-              <Suspense
-                fallback={<div className="flex size-full flex-col"></div>}
-              >
+              <Suspense fallback={<div className="flex size-full flex-col"></div>}>
                 <Primitive
                   value={data}
                   displayDataTypes={false}
@@ -73,8 +71,7 @@ const JsonViewSection = ({ data }: JsonViewSectionProps) => {
                     {
                       "--w-rjv-font-family": "Roboto Mono, monospace",
                       "--w-rjv-line-color": "var(--contrast-border-base)",
-                      "--w-rjv-curlybraces-color":
-                        "var(--contrast-fg-secondary)",
+                      "--w-rjv-curlybraces-color": "var(--contrast-fg-secondary)",
                       "--w-rjv-brackets-color": "var(--contrast-fg-secondary)",
                       "--w-rjv-key-string": "var(--contrast-fg-primary)",
                       "--w-rjv-info-color": "var(--contrast-fg-secondary)",
@@ -87,8 +84,7 @@ const JsonViewSection = ({ data }: JsonViewSectionProps) => {
                       "--w-rjv-key-number": "var(--contrast-fg-secondary)",
                       "--w-rjv-arrow-color": "var(--contrast-fg-secondary)",
                       "--w-rjv-copied-color": "var(--contrast-fg-secondary)",
-                      "--w-rjv-copied-success-color":
-                        "var(--contrast-fg-primary)",
+                      "--w-rjv-copied-success-color": "var(--contrast-fg-primary)",
                       "--w-rjv-colon-color": "var(--contrast-fg-primary)",
                       "--w-rjv-ellipsis-color": "var(--contrast-fg-secondary)",
                     } as CSSProperties
@@ -97,14 +93,10 @@ const JsonViewSection = ({ data }: JsonViewSectionProps) => {
                 >
                   <Primitive.Quote render={() => <span />} />
                   <Primitive.Null
-                    render={() => (
-                      <span className="text-ui-tag-red-icon">null</span>
-                    )}
+                    render={() => <span className="text-ui-tag-red-icon">null</span>}
                   />
                   <Primitive.Undefined
-                    render={() => (
-                      <span className="text-ui-tag-blue-icon">undefined</span>
-                    )}
+                    render={() => <span className="text-ui-tag-blue-icon">undefined</span>}
                   />
                   <Primitive.CountInfo
                     render={(_props, { value }) => {

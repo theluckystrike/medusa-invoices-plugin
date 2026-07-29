@@ -197,7 +197,6 @@ Access the Admin UI at `/app/settings/invoices` to:
 <br />
 <br />
 
-
 ## API Documentation
 
 ### Admin Endpoints
@@ -252,11 +251,7 @@ Response:
       "version": "1.0.0"
     }
   ],
-  "availableTriggers": [
-    "order.completed",
-    "order.fulfillment_created",
-    "payment.captured"
-  ]
+  "availableTriggers": ["order.completed", "order.fulfillment_created", "payment.captured"]
 }
 ```
 
@@ -449,7 +444,8 @@ GET /store/invoices/{order_id}.pdf
 ```
 
 Response:
-  - returns a PDF file stream
+
+- returns a PDF file stream
 
 <br />
 

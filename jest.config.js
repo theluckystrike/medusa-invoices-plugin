@@ -1,5 +1,5 @@
-const { loadEnv } = require("@medusajs/framework/utils")
-loadEnv("test", process.cwd())
+const { loadEnv } = require("@medusajs/framework/utils");
+loadEnv("test", process.cwd());
 
 module.exports = {
   transform: {
@@ -26,16 +26,16 @@ module.exports = {
   moduleNameMapper: {
     "^@react-pdf/renderer$": "<rootDir>/__mocks__/@react-pdf/renderer.js",
   },
-}
+};
 
 if (process.env.TEST_TYPE === "unit") {
   // There are no standalone unit tests — all tests need a database.  Use a
   // pattern that can never match a real file path so Jest finds nothing and
   // exits 0 (combined with --passWithNoTests).
-  module.exports.testMatch = ["**/__NEVER_MATCHES_UNIT__/**"]
+  module.exports.testMatch = ["**/__NEVER_MATCHES_UNIT__/**"];
 } else if (process.env.TEST_TYPE === "integration:http") {
   // Only match actual spec files — exclude setup.js and other helpers.
-  module.exports.testMatch = ["**/integration-tests/**/*.spec.[jt]s"]
+  module.exports.testMatch = ["**/integration-tests/**/*.spec.[jt]s"];
 } else if (process.env.TEST_TYPE === "integration:modules") {
-  module.exports.testMatch = ["**/src/modules/*/__tests__/**/*.[jt]s"]
+  module.exports.testMatch = ["**/src/modules/*/__tests__/**/*.[jt]s"];
 }

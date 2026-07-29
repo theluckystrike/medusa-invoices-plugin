@@ -2,13 +2,7 @@ import { Plus } from "@medusajs/icons";
 import { IconButton, Text } from "@medusajs/ui";
 import React from "react";
 
-const CollapsiblePanel = ({
-  label,
-  content,
-}: {
-  label: string;
-  content: string;
-}) => {
+const CollapsiblePanel = ({ label, content }: { label: string; content: string }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
 
   return (
@@ -19,11 +13,7 @@ const CollapsiblePanel = ({
         size="small"
       >
         {label}
-        <IconButton
-          onClick={() => setIsOpen(!isOpen)}
-          size="small"
-          variant="transparent"
-        >
+        <IconButton onClick={() => setIsOpen(!isOpen)} size="small" variant="transparent">
           <Plus
             className={`transition-transform ease-out duration-200 ${isOpen ? "rotate-45" : ""}`}
           />

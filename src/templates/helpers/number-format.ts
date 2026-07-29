@@ -49,9 +49,6 @@ export function formatCurrency(
  * @param regionLocale - Locale from region/order settings
  * @returns The locale string to use
  */
-export function getInvoiceLocale(
-  storeLocale?: string,
-  regionLocale?: string,
-): string | undefined {
+export function getInvoiceLocale(storeLocale?: string, regionLocale?: string): string | undefined {
   return storeLocale || regionLocale || undefined;
 }

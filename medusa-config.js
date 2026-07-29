@@ -1,16 +1,16 @@
-const { Modules } = require("@medusajs/utils")
+const { Modules } = require("@medusajs/utils");
 
-const DB_HOST = process.env.DB_HOST || "localhost"
-const DB_USERNAME = process.env.DB_USERNAME || "postgres"
-const DB_PASSWORD = process.env.DB_PASSWORD || ""
-const DB_NAME = process.env.DB_TEMP_NAME || "medusa_test"
-const DB_URL = `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`
+const DB_HOST = process.env.DB_HOST || "localhost";
+const DB_USERNAME = process.env.DB_USERNAME || "postgres";
+const DB_PASSWORD = process.env.DB_PASSWORD || "";
+const DB_NAME = process.env.DB_TEMP_NAME || "medusa_test";
+const DB_URL = `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}/${DB_NAME}`;
 
-process.env.POSTGRES_URL = DB_URL
+process.env.POSTGRES_URL = DB_URL;
 
 // The integration tests generate JWT tokens with this secret, so both the
 // http config and the user module must use the same value.
-const JWT_SECRET = "supersecret"
+const JWT_SECRET = "supersecret";
 
 module.exports = {
   projectConfig: {
@@ -58,4 +58,4 @@ module.exports = {
       resolve: "./src/modules/invoice",
     },
   },
-}
+};

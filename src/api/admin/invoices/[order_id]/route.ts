@@ -1,18 +1,12 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import {
-  ContainerRegistrationKeys,
-  MedusaError,
-} from "@medusajs/framework/utils";
+import { ContainerRegistrationKeys, MedusaError } from "@medusajs/framework/utils";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const { order_id } = req.params;
   const { created_by_event, status, template_version } = req.query;
 
   if (!order_id) {
-    throw new MedusaError(
-      MedusaError.Types.INVALID_DATA,
-      "Order ID is required.",
-    );
+    throw new MedusaError(MedusaError.Types.INVALID_DATA, "Order ID is required.");
   }
 
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);

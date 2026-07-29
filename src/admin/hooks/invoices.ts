@@ -11,7 +11,7 @@ import {
   GetInvoicesResponse,
   InvoiceDTO,
 } from "../../types/invoice";
-import { FetchError } from "@medusajs/js-sdk"
+import { FetchError } from "@medusajs/js-sdk";
 
 export type UseOrderInvoicesParams = {
   limit?: number;
@@ -41,10 +41,8 @@ export const useOrderInvoices = (
     queryFn: async () => {
       const searchParams = new URLSearchParams();
 
-      if (params.limit !== undefined)
-        searchParams.set("limit", String(params.limit));
-      if (params.offset !== undefined)
-        searchParams.set("offset", String(params.offset));
+      if (params.limit !== undefined) searchParams.set("limit", String(params.limit));
+      if (params.offset !== undefined) searchParams.set("offset", String(params.offset));
 
       if (params.filters) {
         Object.entries(params.filters).forEach(([key, values]) => {
@@ -96,13 +94,10 @@ export const useGenerateInvoice = (order_id: string) => {
 
   return useMutation<InvoiceDTO, FetchError, GenerateInvoiceRequestBody>({
     mutationFn: async (payload: GenerateInvoiceRequestBody) => {
-      const invoice = await sdk.client.fetch<InvoiceDTO>(
-        `/admin/invoices/${order_id}/generate`,
-        {
-          method: "POST",
-          body: payload,
-        },
-      );
+      const invoice = await sdk.client.fetch<InvoiceDTO>(`/admin/invoices/${order_id}/generate`, {
+        method: "POST",
+        body: payload,
+      });
 
       return invoice;
     },
